@@ -1,0 +1,2 @@
+90    20.0  20.0  10.0    10.0       0.6       0.1	 	0.04      1.0       0.0     0      	0		0.05
+Mass, V0x, V0y, V0z,Viscosity, CRestitution, CFraction, TimeStep, DispTime, Windx, Windy, Windz, Epsilon

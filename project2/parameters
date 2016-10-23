@@ -1,0 +1,2 @@
+100  	3.0		10	  2.0 	 2.0 	 2.0  	1.0 		0.4       	 0.1	 	0.04      1.0     0     0   	0	0   -10  						 0  	-2 		1 		-2	 1			 0.5
+Rate, Lifespan, Mass, V0x,  V0y, 	V0z, Viscosity,CRestitution, CFraction, TimeStep, DispTime, Windx, Windy, Windz,Gx,	Gy,		Gz,Stone.x,Stone.y,Stone.z, StoneRadius, epsilon

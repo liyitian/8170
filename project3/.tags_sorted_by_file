@@ -1,0 +1,386 @@
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+Camera	Camera.cpp	/^Camera::Camera() {$/;"	f	class:Camera
+Camera	Camera.cpp	/^Camera::Camera(Vector3d P, Vector3d A, Vector3d U) {$/;"	f	class:Camera
+Camera	Camera.cpp	/^Camera::Camera(Vector3d P, Vector3d A, Vector3d U,$/;"	f	class:Camera
+CameraMode	Camera.cpp	/^int CameraMode = INACTIVE;$/;"	v
+ComputeCoords	Camera.cpp	/^void Camera::ComputeCoords(const Vector3d &P, const Vector3d &A, const Vector3d &U){$/;"	f	class:Camera
+DeltaAzim	Camera.cpp	/^double DeltaAzim;$/;"	v
+DeltaElev	Camera.cpp	/^double DeltaElev;$/;"	v
+HandleMouseEvent	Camera.cpp	/^void Camera::HandleMouseEvent(int button, int state, int x, int y) {$/;"	f	class:Camera
+HandleMouseMotion	Camera.cpp	/^void Camera::HandleMouseMotion(int x, int y) {$/;"	f	class:Camera
+Initialize	Camera.cpp	/^void Camera::Initialize() {$/;"	f	class:Camera
+LocalDeltaAzim	Camera.cpp	/^double LocalDeltaAzim;$/;"	v
+LocalDeltaElev	Camera.cpp	/^double LocalDeltaElev;$/;"	v
+MousePrevX	Camera.cpp	/^int MousePrevX;$/;"	v
+MousePrevY	Camera.cpp	/^int MousePrevY;$/;"	v
+MouseStartX	Camera.cpp	/^int MouseStartX;$/;"	v
+MouseStartY	Camera.cpp	/^int MouseStartY;$/;"	v
+MvMatrix	Camera.cpp	/^GLdouble MvMatrix[16];$/;"	v
+PerspectiveDisplay	Camera.cpp	/^void Camera::PerspectiveDisplay(int W, int H) {$/;"	f	class:Camera
+PrevMousePos	Camera.cpp	/^Vector3d PrevMousePos;$/;"	v
+ProjMatrix	Camera.cpp	/^GLdouble ProjMatrix[16];$/;"	v
+Reset	Camera.cpp	/^void Camera::Reset() {$/;"	f	class:Camera
+SetAim	Camera.cpp	/^void Camera::SetAim(Vector3d A) {$/;"	f	class:Camera
+SetCenterOfFocus	Camera.cpp	/^void Camera::SetCenterOfFocus(Vector3d NewAim) {$/;"	f	class:Camera
+SetClippingPlanes	Camera.cpp	/^void Camera::SetClippingPlanes(float Near, float Far) {$/;"	f	class:Camera
+SetFOV	Camera.cpp	/^void Camera::SetFOV(float ViewAngle) {$/;"	f	class:Camera
+SetPos	Camera.cpp	/^void Camera::SetPos(Vector3d P) {$/;"	f	class:Camera
+SetUp	Camera.cpp	/^void Camera::SetUp(Vector3d U) {$/;"	f	class:Camera
+ViewPort	Camera.cpp	/^GLint ViewPort[4];$/;"	v
+epsilon	Camera.cpp	/^const float epsilon = 0.0001;$/;"	v
+operator =	Camera.cpp	/^const Camera& Camera::operator=(const Camera& Cam) {$/;"	f	class:Camera
+Aim	Camera.h	/^  Vector3d Aim;$/;"	m	class:Camera
+Camera	Camera.h	/^class Camera {$/;"	c
+CurrentAzim	Camera.h	/^  double CurrentAzim;$/;"	m	class:Camera
+CurrentElev	Camera.h	/^  double CurrentElev;$/;"	m	class:Camera
+DefaultAim	Camera.h	/^  Vector3d DefaultAim;$/;"	m	class:Camera
+DefaultAzim	Camera.h	/^  double DefaultAzim;$/;"	m	class:Camera
+DefaultElev	Camera.h	/^  double DefaultElev;$/;"	m	class:Camera
+DefaultPos	Camera.h	/^  Vector3d DefaultPos;$/;"	m	class:Camera
+DefaultUp	Camera.h	/^  Vector3d DefaultUp;$/;"	m	class:Camera
+FarPlane	Camera.h	/^  float FarPlane;$/;"	m	class:Camera
+Fov	Camera.h	/^  float Fov;$/;"	m	class:Camera
+INACTIVE	Camera.h	17;"	d
+NearPlane	Camera.h	/^  float NearPlane;$/;"	m	class:Camera
+Pos	Camera.h	/^  Vector3d Pos;$/;"	m	class:Camera
+ROTATE	Camera.h	19;"	d
+TRANSLATE	Camera.h	18;"	d
+TranslateX	Camera.h	/^  double TranslateX;$/;"	m	class:Camera
+TranslateY	Camera.h	/^  double TranslateY;$/;"	m	class:Camera
+Up	Camera.h	/^  Vector3d Up;$/;"	m	class:Camera
+ZOOM	Camera.h	20;"	d
+Zoom	Camera.h	/^  double Zoom;$/;"	m	class:Camera
+__CAMERA_H__	Camera.h	12;"	d
+inverted	Camera.h	/^  int inverted; \/\/flag to invert the coordinate$/;"	m	class:Camera
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+gauss	Gauss.cpp	/^double gauss(double mean, double std, int seed)$/;"	f
+_GAUSS_H	Gauss.h	17;"	d
+C	Makefile	/^C	= cpp$/;"	m
+CC	Makefile	/^CC      = g++$/;"	m
+CFLAGS	Makefile	/^CFLAGS 	= -g$/;"	m
+H	Makefile	/^H	= h$/;"	m
+HFILES	Makefile	/^HFILES 	= Matrix.${H} Vector.${H} Utility.${H} Camera.${H} Gauss.${H}$/;"	m
+LDFLAGS	Makefile	/^    LDFLAGS     = -lglut -lGL -lm -L\/usr\/local\/lib -lGLU$/;"	m
+LDFLAGS	Makefile	/^  LDFLAGS     = -framework Foundation -framework GLUT -framework OpenGL -lm$/;"	m
+OFILES	Makefile	/^OFILES 	= Matrix.o Vector.o Utility.o Camera.o Gauss.o$/;"	m
+PROJECT	Makefile	/^PROJECT = Project3$/;"	m
+LU_Decompose	Matrix.cpp	/^Matrix LU_Decompose(const Matrix& M, int *indx)$/;"	f
+LU_Decompose	Matrix.cpp	/^Matrix4x4 LU_Decompose(const Matrix4x4& M, int *indx)$/;"	f
+LU_back_substitution	Matrix.cpp	/^void LU_back_substitution(const Matrix& M, int *indx, double col[])$/;"	f
+LU_back_substitution	Matrix.cpp	/^void LU_back_substitution(const Matrix4x4& M, int *indx, double col[])$/;"	f
+Matrix	Matrix.cpp	/^Matrix::Matrix(const Matrix& M)$/;"	f	class:Matrix
+Matrix	Matrix.cpp	/^Matrix::Matrix(double a11, double a12, double a13, double a14,$/;"	f	class:Matrix
+Matrix	Matrix.cpp	/^Matrix::Matrix(double a11, double a12, double a13,$/;"	f	class:Matrix
+Matrix	Matrix.cpp	/^Matrix::Matrix(double a11, double a12,$/;"	f	class:Matrix
+Matrix	Matrix.cpp	/^Matrix::Matrix(int rows, int cols, const double *M)$/;"	f	class:Matrix
+Matrix2x2	Matrix.cpp	/^Matrix2x2::Matrix2x2(double a11, double a12,$/;"	f	class:Matrix2x2
+Matrix3x3	Matrix.cpp	/^Matrix3x3::Matrix3x3(double a11, double a12, double a13,$/;"	f	class:Matrix3x3
+Matrix3x3	Matrix.cpp	/^Matrix3x3::Matrix3x3(double a11, double a12,$/;"	f	class:Matrix3x3
+Matrix4x4	Matrix.cpp	/^Matrix4x4::Matrix4x4(double a11, double a12, double a13, double a14,$/;"	f	class:Matrix4x4
+Matrix4x4	Matrix.cpp	/^Matrix4x4::Matrix4x4(double a11, double a12, double a13,$/;"	f	class:Matrix4x4
+diag	Matrix.cpp	/^Matrix diag(const Vector &V)$/;"	f
+identity	Matrix.cpp	/^void Matrix2x2::identity()$/;"	f	class:Matrix2x2
+identity	Matrix.cpp	/^void Matrix3x3::identity()$/;"	f	class:Matrix3x3
+identity	Matrix.cpp	/^void Matrix4x4::identity()$/;"	f	class:Matrix4x4
+identity	Matrix.cpp	/^void Matrix::identity()$/;"	f	class:Matrix
+inv	Matrix.cpp	/^Matrix Matrix::inv() const$/;"	f	class:Matrix
+inv	Matrix.cpp	/^Matrix2x2 Matrix2x2::inv() const$/;"	f	class:Matrix2x2
+inv	Matrix.cpp	/^Matrix3x3 Matrix3x3::inv() const$/;"	f	class:Matrix3x3
+inv	Matrix.cpp	/^Matrix4x4 Matrix4x4::inv() const$/;"	f	class:Matrix4x4
+ncols	Matrix.cpp	/^int Matrix::ncols() const$/;"	f	class:Matrix
+nrows	Matrix.cpp	/^int Matrix::nrows() const$/;"	f	class:Matrix
+operator &	Matrix.cpp	/^Matrix operator&(const Vector& v1, const Vector& v2)$/;"	f
+operator &	Matrix.cpp	/^Matrix2x2 operator&(const Vector2d& v1, const Vector2d& v2)$/;"	f
+operator &	Matrix.cpp	/^Matrix3x3 operator&(const Vector3d& v1, const Vector3d& v2)$/;"	f
+operator *	Matrix.cpp	/^Matrix Matrix::operator*(double a) const$/;"	f	class:Matrix
+operator *	Matrix.cpp	/^Matrix operator*(const Matrix& m1, const Matrix& m2)$/;"	f
+operator *	Matrix.cpp	/^Matrix operator*(double a, const Matrix& m)$/;"	f
+operator *	Matrix.cpp	/^Matrix2x2 Matrix2x2::operator*(double a) const$/;"	f	class:Matrix2x2
+operator *	Matrix.cpp	/^Matrix2x2 operator*(const Matrix2x2& m1, const Matrix2x2& m2)$/;"	f
+operator *	Matrix.cpp	/^Matrix2x2 operator*(double a, const Matrix2x2& m)$/;"	f
+operator *	Matrix.cpp	/^Matrix3x3 Matrix3x3::operator*(double a) const$/;"	f	class:Matrix3x3
+operator *	Matrix.cpp	/^Matrix3x3 operator*(const Matrix3x3& m1, const Matrix3x3& m2)$/;"	f
+operator *	Matrix.cpp	/^Matrix3x3 operator*(double a, const Matrix3x3& m)$/;"	f
+operator *	Matrix.cpp	/^Matrix4x4 Matrix4x4::operator*(double a) const$/;"	f	class:Matrix4x4
+operator *	Matrix.cpp	/^Matrix4x4 operator*(const Matrix4x4& m1, const Matrix4x4& m2)$/;"	f
+operator *	Matrix.cpp	/^Matrix4x4 operator*(double a, const Matrix4x4& m)$/;"	f
+operator *	Matrix.cpp	/^Vector operator*(const Matrix& M, const Vector& V)$/;"	f
+operator *	Matrix.cpp	/^Vector operator*(const Vector& V, const Matrix& M)$/;"	f
+operator *	Matrix.cpp	/^Vector2d operator*(const Matrix2x2& m, const Vector2d& v)$/;"	f
+operator *	Matrix.cpp	/^Vector2d operator*(const Vector2d& v, const Matrix2x2& m)$/;"	f
+operator *	Matrix.cpp	/^Vector3d operator*(const Matrix3x3& m, const Vector3d& v)$/;"	f
+operator *	Matrix.cpp	/^Vector3d operator*(const Vector3d& v, const Matrix3x3& m)$/;"	f
+operator *	Matrix.cpp	/^Vector4d operator*(const Matrix4x4& m, const Vector4d& v)$/;"	f
+operator *	Matrix.cpp	/^Vector4d operator*(const Vector4d& v, const Matrix4x4& m)$/;"	f
+operator +	Matrix.cpp	/^Matrix operator+(const Matrix& m1, const Matrix& m2)$/;"	f
+operator +	Matrix.cpp	/^Matrix2x2 operator+(const Matrix2x2& m1, const Matrix2x2& m2)$/;"	f
+operator +	Matrix.cpp	/^Matrix3x3 operator+(const Matrix3x3& m1, const Matrix3x3& m2)$/;"	f
+operator +	Matrix.cpp	/^Matrix4x4 operator+(const Matrix4x4& m1, const Matrix4x4& m2)$/;"	f
+operator -	Matrix.cpp	/^Matrix operator-(const Matrix& m1, const Matrix& m2)$/;"	f
+operator -	Matrix.cpp	/^Matrix2x2 operator-(const Matrix2x2& m1, const Matrix2x2& m2)$/;"	f
+operator -	Matrix.cpp	/^Matrix3x3 operator-(const Matrix3x3& m1, const Matrix3x3& m2)$/;"	f
+operator -	Matrix.cpp	/^Matrix4x4 operator-(const Matrix4x4& m1, const Matrix4x4& m2)$/;"	f
+operator <<	Matrix.cpp	/^ostream& operator<< (ostream& os, const Matrix& m){$/;"	f
+operator <<	Matrix.cpp	/^ostream& operator<< (ostream& os, const Matrix2x2& m){$/;"	f
+operator <<	Matrix.cpp	/^ostream& operator<< (ostream& os, const Matrix3x3& m){$/;"	f
+operator <<	Matrix.cpp	/^ostream& operator<< (ostream& os, const Matrix4x4& m){$/;"	f
+operator =	Matrix.cpp	/^const Matrix& Matrix::operator=(const Matrix& m2)$/;"	f	class:Matrix
+operator Matrix	Matrix.cpp	/^Matrix2x2::operator Matrix()$/;"	f	class:Matrix2x2
+operator Matrix	Matrix.cpp	/^Matrix3x3::operator Matrix()$/;"	f	class:Matrix3x3
+operator Matrix	Matrix.cpp	/^Matrix4x4::operator Matrix()$/;"	f	class:Matrix4x4
+operator Matrix2x2	Matrix.cpp	/^Matrix::operator Matrix2x2()$/;"	f	class:Matrix
+operator Matrix3x3	Matrix.cpp	/^Matrix2x2::operator Matrix3x3()$/;"	f	class:Matrix2x2
+operator Matrix3x3	Matrix.cpp	/^Matrix::operator Matrix3x3()$/;"	f	class:Matrix
+operator Matrix4x4	Matrix.cpp	/^Matrix2x2::operator Matrix4x4()$/;"	f	class:Matrix2x2
+operator Matrix4x4	Matrix.cpp	/^Matrix3x3::operator Matrix4x4()$/;"	f	class:Matrix3x3
+operator Matrix4x4	Matrix.cpp	/^Matrix::operator Matrix4x4()$/;"	f	class:Matrix
+operator []	Matrix.cpp	/^Vector& Matrix::operator[](int i)$/;"	f	class:Matrix
+operator []	Matrix.cpp	/^Vector2d& Matrix2x2::operator[](int i)$/;"	f	class:Matrix2x2
+operator []	Matrix.cpp	/^Vector3d& Matrix3x3::operator[](int i)$/;"	f	class:Matrix3x3
+operator []	Matrix.cpp	/^Vector4d& Matrix4x4::operator[](int i)$/;"	f	class:Matrix4x4
+operator []	Matrix.cpp	/^const Vector& Matrix::operator[](int i) const$/;"	f	class:Matrix
+operator []	Matrix.cpp	/^const Vector2d& Matrix2x2::operator[](int i) const$/;"	f	class:Matrix2x2
+operator []	Matrix.cpp	/^const Vector3d& Matrix3x3::operator[](int i) const$/;"	f	class:Matrix3x3
+operator []	Matrix.cpp	/^const Vector4d& Matrix4x4::operator[](int i) const$/;"	f	class:Matrix4x4
+print	Matrix.cpp	/^void Matrix2x2::print(int w, int p) const$/;"	f	class:Matrix2x2
+print	Matrix.cpp	/^void Matrix3x3::print(int w, int p) const$/;"	f	class:Matrix3x3
+print	Matrix.cpp	/^void Matrix4x4::print(int w, int p) const$/;"	f	class:Matrix4x4
+print	Matrix.cpp	/^void Matrix::print(int w, int p) const$/;"	f	class:Matrix
+set	Matrix.cpp	/^void Matrix2x2::set(double a11, double a12,$/;"	f	class:Matrix2x2
+set	Matrix.cpp	/^void Matrix3x3::set(double a11, double a12, double a13,$/;"	f	class:Matrix3x3
+set	Matrix.cpp	/^void Matrix3x3::set(double a11, double a12,$/;"	f	class:Matrix3x3
+set	Matrix.cpp	/^void Matrix4x4::set(double a11, double a12, double a13, double a14,$/;"	f	class:Matrix4x4
+set	Matrix.cpp	/^void Matrix4x4::set(double a11, double a12, double a13,$/;"	f	class:Matrix4x4
+set	Matrix.cpp	/^void Matrix::set(double *M)$/;"	f	class:Matrix
+set	Matrix.cpp	/^void Matrix::set(double a11, double a12, double a13, double a14,$/;"	f	class:Matrix
+set	Matrix.cpp	/^void Matrix::set(double a11, double a12, double a13,$/;"	f	class:Matrix
+set	Matrix.cpp	/^void Matrix::set(double a11, double a12,$/;"	f	class:Matrix
+setsize	Matrix.cpp	/^void Matrix::setsize(int rows, int cols)$/;"	f	class:Matrix
+svd	Matrix.cpp	/^void Matrix::svd(Matrix &U, Vector &W, Matrix &V) const$/;"	f	class:Matrix
+transpose	Matrix.cpp	/^Matrix Matrix::transpose() const$/;"	f	class:Matrix
+transpose	Matrix.cpp	/^Matrix2x2 Matrix2x2::transpose() const$/;"	f	class:Matrix2x2
+transpose	Matrix.cpp	/^Matrix3x3 Matrix3x3::transpose() const$/;"	f	class:Matrix3x3
+transpose	Matrix.cpp	/^Matrix4x4 Matrix4x4::transpose() const$/;"	f	class:Matrix4x4
+~Matrix	Matrix.cpp	/^Matrix::~Matrix()$/;"	f	class:Matrix
+Matrix	Matrix.h	/^class Matrix {$/;"	c
+Matrix2x2	Matrix.h	/^class Matrix2x2 {$/;"	c
+Matrix3x3	Matrix.h	/^class Matrix3x3 {$/;"	c
+Matrix4x4	Matrix.h	/^class Matrix4x4 {$/;"	c
+Ncols	Matrix.h	/^  int Nrows, Ncols;$/;"	m	class:Matrix
+Nrows	Matrix.h	/^  int Nrows, Ncols;$/;"	m	class:Matrix
+_H_Matrix	Matrix.h	15;"	d
+row	Matrix.h	/^  Vector *row;$/;"	m	class:Matrix
+row	Matrix.h	/^  Vector2d row[2];$/;"	m	class:Matrix2x2
+row	Matrix.h	/^  Vector3d row[3];$/;"	m	class:Matrix3x3
+row	Matrix.h	/^  Vector4d row[4];$/;"	m	class:Matrix4x4
+Accel	Project3.cpp	/^Vector3d Accel(Vector3d currentVelocity, double mass){$/;"	f
+CoeffofRestitution	Project3.cpp	/^static double CoeffofRestitution;$/;"	v	file:
+Collision	Project3.cpp	/^static int Collision[MAXSTEPS];$/;"	v	file:
+DispTime	Project3.cpp	/^static double DispTime;$/;"	v	file:
+DrawParticles	Project3.cpp	/^void DrawParticles()$/;"	f
+Fraction	Project3.cpp	/^static double Fraction;$/;"	v	file:
+G	Project3.cpp	/^static Vector3d G;$/;"	v	file:
+HEIGHT	Project3.cpp	/^int HEIGHT = 600;$/;"	v
+InitSimulation	Project3.cpp	/^void InitSimulation(int argc, char* argv[]){$/;"	f
+Lifespan	Project3.cpp	/^static double Lifespan;$/;"	v	file:
+LoadParameters	Project3.cpp	/^void LoadParameters(char *filename){$/;"	f
+MAXSTEPS	Project3.cpp	26;"	d	file:
+Mass	Project3.cpp	/^static double Mass;$/;"	v	file:
+NSteps	Project3.cpp	/^static int NSteps = 0;$/;"	v	file:
+NTimeSteps	Project3.cpp	/^static int NTimeSteps = -1;$/;"	v	file:
+ParamFilename	Project3.cpp	/^static char *ParamFilename = NULL;$/;"	v	file:
+Particles	Project3.cpp	/^static std::vector<Vector3d> Particles;$/;"	v	file:
+ParticlesAcceleration	Project3.cpp	/^static std::vector<Vector3d> ParticlesAcceleration;$/;"	v	file:
+ParticlesBorntime	Project3.cpp	/^static std::vector<double> ParticlesBorntime;$/;"	v	file:
+ParticlesColor	Project3.cpp	/^static std::vector<Vector3d> ParticlesColor;$/;"	v	file:
+ParticlesLife	Project3.cpp	/^static std::vector<double> ParticlesLife;$/;"	v	file:
+ParticlesMass	Project3.cpp	/^static std::vector<double> ParticlesMass;$/;"	v	file:
+ParticlesVelocity	Project3.cpp	/^static std::vector<Vector3d> ParticlesVelocity;$/;"	v	file:
+PerspDisplay	Project3.cpp	/^void PerspDisplay() {$/;"	f
+Restart	Project3.cpp	/^void Restart(){$/;"	f
+STARTX	Project3.cpp	22;"	d	file:
+STARTY	Project3.cpp	23;"	d	file:
+STARTZ	Project3.cpp	24;"	d	file:
+Simulate	Project3.cpp	/^void Simulate()$/;"	f
+Stone	Project3.cpp	/^static Vector3d Stone;$/;"	v	file:
+StoneRadius	Project3.cpp	/^static double StoneRadius;$/;"	v	file:
+Stopped	Project3.cpp	/^bool Stopped =true;$/;"	v
+Texture	Project3.cpp	/^GLuint Texture;$/;"	v
+Time	Project3.cpp	/^static double Time = 0;$/;"	v	file:
+TimeStep	Project3.cpp	/^static double TimeStep;$/;"	v	file:
+TimeStepsPerDisplay	Project3.cpp	/^static int TimeStepsPerDisplay;$/;"	v	file:
+TimerCallback	Project3.cpp	/^void TimerCallback(int timertype)$/;"	f
+TimerDelay	Project3.cpp	/^static int TimerDelay;$/;"	v	file:
+TotalNum	Project3.cpp	/^static int TotalNum;$/;"	v	file:
+V0	Project3.cpp	/^static Vector3d V0;$/;"	v	file:
+Viscosity	Project3.cpp	/^static double Viscosity;$/;"	v	file:
+WIDTH	Project3.cpp	/^int WIDTH = 800;$/;"	v
+Wind	Project3.cpp	/^static Vector3d Wind;$/;"	v	file:
+camera	Project3.cpp	/^Camera *camera;$/;"	v
+do_material	Project3.cpp	/^void do_material()$/;"	f
+epsilon	Project3.cpp	/^static double epsilon;$/;"	v	file:
+init	Project3.cpp	/^void init() {$/;"	f
+keyboardEventHandler	Project3.cpp	/^void keyboardEventHandler(unsigned char key, int x, int y) {$/;"	f
+main	Project3.cpp	/^int main(int argc, char *argv[]) {$/;"	f
+makeGrid	Project3.cpp	/^void makeGrid() {$/;"	f
+motionEventHandler	Project3.cpp	/^void motionEventHandler(int x, int y) {$/;"	f
+mouseEventHandler	Project3.cpp	/^void mouseEventHandler(int button, int state, int x, int y) {$/;"	f
+persp_win	Project3.cpp	/^int persp_win;$/;"	v
+radius	Project3.cpp	25;"	d	file:
+resting	Project3.cpp	/^bool resting=false;$/;"	v
+restingflag	Project3.cpp	/^bool restingflag[6]={true,true,true,true,true,true},totalresting=false;$/;"	v
+showGrid	Project3.cpp	/^bool showGrid = true;$/;"	v
+totalresting	Project3.cpp	/^bool restingflag[6]={true,true,true,true,true,true},totalresting=false;$/;"	v
+abort	Utility.cpp	/^void abort(char *s1, char *s2, char *s3)$/;"	f
+error	Utility.cpp	/^void error(char *s1, char *s2, char *s3)$/;"	f
+message	Utility.cpp	/^void message(char *s1, char *s2, char *s3)$/;"	f
+prompt	Utility.cpp	/^void prompt(char *s)$/;"	f
+pythag	Utility.cpp	/^double pythag(double a, double b)$/;"	f
+status	Utility.cpp	/^void status(char *s1, char *s2, char *s3)$/;"	f
+Abs	Utility.h	25;"	d
+ApplySign	Utility.h	32;"	d
+DEG2RAD	Utility.h	41;"	d
+DegToRad	Utility.h	43;"	d
+FALSE	Utility.h	/^enum boolean{FALSE, TRUE};$/;"	e	enum:boolean
+HUGENUMBER	Utility.h	22;"	d
+Max	Utility.h	28;"	d
+Min	Utility.h	27;"	d
+PI	Utility.h	37;"	d
+RAD2DEG	Utility.h	40;"	d
+RadToDeg	Utility.h	44;"	d
+Round	Utility.h	29;"	d
+SMALLNUMBER	Utility.h	21;"	d
+Sign	Utility.h	30;"	d
+Sqr	Utility.h	26;"	d
+Swap	Utility.h	31;"	d
+TRUE	Utility.h	/^enum boolean{FALSE, TRUE};$/;"	e	enum:boolean
+_H_UTILITY	Utility.h	12;"	d
+boolean	Utility.h	/^enum boolean{FALSE, TRUE};$/;"	g
+Vector	Vector.cpp	/^Vector::Vector(const Vector& V){$/;"	f	class:Vector
+Vector	Vector.cpp	/^Vector::Vector(double vx, double vy){$/;"	f	class:Vector
+Vector	Vector.cpp	/^Vector::Vector(double vx, double vy, double vz){$/;"	f	class:Vector
+Vector	Vector.cpp	/^Vector::Vector(double vx, double vy, double vz, double vw){$/;"	f	class:Vector
+Vector	Vector.cpp	/^Vector::Vector(int vN, double *vx){$/;"	f	class:Vector
+Vector2d	Vector.cpp	/^Vector2d::Vector2d(const Vector2d &v){$/;"	f	class:Vector2d
+Vector2d	Vector.cpp	/^Vector2d::Vector2d(double vx, double vy){$/;"	f	class:Vector2d
+Vector3d	Vector.cpp	/^Vector3d::Vector3d(const Vector3d &v){$/;"	f	class:Vector3d
+Vector3d	Vector.cpp	/^Vector3d::Vector3d(double vx, double vy, double vz){$/;"	f	class:Vector3d
+Vector4d	Vector.cpp	/^Vector4d::Vector4d(const Vector4d &v){$/;"	f	class:Vector4d
+Vector4d	Vector.cpp	/^Vector4d::Vector4d(double vx, double vy, double vz, double vw){$/;"	f	class:Vector4d
+getn	Vector.cpp	/^int Vector::getn() const{$/;"	f	class:Vector
+norm	Vector.cpp	/^double Vector2d::norm() const$/;"	f	class:Vector2d
+norm	Vector.cpp	/^double Vector3d::norm() const$/;"	f	class:Vector3d
+norm	Vector.cpp	/^double Vector4d::norm() const$/;"	f	class:Vector4d
+norm	Vector.cpp	/^double Vector::norm() const$/;"	f	class:Vector
+normalize	Vector.cpp	/^Vector Vector::normalize() const$/;"	f	class:Vector
+normalize	Vector.cpp	/^Vector2d Vector2d::normalize() const$/;"	f	class:Vector2d
+normalize	Vector.cpp	/^Vector3d Vector3d::normalize() const$/;"	f	class:Vector3d
+normalize	Vector.cpp	/^Vector4d Vector4d::normalize() const$/;"	f	class:Vector4d
+normsqr	Vector.cpp	/^double Vector2d::normsqr() const$/;"	f	class:Vector2d
+normsqr	Vector.cpp	/^double Vector3d::normsqr() const$/;"	f	class:Vector3d
+normsqr	Vector.cpp	/^double Vector4d::normsqr() const$/;"	f	class:Vector4d
+normsqr	Vector.cpp	/^double Vector::normsqr() const$/;"	f	class:Vector
+operator %	Vector.cpp	/^Vector operator%(const Vector& v1, const Vector& v2)$/;"	f
+operator %	Vector.cpp	/^Vector3d operator%(const Vector2d& v1, const Vector2d& v2)$/;"	f
+operator %	Vector.cpp	/^Vector3d operator%(const Vector3d& v1, const Vector3d& v2)$/;"	f
+operator %	Vector.cpp	/^Vector4d operator%(const Vector4d& v1, const Vector4d& v2)$/;"	f
+operator *	Vector.cpp	/^Vector operator*(const Vector& v1, double s)$/;"	f
+operator *	Vector.cpp	/^Vector operator*(double s, const Vector& v1)$/;"	f
+operator *	Vector.cpp	/^Vector2d operator*(const Vector2d& v, double s)$/;"	f
+operator *	Vector.cpp	/^Vector2d operator*(double s, const Vector2d& v)$/;"	f
+operator *	Vector.cpp	/^Vector3d operator*(const Vector3d& v, double s)$/;"	f
+operator *	Vector.cpp	/^Vector3d operator*(double s, const Vector3d& v)$/;"	f
+operator *	Vector.cpp	/^Vector4d operator*(const Vector4d& v, double s)$/;"	f
+operator *	Vector.cpp	/^Vector4d operator*(double s, const Vector4d& v)$/;"	f
+operator *	Vector.cpp	/^double operator*(const Vector& v1, const Vector& v2)$/;"	f
+operator *	Vector.cpp	/^double operator*(const Vector2d& v1, const Vector2d& v2)$/;"	f
+operator *	Vector.cpp	/^double operator*(const Vector3d& v1, const Vector3d& v2)$/;"	f
+operator *	Vector.cpp	/^double operator*(const Vector4d& v1, const Vector4d& v2)$/;"	f
+operator +	Vector.cpp	/^Vector operator+(const Vector& v1, const Vector& v2)$/;"	f
+operator +	Vector.cpp	/^Vector2d operator+(const Vector2d& v1, const Vector2d& v2)$/;"	f
+operator +	Vector.cpp	/^Vector3d Vector3d::operator+(const Vector3d& v2) const$/;"	f	class:Vector3d
+operator +	Vector.cpp	/^Vector4d Vector4d::operator+(const Vector4d& v2) const$/;"	f	class:Vector4d
+operator -	Vector.cpp	/^Vector operator-(const Vector& v1){$/;"	f
+operator -	Vector.cpp	/^Vector operator-(const Vector& v1, const Vector& v2)$/;"	f
+operator -	Vector.cpp	/^Vector2d operator-(const Vector2d& v1){$/;"	f
+operator -	Vector.cpp	/^Vector2d operator-(const Vector2d& v1, const Vector2d& v2)$/;"	f
+operator -	Vector.cpp	/^Vector3d operator-(const Vector3d& v1){$/;"	f
+operator -	Vector.cpp	/^Vector3d operator-(const Vector3d& v1, const Vector3d& v2)$/;"	f
+operator -	Vector.cpp	/^Vector4d operator-(const Vector4d& v1){$/;"	f
+operator -	Vector.cpp	/^Vector4d operator-(const Vector4d& v1, const Vector4d& v2)$/;"	f
+operator /	Vector.cpp	/^Vector operator\/(const Vector& v1, double s)$/;"	f
+operator /	Vector.cpp	/^Vector2d operator\/(const Vector2d& v, double s)$/;"	f
+operator /	Vector.cpp	/^Vector3d operator\/(const Vector3d& v, double s)$/;"	f
+operator /	Vector.cpp	/^Vector4d operator\/(const Vector4d& v, double s)$/;"	f
+operator <<	Vector.cpp	/^ostream& operator<< (ostream& os, const Vector& v){$/;"	f
+operator <<	Vector.cpp	/^ostream& operator<< (ostream& os, const Vector2d& v){$/;"	f
+operator <<	Vector.cpp	/^ostream& operator<< (ostream& os, const Vector3d& v){$/;"	f
+operator <<	Vector.cpp	/^ostream& operator<< (ostream& os, const Vector4d& v){$/;"	f
+operator =	Vector.cpp	/^const Vector& Vector::operator=(const Vector& v2){$/;"	f	class:Vector
+operator ==	Vector.cpp	/^short operator==(const Vector& one, const Vector& two)$/;"	f
+operator ==	Vector.cpp	/^short operator==(const Vector2d& one, const Vector2d& two)$/;"	f
+operator ==	Vector.cpp	/^short operator==(const Vector3d& one, const Vector3d& two)$/;"	f
+operator ==	Vector.cpp	/^short operator==(const Vector4d& one, const Vector4d& two)$/;"	f
+operator Vector	Vector.cpp	/^Vector2d::operator Vector(){$/;"	f	class:Vector2d
+operator Vector	Vector.cpp	/^Vector3d::operator Vector(){$/;"	f	class:Vector3d
+operator Vector	Vector.cpp	/^Vector4d::operator Vector(){$/;"	f	class:Vector4d
+operator Vector2d	Vector.cpp	/^Vector::operator Vector2d(){$/;"	f	class:Vector
+operator Vector3d	Vector.cpp	/^Vector2d::operator Vector3d(){$/;"	f	class:Vector2d
+operator Vector3d	Vector.cpp	/^Vector::operator Vector3d(){$/;"	f	class:Vector
+operator Vector4d	Vector.cpp	/^Vector2d::operator Vector4d(){$/;"	f	class:Vector2d
+operator Vector4d	Vector.cpp	/^Vector3d::operator Vector4d(){$/;"	f	class:Vector3d
+operator Vector4d	Vector.cpp	/^Vector::operator Vector4d(){$/;"	f	class:Vector
+operator []	Vector.cpp	/^const double& Vector2d::operator[](int i) const$/;"	f	class:Vector2d
+operator []	Vector.cpp	/^const double& Vector3d::operator[](int i) const$/;"	f	class:Vector3d
+operator []	Vector.cpp	/^const double& Vector4d::operator[](int i) const$/;"	f	class:Vector4d
+operator []	Vector.cpp	/^const double& Vector::operator[](int i) const$/;"	f	class:Vector
+operator []	Vector.cpp	/^double& Vector2d::operator[](int i)$/;"	f	class:Vector2d
+operator []	Vector.cpp	/^double& Vector3d::operator[](int i)$/;"	f	class:Vector3d
+operator []	Vector.cpp	/^double& Vector4d::operator[](int i)$/;"	f	class:Vector4d
+operator []	Vector.cpp	/^double& Vector::operator[](int i)$/;"	f	class:Vector
+operator ^	Vector.cpp	/^Vector operator^(const Vector& v1, const Vector& v2)$/;"	f
+operator ^	Vector.cpp	/^Vector2d operator^(const Vector2d& v1, const Vector2d& v2)$/;"	f
+operator ^	Vector.cpp	/^Vector3d operator^(const Vector3d& v1, const Vector3d& v2)$/;"	f
+operator ^	Vector.cpp	/^Vector4d operator^(const Vector4d& v1, const Vector4d& v2)$/;"	f
+print	Vector.cpp	/^void Vector2d::print() const$/;"	f	class:Vector2d
+print	Vector.cpp	/^void Vector2d::print(int w, int p) const$/;"	f	class:Vector2d
+print	Vector.cpp	/^void Vector3d::print() const$/;"	f	class:Vector3d
+print	Vector.cpp	/^void Vector3d::print(int w, int p) const$/;"	f	class:Vector3d
+print	Vector.cpp	/^void Vector4d::print() const$/;"	f	class:Vector4d
+print	Vector.cpp	/^void Vector4d::print(int w, int p) const$/;"	f	class:Vector4d
+print	Vector.cpp	/^void Vector::print() const$/;"	f	class:Vector
+print	Vector.cpp	/^void Vector::print(int w, int p) const$/;"	f	class:Vector
+set	Vector.cpp	/^void Vector2d::set(const Vector2d &v)$/;"	f	class:Vector2d
+set	Vector.cpp	/^void Vector2d::set(double vx, double vy)$/;"	f	class:Vector2d
+set	Vector.cpp	/^void Vector3d::set(const Vector3d &v)$/;"	f	class:Vector3d
+set	Vector.cpp	/^void Vector3d::set(double vx, double vy, double vz)$/;"	f	class:Vector3d
+set	Vector.cpp	/^void Vector4d::set(const Vector4d &v)$/;"	f	class:Vector4d
+set	Vector.cpp	/^void Vector4d::set(double vx, double vy, double vz, double vw)$/;"	f	class:Vector4d
+set	Vector.cpp	/^void Vector::set(const Vector &V){$/;"	f	class:Vector
+set	Vector.cpp	/^void Vector::set(double *vx){$/;"	f	class:Vector
+set	Vector.cpp	/^void Vector::set(double vx, double vy){$/;"	f	class:Vector
+set	Vector.cpp	/^void Vector::set(double vx, double vy, double vz){$/;"	f	class:Vector
+set	Vector.cpp	/^void Vector::set(double vx, double vy, double vz, double vw){$/;"	f	class:Vector
+setsize	Vector.cpp	/^void Vector::setsize(int vN){$/;"	f	class:Vector
+wnorm	Vector.cpp	/^Vector4d Vector4d::wnorm() const$/;"	f	class:Vector4d
+~Vector	Vector.cpp	/^Vector::~Vector(){$/;"	f	class:Vector
+N	Vector.h	/^  int N;$/;"	m	class:Vector
+Vector	Vector.h	/^class Vector {$/;"	c
+Vector2d	Vector.h	/^class Vector2d {$/;"	c
+Vector3d	Vector.h	/^class Vector3d {$/;"	c
+Vector4d	Vector.h	/^class Vector4d {$/;"	c
+_H_Vector	Vector.h	15;"	d
+v	Vector.h	/^  double *v;$/;"	m	class:Vector
+w	Vector.h	/^  double x, y, z, w;$/;"	m	class:Vector4d
+x	Vector.h	/^  double x, y, z, w;$/;"	m	class:Vector4d
+x	Vector.h	/^  double x, y, z;$/;"	m	class:Vector3d
+x	Vector.h	/^  double x, y;$/;"	m	class:Vector2d
+y	Vector.h	/^  double x, y, z, w;$/;"	m	class:Vector4d
+y	Vector.h	/^  double x, y, z;$/;"	m	class:Vector3d
+y	Vector.h	/^  double x, y;$/;"	m	class:Vector2d
+z	Vector.h	/^  double x, y, z, w;$/;"	m	class:Vector4d
+z	Vector.h	/^  double x, y, z;$/;"	m	class:Vector3d
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/

@@ -1,0 +1,608 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"Col",
+				"CollisiontoStone"
+			],
+			[
+				"Co",
+				"CollisiontoStone"
+			],
+			[
+				"Preto",
+				"PretoNow"
+			],
+			[
+				"Stone",
+				"StoneRadius"
+			],
+			[
+				"Pre",
+				"PreviousPosition"
+			],
+			[
+				"Prev",
+				"PreviousPosition"
+			],
+			[
+				"nor",
+				"normalize"
+			],
+			[
+				"St",
+				"StonetoPre"
+			],
+			[
+				"C",
+				"Collision"
+			],
+			[
+				"Particle",
+				"ParticlesAcceleration"
+			],
+			[
+				"Vc",
+				"VcPrime"
+			],
+			[
+				"Previou",
+				"PreviousVelocity"
+			],
+			[
+				"Part",
+				"Particles"
+			],
+			[
+				"partic",
+				"ParticlesVelocity"
+			],
+			[
+				"Particles",
+				"ParticlesColor"
+			],
+			[
+				"Parti",
+				"ParticlesVelocity"
+			],
+			[
+				"Time",
+				"TimeStep"
+			],
+			[
+				"Par",
+				"ParticlesVelocity"
+			],
+			[
+				"Accel",
+				"acceleration"
+			],
+			[
+				"Tim",
+				"Time"
+			],
+			[
+				"T",
+				"Time"
+			],
+			[
+				"g",
+				"gauss"
+			],
+			[
+				"glP",
+				"GL_POINTS"
+			],
+			[
+				"gl",
+				"glut"
+			],
+			[
+				"Start",
+				"STARTZ"
+			],
+			[
+				"ST",
+				"STARTX"
+			],
+			[
+				"time",
+				"Time"
+			],
+			[
+				"max",
+				"Maxnumber"
+			],
+			[
+				"restar",
+				"Restart"
+			],
+			[
+				"mass",
+				"Mass"
+			],
+			[
+				"new",
+				"newball"
+			],
+			[
+				"resting",
+				"restingflag"
+			],
+			[
+				"ball",
+				"Ball"
+			],
+			[
+				"ba",
+				"Ball"
+			],
+			[
+				"make",
+				"makeGrid"
+			],
+			[
+				"rest",
+				"RestartBall"
+			],
+			[
+				"do_",
+				"do_material"
+			],
+			[
+				"dst",
+				"dst_mac"
+			],
+			[
+				"src",
+				"src_mac"
+			],
+			[
+				"ether_",
+				"ether_dhost"
+			],
+			[
+				"Packet",
+				"PacketInspection"
+			],
+			[
+				"ura",
+				"Uradiance"
+			],
+			[
+				"m",
+				"m2"
+			]
+		]
+	},
+	"buffers":
+	[
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 104.0,
+		"last_filter": "Package Control: instal",
+		"selected_items":
+		[
+			[
+				"Package Control: instal",
+				"Package Control: Install Package"
+			],
+			[
+				"Package Control: inst",
+				"Package Control: Install Package"
+			],
+			[
+				"Package Control: ins",
+				"Package Control: Install Package"
+			],
+			[
+				"Package Control: insta",
+				"Package Control: Install Package"
+			]
+		],
+		"width": 435.0
+	},
+	"console":
+	{
+		"height": 139.0,
+		"history":
+		[
+			"import urllib.request,os,hashlib; h = '2915d1851351e5ee549c20394736b442' + '8bc59f460fa1548d1514676163dafc88'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://packagecontrol.io/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by)"
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/home/yitianl/8170/project2/Gauss.cpp",
+		"/home/yitianl/8170/project2/parameters",
+		"/home/yitianl/8170/project2/Project2.cpp",
+		"/home/yitianl/8170/project2/Readme",
+		"/home/yitianl/8170/project2/Makefile",
+		"/home/yitian/current817/project2/Gauss.cpp",
+		"/home/yitian/current817/project2/Utility.h",
+		"/home/yitian/current817/project2/Project1.cpp",
+		"/home/yitian/current817/project2/project2.sublime-project",
+		"/home/yitian/Clemson/8170/shading/shading.cpp",
+		"/home/yitian/Clemson/8170/bounce/bounce.cpp",
+		"/home/yitian/current848/project0/Makefile",
+		"/home/yitian/Clemson/8270/8270Assets-2016/quiz/1/code/construct/main.cpp",
+		"/home/yitian/Clemson/8170/project2/parameters",
+		"/home/yitian/Clemson/8170/project2/Vector.h",
+		"/home/yitian/Clemson/8170/project2/Project1.cpp",
+		"/home/yitian/Clemson/8270/8270Assets-2016/projects/2/ltoe/scan.l",
+		"/home/yitian/Clemson/8270/8270Assets-2016/quiz/1/code/initorder/main.cpp",
+		"/home/yitian/current817/Project1.cpp",
+		"/home/yitian/current848/project0/project0.cpp",
+		"/home/yitian/current848/bgl/example.cpp",
+		"/home/yitian/current848/test.cpp",
+		"/home/yitian/current848/example.cpp",
+		"/home/yitian/.config/sublime-text-3/Packages/Default/Preferences.sublime-settings",
+		"/home/yitian/.config/sublime-text-3/Packages/User/Preferences.sublime-settings",
+		"/home/yitian/current848/p2p-Gnutella30.txt",
+		"/home/yitian/current848/web-Google.txt",
+		"/home/yitian/.cache/.fr-0Kv6wm/Main.c",
+		"/home/yitian/Clemson/8170/shading/shading",
+		"/home/yitian/Clemson/6050/test.c",
+		"/home/yitian/current817/Camera.cpp",
+		"/home/yitian/Clemson/8170/project1/Vector.h",
+		"/home/yitian/Clemson/8170/project1/Vector.cpp",
+		"/home/yitian/Clemson/8170/project1/Utility.h",
+		"/home/yitian/Clemson/8170/project1/Utility.cpp",
+		"/home/yitian/Clemson/8170/project1/Matrix.h",
+		"/home/yitian/Clemson/8170/project1/Matrix.cpp",
+		"/home/yitian/Clemson/8170/project1/Camera.h",
+		"/home/yitian/Clemson/8170/project1/Project1.cpp",
+		"/home/yitian/Clemson/8170/project1/Camera.cpp",
+		"/home/yitian/Clemson/8170/project1/CameraExample.cpp",
+		"/home/yitian/Clemson/8170/camera/CameraExample.cpp",
+		"/home/yitian/bash_aliases",
+		"/home/yitian/Clemson/8480/Project1/example.cpp",
+		"/home/yitian/Downloads/Fall 2016.ics",
+		"/home/yitian/current848/web-Google -Origin.txt",
+		"/home/yitian/Clemson/8270/8270Assets-2016/projects/README",
+		"/home/yitian/Src/linux-4.3.3/block/blk.h",
+		"/home/yitian/Src/linux-4.3.3/block/blk-core.c",
+		"/home/yitian/Clemson/8220/Goober.c",
+		"/home/yitian/Clemson/8220/Week-12/note.c",
+		"/home/yitian/Clemson/8220/Week10/Note2",
+		"/home/yitian/Clemson/welsh-dragon/shader.frag",
+		"/home/yitian/Src/linux-4.3.3/include/linux/elevator.h",
+		"/home/yitian/Src/linux-4.3.3/include/linux/blkdev.h",
+		"/home/yitian/Clemson/welsh-dragon/shader.vert",
+		"/home/yitian/.cache/.fr-rOAIvD/teapot/shader.frag",
+		"/home/yitian/.cache/.fr-ivocl5/teapot/shader.vert",
+		"/home/yitian/Desktop/Untitled Document",
+		"/home/yitian/Desktop/out.csv",
+		"/home/yitian/Desktop/greedy.csv",
+		"/home/yitian/Desktop/Untitled Document 2",
+		"/home/yitian/Desktop/wireshark.desktop",
+		"/home/yitian/Desktop/cinnamon-custom-launcher-5.desktop",
+		"/home/yitian/Src/dpi/sniff and spoof.c",
+		"/usr/include/linux/tcp.h",
+		"/home/yitian/Software/mininet/util/install.sh",
+		"/home/yitian/Desktop/2-flowtable",
+		"/home/yitian/Downloads/tr4_ll.c",
+		"/home/yitian/Src/linux-4.3.3/include/uapi/linux/if_ether.h",
+		"/home/yitian/Src/linux-4.3.3/arch/avr32/include/asm/setup.h",
+		"/usr/include/net/ethernet.h",
+		"/home/yitian/Src/dpi/tags",
+		"/home/yitian/Src/dpi/sniff and spoof",
+		"/home/yitian/Downloads/dpi-instance",
+		"/home/yitian/.local/share/rhythmbox/rhythmdb.xml",
+		"/home/yitian/.xinitrc",
+		"/home/yitian/Src/linux-4.3.3/kernel/pid.c",
+		"/home/yitian/bin/route-campus",
+		"/home/yitian/.xprofile",
+		"/home/yitian/bin/route-set",
+		"/home/yitian/bin/ovs-start",
+		"/home/yitian/Clemson/welsh-dragon/welsh-dragon.c",
+		"/home/yitian/.cache/.fr-54yqqr/.vimrc",
+		"/home/yitian/Clemson/welsh-dragon/welsh-dragon",
+		"/home/yitian/Desktop/smplayer.desktop",
+		"/home/yitian/Src/linux-4.3.3/kernel/signal.c",
+		"/home/yitian/Src/linux-4.3.3/include/linux/signal.h",
+		"/etc/default/grub",
+		"/boot/grub/grub.cfg",
+		"/home/yitian/Music/princes/Princes.cue",
+		"/home/yitian/Music/王妃/Princes.cue",
+		"/home/yitian/Music/王妃/萧敬腾.-.[王妃].专辑.(FLAC).cue",
+		"/home/yitian/Music/王妃/免责声明.txt",
+		"/home/yitian/Src/linux-4.3.3/include/linux/compiler.h",
+		"/home/yitian/Src/linux-4.3.3/arch/x86/include/uapi/asm/signal.h",
+		"/home/yitian/Src/linux-4.3.3/include/linux/sched.h",
+		"/home/yitian/Src/linux-4.3.3/fs/adfs/file.c",
+		"/etc/fstab",
+		"/etc/profile",
+		"/home/yitian/.bashrc",
+		"/etc/default/tlp",
+		"/etc/rc.local",
+		"/home/yitian/Src/linux-4.3.3/arch/x86/include/asm/signal.h",
+		"/home/yitian/.config/sublime-text-3/Packages/User/Default (Linux).sublime-mousemap",
+		"/home/yitian/.config/sublime-text-3/Packages/CTags/Default.sublime-mousemap",
+		"/home/yitian/Clemson/8220/Week10/Note_2",
+		"/home/yitian/Clemson/8220/Week10/Note 2",
+		"/home/yitian/Clemson/6050/Note2",
+		"/home/yitian/Clemson/8220/Week10/Note1",
+		"/home/yitian/Downloads/美女同学惹不起TXT.txt",
+		"/home/yitian/untitled.sh",
+		"/etc/X11/default-display-manager",
+		"/home/yitian/Clemson/6050/Week10/Note1",
+		"/home/yitian/Clemson/untitled",
+		"/home/yitian/bin/agi",
+		"/root/.bashrc",
+		"/home/yitian/bin/ovsstart",
+		"/etc/hostname",
+		"/etc/hosts",
+		"/etc/networks"
+	],
+	"find":
+	{
+		"height": 32.0
+	},
+	"find_in_files":
+	{
+		"height": 110.0,
+		"where_history":
+		[
+			"/home/yitian/Src/linux-4.3.3",
+			"/home/yitian/Src/linux-4.3.3/block",
+			"/home/yitian/Src/linux-4.3.3",
+			"/home/yitian/Src/linux-4.3.3/block",
+			"/home/yitian/Src/linux-4.3.3/mm",
+			"/home/yitian/Src/linux-4.3.3"
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"light",
+			"drawparticles",
+			"RAND_MAX",
+			"DrawParticles()",
+			"draw",
+			"Init",
+			"prespdisplay",
+			"postredisplay",
+			"rate",
+			"totalnum",
+			"rate",
+			"line",
+			"Vcprime",
+			"distancecollisiontonear",
+			"distance",
+			"segment",
+			"loadpara",
+			"accel(",
+			"Mass",
+			"accel(",
+			"accel",
+			"accel(",
+			"accel",
+			"accel(",
+			"pdisplay",
+			"drawp",
+			"draw",
+			"simulate",
+			"glpointsi",
+			"perspd",
+			"persp",
+			"simulate",
+			"glenable",
+			"velocity",
+			"grid",
+			"showgrid",
+			"makeg",
+			"make",
+			"ParticlesVe",
+			"Particles",
+			"acceleration",
+			"accel(",
+			"accel",
+			"color",
+			"particles",
+			"color",
+			"init",
+			"color",
+			"Lifespan",
+			"borntime",
+			"cout",
+			"Particles",
+			"Particles[i]",
+			"color",
+			"clolor",
+			"restart",
+			"particleslife",
+			"particleslifesp",
+			"particleslife",
+			"particles",
+			"status",
+			"simulate",
+			"mass",
+			"color",
+			"particles",
+			"simulate",
+			"timesp",
+			"rate",
+			"number",
+			"draw",
+			"disp",
+			"rate",
+			"display",
+			"idlefunc",
+			"swap",
+			"particles",
+			"ep",
+			"draw",
+			"simulate",
+			"gauss",
+			"Particles",
+			"drawparticles",
+			"gauss",
+			"break;",
+			"velocity",
+			"particles",
+			"simulate",
+			"maxnum",
+			"max",
+			"TimeStepsPerDisplay",
+			"disptime",
+			"disp",
+			"number",
+			"rate",
+			"number",
+			"startx",
+			"simulate",
+			"stopped",
+			"case",
+			"ball",
+			"restart",
+			"ball",
+			"collision",
+			"oldball",
+			"oldb",
+			"OldBall",
+			"Ball",
+			"Drawball",
+			"DrawParticles",
+			"restart",
+			"initsimul",
+			"maxnumber",
+			"number",
+			"max",
+			"number",
+			"load",
+			"position",
+			"velocity",
+			"init",
+			"Mass",
+			"number",
+			"Mass",
+			"time = 0",
+			"time",
+			"simulate",
+			"DrawBall",
+			"drawball",
+			"particles"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 32.0
+	},
+	"input":
+	{
+		"height": 39.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "",
+	"project": "Project1.sublime-project",
+	"replace":
+	{
+		"height": 60.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": true,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 199.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}

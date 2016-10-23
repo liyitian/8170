@@ -1,0 +1,12 @@
+Project1 Usage:
+----------------------
+
+Example:  ./Project1 parameters
+
+Keybind:
+	R:to restart the ball
+	S:to start the animation
+	T:to stop the animation
+
+use make to compile the Project1
+use make clean to clean excutable file
