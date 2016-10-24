@@ -22,8 +22,8 @@ else
   endif
 endif
 
-HFILES 	= Matrix.${H} Vector.${H} Utility.${H} Camera.${H} Gauss.${H}
-OFILES 	= Matrix.o Vector.o Utility.o Camera.o Gauss.o
+HFILES 	= Matrix.${H} Vector.${H} Utility.${H} Camera.${H} Gauss.${H} StateVector.${H}
+OFILES 	= Matrix.o Vector.o Utility.o Camera.o Gauss.o StateVector.o
 PROJECT = Project4
 
 ${PROJECT}:	${PROJECT}.o $(OFILES)
@@ -34,6 +34,9 @@ ${PROJECT}.o: ${PROJECT}.${C} $(HFILES)
 
 Camera.o: Camera.${C} Camera.${H} Matrix.${H} Vector.${H} Utility.${H} 
 	${CC} $(CFLAGS) -c Camera.${C}
+
+StateVector.o: StateVector.${C} StateVector.${H} Vector.${H} Utility.${H}
+	${CC} $(CFLAGS) -c StateVector.${C}
 
 Matrix.o: Matrix.${C} Matrix.${H} Vector.${H} Utility.${H} 
 	${CC} $(CFLAGS) -c Matrix.${C}
@@ -46,6 +49,8 @@ Utility.o: Utility.${C} Utility.${H}
 
 Gauss.o: Gauss.${C} Gauss.${H}
 	${CC} $(CFLAGS) -c Gauss.${C} $(LDFLAGS)
+
+
 
 debug:
 	make 'DFLAGS = /usr/lib/debug/malloc.o'

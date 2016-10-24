@@ -59,14 +59,14 @@ inverted	Camera.h	/^  int inverted; \/\/flag to invert the coordinate$/;"	m	clas
 gauss	Gauss.cpp	/^double gauss(double mean, double std, int seed)$/;"	f
 _GAUSS_H	Gauss.h	17;"	d
 C	Makefile	/^C	= cpp$/;"	m
-CC	Makefile	/^CC      = g++$/;"	m
-CFLAGS	Makefile	/^CFLAGS 	= -g$/;"	m
+CC	Makefile	/^CC  = g++$/;"	m
+CFLAGS	Makefile	/^CFLAGS 	= -g -Wno-deprecated-declarations$/;"	m
 H	Makefile	/^H	= h$/;"	m
 HFILES	Makefile	/^HFILES 	= Matrix.${H} Vector.${H} Utility.${H} Camera.${H} Gauss.${H}$/;"	m
 LDFLAGS	Makefile	/^    LDFLAGS     = -lglut -lGL -lm -L\/usr\/local\/lib -lGLU$/;"	m
-LDFLAGS	Makefile	/^  LDFLAGS     = -framework Foundation -framework GLUT -framework OpenGL -lm$/;"	m
+LDFLAGS	Makefile	/^  LDFLAGS     = -framework Foundation -framework GLUT -framework OpenGL -lm $/;"	m
 OFILES	Makefile	/^OFILES 	= Matrix.o Vector.o Utility.o Camera.o Gauss.o$/;"	m
-PROJECT	Makefile	/^PROJECT = Project3$/;"	m
+PROJECT	Makefile	/^PROJECT = Project4$/;"	m
 LU_Decompose	Matrix.cpp	/^Matrix LU_Decompose(const Matrix& M, int *indx)$/;"	f
 LU_Decompose	Matrix.cpp	/^Matrix4x4 LU_Decompose(const Matrix4x4& M, int *indx)$/;"	f
 LU_back_substitution	Matrix.cpp	/^void LU_back_substitution(const Matrix& M, int *indx, double col[])$/;"	f
@@ -176,64 +176,88 @@ row	Matrix.h	/^  Vector *row;$/;"	m	class:Matrix
 row	Matrix.h	/^  Vector2d row[2];$/;"	m	class:Matrix2x2
 row	Matrix.h	/^  Vector3d row[3];$/;"	m	class:Matrix3x3
 row	Matrix.h	/^  Vector4d row[4];$/;"	m	class:Matrix4x4
-Accel	Project3.cpp	/^Vector3d Accel(Vector3d currentVelocity, double mass){$/;"	f
-CoeffofRestitution	Project3.cpp	/^static double CoeffofRestitution;$/;"	v	file:
-Collision	Project3.cpp	/^static int Collision[MAXSTEPS];$/;"	v	file:
-DispTime	Project3.cpp	/^static double DispTime;$/;"	v	file:
-DrawParticles	Project3.cpp	/^void DrawParticles()$/;"	f
-Fraction	Project3.cpp	/^static double Fraction;$/;"	v	file:
-G	Project3.cpp	/^static Vector3d G;$/;"	v	file:
-HEIGHT	Project3.cpp	/^int HEIGHT = 600;$/;"	v
-InitSimulation	Project3.cpp	/^void InitSimulation(int argc, char* argv[]){$/;"	f
-Lifespan	Project3.cpp	/^static double Lifespan;$/;"	v	file:
-LoadParameters	Project3.cpp	/^void LoadParameters(char *filename){$/;"	f
-MAXSTEPS	Project3.cpp	26;"	d	file:
-Mass	Project3.cpp	/^static double Mass;$/;"	v	file:
-NSteps	Project3.cpp	/^static int NSteps = 0;$/;"	v	file:
-NTimeSteps	Project3.cpp	/^static int NTimeSteps = -1;$/;"	v	file:
-ParamFilename	Project3.cpp	/^static char *ParamFilename = NULL;$/;"	v	file:
-Particles	Project3.cpp	/^static std::vector<Vector3d> Particles;$/;"	v	file:
-ParticlesAcceleration	Project3.cpp	/^static std::vector<Vector3d> ParticlesAcceleration;$/;"	v	file:
-ParticlesBorntime	Project3.cpp	/^static std::vector<double> ParticlesBorntime;$/;"	v	file:
-ParticlesColor	Project3.cpp	/^static std::vector<Vector3d> ParticlesColor;$/;"	v	file:
-ParticlesLife	Project3.cpp	/^static std::vector<double> ParticlesLife;$/;"	v	file:
-ParticlesMass	Project3.cpp	/^static std::vector<double> ParticlesMass;$/;"	v	file:
-ParticlesVelocity	Project3.cpp	/^static std::vector<Vector3d> ParticlesVelocity;$/;"	v	file:
-PerspDisplay	Project3.cpp	/^void PerspDisplay() {$/;"	f
-Restart	Project3.cpp	/^void Restart(){$/;"	f
-STARTX	Project3.cpp	22;"	d	file:
-STARTY	Project3.cpp	23;"	d	file:
-STARTZ	Project3.cpp	24;"	d	file:
-Simulate	Project3.cpp	/^void Simulate()$/;"	f
-Stone	Project3.cpp	/^static Vector3d Stone;$/;"	v	file:
-StoneRadius	Project3.cpp	/^static double StoneRadius;$/;"	v	file:
-Stopped	Project3.cpp	/^bool Stopped =true;$/;"	v
-Texture	Project3.cpp	/^GLuint Texture;$/;"	v
-Time	Project3.cpp	/^static double Time = 0;$/;"	v	file:
-TimeStep	Project3.cpp	/^static double TimeStep;$/;"	v	file:
-TimeStepsPerDisplay	Project3.cpp	/^static int TimeStepsPerDisplay;$/;"	v	file:
-TimerCallback	Project3.cpp	/^void TimerCallback(int timertype)$/;"	f
-TimerDelay	Project3.cpp	/^static int TimerDelay;$/;"	v	file:
-TotalNum	Project3.cpp	/^static int TotalNum;$/;"	v	file:
-V0	Project3.cpp	/^static Vector3d V0;$/;"	v	file:
-Viscosity	Project3.cpp	/^static double Viscosity;$/;"	v	file:
-WIDTH	Project3.cpp	/^int WIDTH = 800;$/;"	v
-Wind	Project3.cpp	/^static Vector3d Wind;$/;"	v	file:
-camera	Project3.cpp	/^Camera *camera;$/;"	v
-do_material	Project3.cpp	/^void do_material()$/;"	f
-epsilon	Project3.cpp	/^static double epsilon;$/;"	v	file:
-init	Project3.cpp	/^void init() {$/;"	f
-keyboardEventHandler	Project3.cpp	/^void keyboardEventHandler(unsigned char key, int x, int y) {$/;"	f
-main	Project3.cpp	/^int main(int argc, char *argv[]) {$/;"	f
-makeGrid	Project3.cpp	/^void makeGrid() {$/;"	f
-motionEventHandler	Project3.cpp	/^void motionEventHandler(int x, int y) {$/;"	f
-mouseEventHandler	Project3.cpp	/^void mouseEventHandler(int button, int state, int x, int y) {$/;"	f
-persp_win	Project3.cpp	/^int persp_win;$/;"	v
-radius	Project3.cpp	25;"	d	file:
-resting	Project3.cpp	/^bool resting=false;$/;"	v
-restingflag	Project3.cpp	/^bool restingflag[6]={true,true,true,true,true,true},totalresting=false;$/;"	v
-showGrid	Project3.cpp	/^bool showGrid = true;$/;"	v
-totalresting	Project3.cpp	/^bool restingflag[6]={true,true,true,true,true,true},totalresting=false;$/;"	v
+Accel	Project4.cpp	/^Vector3d Accel(Vector3d currentVelocity, double valve){$/;"	f
+CoeffofRestitution	Project4.cpp	/^static double CoeffofRestitution;$/;"	v	file:
+Collision	Project4.cpp	/^static int Collision[MAXSTEPS];$/;"	v	file:
+DispTime	Project4.cpp	/^static double DispTime;$/;"	v	file:
+DrawParticles	Project4.cpp	/^void DrawParticles()$/;"	f
+Fraction	Project4.cpp	/^static double Fraction;$/;"	v	file:
+G	Project4.cpp	/^static Vector3d G;$/;"	v	file:
+HEIGHT	Project4.cpp	/^int HEIGHT = 600;$/;"	v
+InitSimulation	Project4.cpp	/^void InitSimulation(int argc, char* argv[]){$/;"	f
+Ka	Project4.cpp	/^static double Ka;$/;"	v	file:
+Kc	Project4.cpp	/^static double Kc;$/;"	v	file:
+Kv	Project4.cpp	/^static double Kv;$/;"	v	file:
+LoadParameters	Project4.cpp	/^void LoadParameters(char *filename){$/;"	f
+MAXSTEPS	Project4.cpp	26;"	d	file:
+Mass	Project4.cpp	/^static double Mass;$/;"	v	file:
+NSteps	Project4.cpp	/^static int NSteps = 0;$/;"	v	file:
+NTimeSteps	Project4.cpp	/^static int NTimeSteps = -1;$/;"	v	file:
+ParamFilename	Project4.cpp	/^static char *ParamFilename = NULL;$/;"	v	file:
+Particles	Project4.cpp	/^static std::vector<Vector3d> Particles;$/;"	v	file:
+ParticlesAcceleration	Project4.cpp	/^static std::vector<Vector3d> ParticlesAcceleration;$/;"	v	file:
+ParticlesBorntime	Project4.cpp	/^static std::vector<double> ParticlesBorntime;$/;"	v	file:
+ParticlesColor	Project4.cpp	/^static std::vector<Vector3d> ParticlesColor;$/;"	v	file:
+ParticlesLife	Project4.cpp	/^static std::vector<double> ParticlesLife;$/;"	v	file:
+ParticlesMass	Project4.cpp	/^static std::vector<double> ParticlesMass;$/;"	v	file:
+ParticlesVelocity	Project4.cpp	/^static std::vector<Vector3d> ParticlesVelocity;$/;"	v	file:
+PerspDisplay	Project4.cpp	/^void PerspDisplay() {$/;"	f
+Restart	Project4.cpp	/^void Restart(){$/;"	f
+STARTX	Project4.cpp	22;"	d	file:
+STARTY	Project4.cpp	23;"	d	file:
+STARTZ	Project4.cpp	24;"	d	file:
+Simulate	Project4.cpp	/^void Simulate()$/;"	f
+Stone	Project4.cpp	/^static Vector3d Stone;$/;"	v	file:
+StoneRadius	Project4.cpp	/^static double StoneRadius;$/;"	v	file:
+Stopped	Project4.cpp	/^bool Stopped =true;$/;"	v
+Texture	Project4.cpp	/^GLuint Texture;$/;"	v
+Time	Project4.cpp	/^static double Time = 0;$/;"	v	file:
+TimeStep	Project4.cpp	/^static double TimeStep;$/;"	v	file:
+TimeStepsPerDisplay	Project4.cpp	/^static int TimeStepsPerDisplay;$/;"	v	file:
+TimerCallback	Project4.cpp	/^void TimerCallback(int timertype)$/;"	f
+TimerDelay	Project4.cpp	/^static int TimerDelay;$/;"	v	file:
+TotalNum	Project4.cpp	/^static int TotalNum;$/;"	v	file:
+V0	Project4.cpp	/^static Vector3d V0;$/;"	v	file:
+Viscosity	Project4.cpp	/^static double Viscosity;$/;"	v	file:
+WIDTH	Project4.cpp	/^int WIDTH = 800;$/;"	v
+Wind	Project4.cpp	/^static Vector3d Wind;$/;"	v	file:
+camera	Project4.cpp	/^Camera *camera;$/;"	v
+do_lights	Project4.cpp	/^void do_lights()$/;"	f
+do_material	Project4.cpp	/^void do_material()$/;"	f
+epsilon	Project4.cpp	/^static double epsilon;$/;"	v	file:
+init	Project4.cpp	/^void init() {$/;"	f
+keyboardEventHandler	Project4.cpp	/^void keyboardEventHandler(unsigned char key, int x, int y) {$/;"	f
+main	Project4.cpp	/^int main(int argc, char *argv[]) {$/;"	f
+makeGrid	Project4.cpp	/^void makeGrid() {$/;"	f
+min	Project4.cpp	/^double min(double a, double b){$/;"	f
+motionEventHandler	Project4.cpp	/^void motionEventHandler(int x, int y) {$/;"	f
+mouseEventHandler	Project4.cpp	/^void mouseEventHandler(int button, int state, int x, int y) {$/;"	f
+persp_win	Project4.cpp	/^int persp_win;$/;"	v
+radius	Project4.cpp	25;"	d	file:
+resting	Project4.cpp	/^bool resting=false;$/;"	v
+restingflag	Project4.cpp	/^bool restingflag[6]={true,true,true,true,true,true},totalresting=false;$/;"	v
+showGrid	Project4.cpp	/^bool showGrid = true;$/;"	v
+totalresting	Project4.cpp	/^bool restingflag[6]={true,true,true,true,true,true},totalresting=false;$/;"	v
+StateVector	StateVector.cpp	/^StateVector::StateVector(int n):N(n){$/;"	f	class:StateVector
+StateVector	StateVector.cpp	/^StateVector::StateVector(int n, std::vector<Vector3d> x,std::vector<Vector3d> v):N(n),Array(v){$/;"	f	class:StateVector
+Vector	StateVector.cpp	/^Vector::Vector(const StateVector& V){$/;"	f	class:Vector
+getn	StateVector.cpp	/^int StateVector::getn() const{$/;"	f	class:StateVector
+operator *	StateVector.cpp	/^StateVector operator*(const StateVector& v, double s)$/;"	f
+operator *	StateVector.cpp	/^StateVector operator*(double s, const StateVector& v)$/;"	f
+operator +	StateVector.cpp	/^StateVector operator+(const StateVector& v1, const StateVector& v2)$/;"	f
+operator -	StateVector.cpp	/^StateVector operator-(const StateVector& v1, const StateVector& v2)$/;"	f
+operator <<	StateVector.cpp	/^ostream& operator<< (ostream& os, const Vector2d& v){$/;"	f
+operator =	StateVector.cpp	/^const StateVector& StateVector::operator=(const StateVector& v2){$/;"	f	class:StateVector
+operator []	StateVector.cpp	/^Vector3d& StateVector::operator[](int i)$/;"	f	class:StateVector
+operator []	StateVector.cpp	/^const Vector3d& StateVector::operator[](int i) const$/;"	f	class:StateVector
+print	StateVector.cpp	/^void StateVector::print() const$/;"	f	class:StateVector
+set	StateVector.cpp	/^void StateVector::set(const StateVector &t)$/;"	f	class:StateVector
+set	StateVector.cpp	/^void StateVector::set(std::vector<Vector3d> x,std::vector<Vector3d> v)$/;"	f	class:StateVector
+~StateVector	StateVector.cpp	/^StateVector::~StateVector(){$/;"	f	class:StateVector
+Array	StateVector.h	/^  std::vector<Vector3d> Array;$/;"	m	class:StateVector
+N	StateVector.h	/^  int N;$/;"	m	class:StateVector
+StateVector	StateVector.h	/^class StateVector {$/;"	c
+_H_Vector	StateVector.h	15;"	d
 abort	Utility.cpp	/^void abort(char *s1, char *s2, char *s3)$/;"	f
 error	Utility.cpp	/^void error(char *s1, char *s2, char *s3)$/;"	f
 message	Utility.cpp	/^void message(char *s1, char *s2, char *s3)$/;"	f

@@ -11,6 +11,7 @@
 
 #include "Camera.h"
 #include "Gauss.h"
+#include "StateVector.h"
 #include <vector>
 #ifdef __APPLE__
 #  include <GLUT/glut.h>
@@ -167,9 +168,8 @@ void LoadParameters(char *filename){
   
   ParamFilename = filename;
   
-  if(fscanf(paramfile, "%d %lf %lf  %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf",
-            &TotalNum, &Ka, &Kv, &Kc, &Mass, &(V0.x), &(V0.y), &(V0.z), &Viscosity, &CoeffofRestitution,&Fraction,
-            &TimeStep, &DispTime, &(Wind.x), &(Wind.y), &(Wind.z),&(G.x),&(G.y),&(G.z),&(Stone.x),&(Stone.y),&(Stone.z),&StoneRadius,&epsilon) != 24){
+  if(fscanf(paramfile, "%d %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf",
+            &TotalNum, &Mass, &TimeStep, &DispTime, &(Wind.x), &(Wind.y), &(Wind.z),&(G.x),&(G.y),&(G.z),&epsilon) != 11){
     fprintf(stderr, "error reading parameter file %s\n", filename);
     exit(1);
   }
@@ -246,6 +246,20 @@ void InitSimulation(int argc, char* argv[]){
   //TODO:Vertex clear
 }
 
+/////////TODO: Force:
+StateVector Force(StateVector S, double t)
+{
+  StateVector Sdot;
+  for(int i=0;i<S.N;i++){
+    Sdot[i]=S[N+i];
+    Sdot[N+i]=1/ParticlesMass[i]*
+  }
+}
+
+
+
+
+
 /*
  Compute acceleration on each particle
  */
@@ -264,6 +278,7 @@ void Simulate()
 
   Vector3d acceleration;
   
+
 
   Time += TimeStep;
   NTimeSteps++;

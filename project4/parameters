@@ -1,2 +1,2 @@
-100  	3.0	  1.0   2.0 	10	  1.0 	 1.0 	 1.0  	1.0 		0.4       	 0.1	 	0.04      1.0     0     0   	0	0   0  						 0  	-2 		1 		-2	 1			 0.5
-Total, Ka, Kv, Kc, Mass, V0x,  V0y, 	V0z, Viscosity,CRestitution, CFraction, TimeStep, DispTime, Windx, Windy, Windz,Gx,	Gy,		Gz,Stone.x,Stone.y,Stone.z, StoneRadius, epsilon
+100  	10	 0.04      1.0        0     0   	0		0   0  		0	     0.5
+Total, Mass, TimeStep, DispTime, Windx, Windy, Windz,  Gx,	Gy,		Gz,   epsilon

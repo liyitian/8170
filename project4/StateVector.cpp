@@ -19,11 +19,19 @@ StateVector::StateVector(int n, std::vector<Vector3d> x,std::vector<Vector3d> v)
     Array.push_back(v[i-1]);
   }
 }
+StateVector::StateVector(int n):N(n){
+  Array.reserve(2*N);
+}
+
+//Copy Constructor
+StateVector::StateVector(const StateVector& V){
+  set(V);
+}
 
 
 // Destructor
 StateVector::~StateVector(){
-  delete []Array;
+  Array.clear();
 }
 
 //
@@ -38,6 +46,16 @@ Vector3d& StateVector::operator[](int i)
   }
   return Array[i];
 }
+
+const Vector3d& StateVector::operator[](int i) const
+{
+  if(i < 0 || i > 1){
+    cerr << "2D vector index bounds error" << endl;
+    exit(1);
+  }
+  return Array[i];
+}
+
 
 int StateVector::getn() const{
   return N;
@@ -61,117 +79,112 @@ void StateVector::set(const StateVector &t)
   Array = t.Array;
 }
 
+// Set size of generic Vector
+void StateVector::setsize(int vN){
+  if(vN < 0){
+    cerr << "vector dimension of " << vN << " invalid" << endl;
+    exit(1);    
+  }
+
+  N = vN;
+  if(N == 0)
+    Array.clear();
+  else{
+    Array.clear();
+    Array.reserve(2*N);
+  }
+
+  int i;
+  for(int i = 0; i < 2*N; i++)
+    Array[i] = 0;
+}
+
 // Print a Vector to the standard output device.
-void Vector2d::print() const
+void StateVector::print() const
 {
-  cout << "[" << x << " " << y << "]";
-}
-void Vector2d::print(int w, int p) const
-{
-  cout << "[" << setw(w) << setprecision(p) << Round(x, p) << " ";
-  cout << setw(w) << setprecision(p) << Round(y, p) << "]";
-}
-
-
-// Unary negation of a vector
-Vector2d operator-(const Vector2d& v1){
-  Vector2d r(-v1.x, -v1.y);
-  return r;
+  cout << "[" << N << "]" << endl;
+  for(int i=0;i<N;i++){
+    cout<< Array[i] << " " << Array[i+N] << endl;
+  }
 }
 
 //  Addition of 2 Vectors.
-Vector2d operator+(const Vector2d& v1, const Vector2d& v2)
+StateVector operator+(const StateVector& v1, const StateVector& v2)
 {
-  Vector2d r;
-  r.x = v1.x + v2.x;
-  r.y = v1.y + v2.y;
+  
+  if (v1.getn()!=v2.getn()){
+    cout<< "Size not Match!\n" <<endl;
+    exit(1);
+  }
+
+  StateVector r(v1.getn());
+  
+  for(int i=0;i<2*r.N;i++){
+    r.Array[i]=v1.Array[i]+v2.Array[i];
+  }
+
   return r;
 }
 
 //  Subtract two Vectors.
-Vector2d operator-(const Vector2d& v1, const Vector2d& v2)
+StateVector operator-(const StateVector& v1, const StateVector& v2)
 {
-  Vector2d r;
-  r.x = v1.x - v2.x;
-  r.y = v1.y - v2.y;
+  
+  if (v1.getn()!=v2.getn()){
+    cout<< "Size not Match!\n" <<endl;
+    exit(1);
+  }
+
+  StateVector r(v1.getn());
+  
+  for(int i=0;i<2*r.N;i++){
+    r.Array[i]=v1.Array[i]-v2.Array[i];
+  }
+
   return r;
 }
 
 // Product of vector and scalar
-Vector2d operator*(const Vector2d& v, double s)
+StateVector operator*(const StateVector& v, double s)
 {
-  Vector2d r;
-
-  r.x = v.x * s;
-  r.y = v.y * s;
-  return r;
-}
-Vector2d operator*(double s, const Vector2d& v)
-{
-  Vector2d r;
-
-  r.x = v.x * s;
-  r.y = v.y * s;
+  StateVector r(v.getn());  
+  for(int i=0;i<2*r.N;i++){
+    r.Array[i]=v.Array[i]*s;
+  }
   return r;
 }
 
-// Inner product of two Vectors
-double operator*(const Vector2d& v1, const Vector2d& v2)
+StateVector operator*(double s, const StateVector& v)
 {
-  return(v1.x * v2.x +
-	 v1.y * v2.y);
-}
-
-//  Component-wise multiplication of two Vectors
-Vector2d operator^(const Vector2d& v1, const Vector2d& v2)
-{
-  Vector2d r;
-  r.x = v1.x * v2.x;
-  r.y = v1.y * v2.y;
+  StateVector r(v.getn());  
+  for(int i=0;i<2*r.N;i++){
+    r.Array[i]=v.Array[i]*s;
+  }
   return r;
 }
 
-// Cross product of two Vectors
-Vector3d operator%(const Vector2d& v1, const Vector2d& v2)
-{
-  Vector3d cp;
-  cp.x = 0;
-  cp.y = 0;
-  cp.z = v1.x * v2.y - v1.y * v2.x;
-  return (cp);
-}
 
-// Divide a vector by a scalar.
-Vector2d operator/(const Vector2d& v, double s)
-{
-  Vector2d r;
-  r.x = v.x / s;
-  r.y = v.y / s;
-  return(r);
-}
 
-// Determine if two Vectors are identical.
-short operator==(const Vector2d& one, const Vector2d& two)
-{
-  return((one.x == two.x) && (one.y == two.y));
-}
 
 // assign one vector to another
-const Vector& Vector::operator=(const Vector& v2){
+const StateVector& StateVector::operator=(const StateVector& v2){
   int i;
 
   if(N != v2.N){
-    delete []v;
+    Array.clear();
     setsize(v2.N);
   }
-  for(i = 0; i < N; i++)
-    v[i] = v2.v[i];
+  for(int i = 0; i < 2*N; i++)
+    Array[i] = v2.Array[i];
 
   return *this;
 }
 
-ostream& operator<< (ostream& os, const Vector2d& v){
-  os << "[" << v.x << " " << v.y << "]";
+ostream& operator<< (ostream& os, const StateVector& v){
+  os << "[" << v.N << "]" << endl;
+  for(int i=0;i<v.N;i++){
+    os << v.Array[i] << " " << v.Array[i+v.N] << endl;
+  }
   return os;
 }
 

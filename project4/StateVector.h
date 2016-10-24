@@ -11,37 +11,44 @@
 
 *********************************************************************/
 
-#ifndef _H_Vector
-#define _H_Vector
+#ifndef _H_StateVector
+#define _H_StateVector
 
-#include "Utility.h"
 #include "Vector.h"
+#include <vector>
 
 using namespace std;
 
 /* StateVector Descriptions and Operations */
 
-class StateVector;
-
 class StateVector {
 protected:
   int N;
-  std::vector<Vector3d> Array;
+  vector<Vector3d> Array;
   
 public:
-  StateVector(n, std::vector<Vector3d> Array);
-  StateVector(const StateVector& Array);
+  StateVector(int n);
+  StateVector(int n, vector<Vector3d> x,vector<Vector3d> v);
+
+  StateVector(const StateVector& V);
   ~StateVector();
 
-  set()
+  Vector3d& operator[](int i);  
+  const Vector3d& operator[](int i) const;
+  int getn() const; 
 
-  double& operator[](int i);
-  const double& operator[](int i) const;  
+
+  void set(vector<Vector3d> x,vector<Vector3d> v);
+  void set(const StateVector &t);
+  void setsize(int vN);
+  void print() const;
+
   friend StateVector operator+(const StateVector& v1, const StateVector& v2);//addition 
   friend StateVector operator-(const StateVector& v1, const StateVector& v2);//subtract
   friend StateVector operator*(const StateVector& v, double s); // scalar mult
+  friend StateVector operator*(double s, const StateVector& v);
   const StateVector& operator=(const StateVector& v2);
-
+  friend ostream& operator<< (ostream& os, const StateVector& v);
 };
 
 
