@@ -13,6 +13,10 @@
 #include "StateVector.h"
 
 using namespace std;
+StateVector::StateVector()
+{
+
+}
 
 StateVector::StateVector(int n, std::vector<Vector3d> x,std::vector<Vector3d> v):N(n),Array(v){
   for(int i=1;i<=n;i++){
@@ -21,6 +25,10 @@ StateVector::StateVector(int n, std::vector<Vector3d> x,std::vector<Vector3d> v)
 }
 StateVector::StateVector(int n):N(n){
   Array.reserve(2*N);
+  Vector3d t(0,0,0);
+  for(int i=0;i<2*N;i++){
+    Array.push_back(t);
+  }
 }
 
 //Copy Constructor
@@ -38,19 +46,10 @@ StateVector::~StateVector(){
 // Array index form of a vector
 // Routines returning an lvalue: i.e. X[i] returns addr of X[i]
 //
-Vector3d& StateVector::operator[](int i)
+ Vector3d& StateVector::operator[](int i) 
 {
-  if(i < 0 || i > 1){
-    cerr << "2D vector index bounds error" << endl;
-    exit(1);
-  }
-  return Array[i];
-}
-
-const Vector3d& StateVector::operator[](int i) const
-{
-  if(i < 0 || i > 1){
-    cerr << "2D vector index bounds error" << endl;
+  if(i < 0 || i > 2*N){
+    cerr << "2D vector index bounds error :" <<i<< endl;
     exit(1);
   }
   return Array[i];
@@ -61,6 +60,13 @@ int StateVector::getn() const{
   return N;
 }
 
+void StateVector::setn(int n) {
+  N=n;
+}
+
+int StateVector::getArraysize() const{
+  return Array.size();
+}
 //  Set the components of a Vector according to the arguments
 void StateVector::set(std::vector<Vector3d> x,std::vector<Vector3d> v)
 {
@@ -69,8 +75,10 @@ void StateVector::set(std::vector<Vector3d> x,std::vector<Vector3d> v)
   Array.reserve(N*2);
   for(int i=0;i<N;i++)
   {
-    Array[0]=x[i];
-    Array[N+i]=v[i];
+    Array.push_back(x[i]);
+  }
+  for(int i=0;i<N;i++){
+    Array.push_back(v[i]);
   }
 }
 void StateVector::set(const StateVector &t)
@@ -93,10 +101,9 @@ void StateVector::setsize(int vN){
     Array.clear();
     Array.reserve(2*N);
   }
-
-  int i;
+  Vector3d t(0,0,0);
   for(int i = 0; i < 2*N; i++)
-    Array[i] = 0;
+    Array.push_back(t);
 }
 
 // Print a Vector to the standard output device.

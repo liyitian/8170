@@ -27,15 +27,17 @@ protected:
   vector<Vector3d> Array;
   
 public:
+  StateVector();
   StateVector(int n);
   StateVector(int n, vector<Vector3d> x,vector<Vector3d> v);
 
   StateVector(const StateVector& V);
   ~StateVector();
 
-  Vector3d& operator[](int i);  
-  const Vector3d& operator[](int i) const;
+   Vector3d& operator[](int i) ;
   int getn() const; 
+  int getArraysize() const;
+  void setn(int n);
 
 
   void set(vector<Vector3d> x,vector<Vector3d> v);

@@ -25,6 +25,7 @@
 #define STARTZ -10.0
 #define radius 1.0
 #define MAXSTEPS  10000
+#define PRINTTEST cout<<"here"<<endl
 int WIDTH = 800;
 int HEIGHT = 600;
 
@@ -40,11 +41,11 @@ static Vector3d Wind;
 static Vector3d G;
 static Vector3d Stone;
 static double StoneRadius;
-static std::vector<Vector3d> Particles;
-static std::vector<Vector3d> ParticlesVelocity;
+static StateVector Particles;
+static StateVector Snew;
+static StateVector Sdot;
+static std::vector<int> Sindex;
 static std::vector<Vector3d> ParticlesColor;
-static std::vector<Vector3d> ParticlesAcceleration;
-static std::vector<double> ParticlesLife;
 static std::vector<double> ParticlesMass;
 static std::vector<double> ParticlesBorntime;
 
@@ -168,7 +169,7 @@ void LoadParameters(char *filename){
   
   ParamFilename = filename;
   
-  if(fscanf(paramfile, "%d %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf",
+  if(fscanf(paramfile, "%d %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf",
             &TotalNum, &Mass, &TimeStep, &DispTime, &(Wind.x), &(Wind.y), &(Wind.z),&(G.x),&(G.y),&(G.z),&epsilon) != 11){
     fprintf(stderr, "error reading parameter file %s\n", filename);
     exit(1);
@@ -193,7 +194,7 @@ void do_lights()
   glLightfv(GL_LIGHT0,GL_POSITION,light0_position);
   glLightfv(GL_LIGHT0,GL_SPOT_DIRECTION,light0_direction);
   glEnable(GL_LIGHT0);
-glEnable(GL_LIGHTING);
+  glEnable(GL_LIGHTING);
 }
 
 void DrawParticles()
@@ -202,6 +203,25 @@ void DrawParticles()
   glClear(GL_COLOR_BUFFER_BIT);
   
   //TODO:Draw the CUBE
+  glLoadIdentity();
+  glColor3f(0.0, 0.0, 0.0);
+  glLineWidth(1.0);
+
+  for(int i=0;i<Particles.getn()-1;i++){
+    if(i % TotalNum!=TotalNum-1){
+    glBegin(GL_LINES);
+    glVertex3f(Particles[i].x,Particles[i].y,Particles[i].z);
+    glVertex3f(Particles[i+1].x,Particles[i+1].y,Particles[i+1].z);
+    glEnd();
+    }
+    if(i +TotalNum<TotalNum*TotalNum){
+    glBegin(GL_LINES);
+    glVertex3f(Particles[i].x,Particles[i].y,Particles[i].z);
+    glVertex3f(Particles[i+TotalNum].x,Particles[i+TotalNum].y,Particles[i+TotalNum].z);
+    glEnd();
+    }
+    
+  }
 
   glutPostRedisplay();
   
@@ -218,11 +238,18 @@ void DrawParticles()
 void Restart(){
   
   LoadParameters(ParamFilename); // reload parameters in case changed
-
+  //TODO:Vertex clear,& reserve the room;
+  Particles.setsize(TotalNum*TotalNum);
+  Particles.setn(0);
+  Sdot.setsize(TotalNum*TotalNum);
+  Snew.setsize(TotalNum*TotalNum);
+  ParticlesMass.clear();
+  ParticlesMass.reserve(TotalNum*TotalNum);
   NTimeSteps = -1;
+
   glutIdleFunc(NULL);
   Time = 0;
-  //TODO:Vertex clear,& reserve the room;
+
 
   DrawParticles();
 }
@@ -238,7 +265,9 @@ void InitSimulation(int argc, char* argv[]){
   }
   
   LoadParameters(argv[1]);
-  
+  Particles.setsize(TotalNum*TotalNum);
+  Particles.setn(0);
+
   NSteps = 0;
   NTimeSteps = -1;
   Time = 0;
@@ -246,29 +275,48 @@ void InitSimulation(int argc, char* argv[]){
   //TODO:Vertex clear
 }
 
+
+
+//TODO: Acceleration
+StateVector Acceleration(StateVector S, double t)
+{
+  StateVector Sdot(S.getn());
+  Vector3d fij;
+  Vector3d tmp(0,0,0);
+  for(int i=0;i<S.getn();i++){
+    //cout<<S.getn()+i<<endl;
+    Sdot[S.getn()+i]=tmp/ParticlesMass[i];
+  }
+
+  for(int i=0;i<S.getn();i++){
+    //Spring force;
+    fij.set(0,0,0);
+    Sdot[S.getn()+i]=Sdot[S.getn()+i]+fij;
+  }
+  return Sdot;
+}
+
+
 /////////TODO: Force:
 StateVector Force(StateVector S, double t)
 {
-  StateVector Sdot;
-  for(int i=0;i<S.N;i++){
-    Sdot[i]=S[N+i];
-    Sdot[N+i]=1/ParticlesMass[i]*
+  StateVector Sdot(S.getn());
+
+  Sdot=Acceleration(Sdot,t);
+
+  for(int i=0;i<S.getn();i++){
+    Sdot[i]=S[S.getn()+i];
   }
+  return Sdot;
 }
 
-
-
-
-
-/*
- Compute acceleration on each particle
- */
-Vector3d Accel(Vector3d currentVelocity, double valve){
-  Vector3d acceleration;
-  acceleration = G - (Viscosity* currentVelocity) / Mass + Wind/Mass ;
-  
-  return acceleration;
+StateVector Euler(StateVector S,StateVector Sdot)
+{
+  StateVector Snew(S.getn());
+  Snew=S+Sdot*TimeStep;
+  return Snew;
 }
+
 double min(double a, double b){
   if (a<b)return a; else return b;
 }
@@ -276,8 +324,30 @@ double min(double a, double b){
 void Simulate()
 {
 
-  Vector3d acceleration;
-  
+  //Particles Generator
+  //cout<<Particles.getn()<<endl;
+  if (Particles.getn()!=TotalNum*TotalNum){
+    //cout<<TotalNum<<endl;
+    Particles.setsize(TotalNum*TotalNum);
+    //Particles.setn(0);
+    Sdot.setsize(TotalNum*TotalNum);
+    Snew.setsize(TotalNum*TotalNum);
+    ParticlesMass.clear();
+    ParticlesMass.reserve(TotalNum*TotalNum);
+    for(int i=0;i<TotalNum;i++){
+      for(int j=0;j<TotalNum;j++){
+        
+        Particles[i*TotalNum+j].set(-10+i,0,-10+j);
+        ParticlesMass.push_back(Mass);
+        
+      }
+    }
+  }
+
+  //cout<<TotalNum<<endl;
+  Sdot=Force(Particles,Time);
+  Snew=Euler(Particles,Sdot);
+  Particles=Snew;
 
 
   Time += TimeStep;
