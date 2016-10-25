@@ -26,14 +26,14 @@
 #define radius 1.0
 #define MAXSTEPS  10000
 #define PRINTTEST cout<<"here"<<endl
-int WIDTH = 800;
-int HEIGHT = 600;
+int WIDTH = 1024;
+int HEIGHT = 765;
 
 int persp_win;
 
 Camera *camera;
 
-bool showGrid = true;
+bool showGrid = false;
 bool Stopped =true;
 
 static Vector3d V0;
@@ -52,16 +52,12 @@ static std::vector<double> ParticlesBorntime;
 static char *ParamFilename = NULL;
 static int TotalNum;
 static double Mass;
-static double Viscosity;
 static double TimeStep;
 static double DispTime;
-static double CoeffofRestitution;
-static double Fraction;
+static double Kij;
 static double Time = 0;
 static double epsilon;
-static double Ka;
-static double Kv;
-static double Kc;
+static double l0 = 1;
 static int TimerDelay;
 static int TimeStepsPerDisplay;
 static int NSteps = 0;
@@ -169,8 +165,8 @@ void LoadParameters(char *filename){
   
   ParamFilename = filename;
   
-  if(fscanf(paramfile, "%d %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf",
-            &TotalNum, &Mass, &TimeStep, &DispTime, &(Wind.x), &(Wind.y), &(Wind.z),&(G.x),&(G.y),&(G.z),&epsilon) != 11){
+  if(fscanf(paramfile, "%d %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf",
+            &TotalNum, &Mass, &Kij, &TimeStep, &DispTime, &(Wind.x), &(Wind.y), &(Wind.z),&(G.x),&(G.y),&(G.z),&epsilon) != 12){
     fprintf(stderr, "error reading parameter file %s\n", filename);
     exit(1);
   }
@@ -180,22 +176,7 @@ void LoadParameters(char *filename){
   TimeStepsPerDisplay = Max(1, int(DispTime / TimeStep + 0.5));
   TimerDelay = int(0.5 * TimeStep * 1000);
 }
-void do_lights()
-{
-  float light0_ambient[] = { 1.0, 1.0, 1.0, 1.0 };
-  float light0_diffuse[] = { 1.0, 1.0, 1.0, 1.0 }; 
-  float light0_specular[] = { 1.0, 1.0, 1.0, 1.0 }; 
-  float light0_position[] = { 15.0, 15.0, 15.0, 0.0 };
-  float light0_direction[] = { -1.0, -1.0, -1.0, 1.0};
 
-  glLightfv(GL_LIGHT0,GL_AMBIENT,light0_ambient); 
-  glLightfv(GL_LIGHT0,GL_DIFFUSE,light0_diffuse); 
-  glLightfv(GL_LIGHT0,GL_SPECULAR,light0_specular); 
-  glLightfv(GL_LIGHT0,GL_POSITION,light0_position);
-  glLightfv(GL_LIGHT0,GL_SPOT_DIRECTION,light0_direction);
-  glEnable(GL_LIGHT0);
-  glEnable(GL_LIGHTING);
-}
 
 void DrawParticles()
 {
@@ -204,22 +185,33 @@ void DrawParticles()
   
   //TODO:Draw the CUBE
   glLoadIdentity();
-  glColor3f(0.0, 0.0, 0.0);
-  glLineWidth(1.0);
+  
+
 
   for(int i=0;i<Particles.getn()-1;i++){
-    if(i % TotalNum!=TotalNum-1){
-    glBegin(GL_LINES);
+    if(i % TotalNum!=TotalNum-1&&i +TotalNum<TotalNum*TotalNum){
+    //glDisable(GL_LIGHTING);
+
+    glBegin(GL_TRIANGLES);
+    glColor3f(0.0, 0.0, 1.0);
     glVertex3f(Particles[i].x,Particles[i].y,Particles[i].z);
     glVertex3f(Particles[i+1].x,Particles[i+1].y,Particles[i+1].z);
-    glEnd();
-    }
-    if(i +TotalNum<TotalNum*TotalNum){
-    glBegin(GL_LINES);
-    glVertex3f(Particles[i].x,Particles[i].y,Particles[i].z);
     glVertex3f(Particles[i+TotalNum].x,Particles[i+TotalNum].y,Particles[i+TotalNum].z);
     glEnd();
+    glBegin(GL_TRIANGLES);
+    glColor3f(0.0, 0.0, 1.0);
+    glVertex3f(Particles[i+1+TotalNum].x,Particles[i+1+TotalNum].y,Particles[i+1+TotalNum].z);
+    glVertex3f(Particles[i+1].x,Particles[i+1].y,Particles[i+1].z);
+    glVertex3f(Particles[i+TotalNum].x,Particles[i+TotalNum].y,Particles[i+TotalNum].z);
+    glEnd();
+    //glEnable(GL_LIGHTING);
     }
+    // if(i +TotalNum<TotalNum*TotalNum){
+    // glBegin(GL_LINES);
+    // glVertex3f(Particles[i].x,Particles[i].y,Particles[i].z);
+
+    // glEnd();
+    // }
     
   }
 
@@ -288,10 +280,31 @@ StateVector Acceleration(StateVector S, double t)
     Sdot[S.getn()+i]=tmp/ParticlesMass[i];
   }
 
-  for(int i=0;i<S.getn();i++){
-    //Spring force;
-    fij.set(0,0,0);
-    Sdot[S.getn()+i]=Sdot[S.getn()+i]+fij;
+  //Springy force;
+  for(int i=0;i<S.getn()-1;i++){
+    if(i % TotalNum!=TotalNum-1){
+      Vector3d Xijhab=(Particles[i+1]-Particles[i]).normalize();
+      double dij=(Particles[i+1]-Particles[i]).norm();
+      Vector3d Vij=Particles[i+1+S.getn()]-Particles[i+S.getn()];
+      Vector3d fis=Kij*(dij-l0)*Xijhab;
+      Vector3d fid=dij*(Vij*Xijhab)*Xijhab;
+      fij=fis+fid;
+      Sdot[S.getn()+i]=Sdot[S.getn()+i]+fij/ParticlesMass[i];
+      Sdot[S.getn()+i+1]=Sdot[S.getn()+i+1]-fij/ParticlesMass[i];
+    }
+    if(i +TotalNum<TotalNum*TotalNum){
+      int j=i+TotalNum;
+      Vector3d Xijhab=(Particles[j]-Particles[i]).normalize();
+      double dij=(Particles[j]-Particles[i]).norm();
+      Vector3d Vij=Particles[j+S.getn()]-Particles[i+S.getn()];
+      Vector3d fis=Kij*(dij-l0)*Xijhab;
+      Vector3d fid=dij*(Vij*Xijhab)*Xijhab;
+      fij=fis+fid;
+      Sdot[S.getn()+i]=Sdot[S.getn()+i]+fij/ParticlesMass[i];
+      Sdot[S.getn()+j]=Sdot[S.getn()+j]-fij/ParticlesMass[i];
+    }
+   
+
   }
   return Sdot;
 }
@@ -306,14 +319,20 @@ StateVector Force(StateVector S, double t)
 
   for(int i=0;i<S.getn();i++){
     Sdot[i]=S[S.getn()+i];
+    //Sdot[i+S.getn()]=1/ParticlesMass[i]*
   }
   return Sdot;
 }
 
-StateVector Euler(StateVector S,StateVector Sdot)
+StateVector Euler(StateVector S,StateVector Sdot,double t)
 {
+  StateVector K1,K2,K3,K4;
   StateVector Snew(S.getn());
-  Snew=S+Sdot*TimeStep;
+  K1=Sdot;
+  K2=Force(S+TimeStep/2*K1,t+TimeStep/2);
+  K3=Force(S+TimeStep/2*K2,t+TimeStep/2);
+  K4=Force(S+TimeStep*K3,t+TimeStep);
+  Snew=S+TimeStep/6*(K1+2*K2+2*K3+K4);
   return Snew;
 }
 
@@ -346,7 +365,7 @@ void Simulate()
 
   //cout<<TotalNum<<endl;
   Sdot=Force(Particles,Time);
-  Snew=Euler(Particles,Sdot);
+  Snew=Euler(Particles,Sdot,Time);
   Particles=Snew;
 
 
@@ -367,19 +386,48 @@ void TimerCallback(int timertype)
   }
 }
 
+void do_lights()
+{
+  float light0_ambient[] = { 0.0, 0.0, 0.0, 1.0 };
+  float light0_diffuse[] = { 0.3, 0.3, 0.3, 1.0 }; 
+  float light0_specular[] = { 0.3, 0.3, 0.3, 1.0 }; 
+  float light0_position[] = { 0.0, 1.0, 8.0, 1.0 };
+  float light0_direction[] = { -1.0, -1.0, -1.0, 1.0};
+  float lmodel_ambient[] = { 0.2, 0.2, 0.2, 1.0 };
 
+
+
+  glLightfv(GL_LIGHT0,GL_AMBIENT,light0_ambient); 
+  glLightfv(GL_LIGHT0,GL_DIFFUSE,light0_diffuse); 
+  glLightfv(GL_LIGHT0,GL_SPECULAR,light0_specular); 
+  glLightModelfv(GL_LIGHT_MODEL_AMBIENT, lmodel_ambient);
+
+  glLightfv(GL_LIGHT0,GL_POSITION,light0_position);
+  glLightfv(GL_LIGHT0,GL_SPOT_DIRECTION,light0_direction);
+  
+  glEnable(GL_LIGHTING);
+  glEnable(GL_LIGHT0);
+}
 
 void do_material()
 {
-float mat_ambient[] = {0.1,0.1,0.1,1.0}; 
-float mat_diffuse[] = {0.4,0.4,0.4,1.0}; 
-float mat_specular[] = {0.4,0.4,0.4,1.0};
-float mat_shininess[] = {1.0}; 
+float mat_ambient[] = {1.0,1.0,1.0,1.0};
+float mat_specular[] = {1.0,1.0,1.0,1.0};
+float mat_emission[] = {0.0,0.0,0.0,1.0};
+float low_shininess[] = { 128.0 };
 
-glMaterialfv(GL_FRONT,GL_AMBIENT,mat_ambient);
-glMaterialfv(GL_FRONT,GL_DIFFUSE,mat_diffuse);
+
+
+glEnable(GL_COLOR_MATERIAL);
+glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
+glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, mat_ambient);
 glMaterialfv(GL_FRONT,GL_SPECULAR,mat_specular);
-glMaterialfv(GL_FRONT,GL_SHININESS,mat_shininess);
+glMaterialfv(GL_FRONT,GL_EMISSION,mat_emission);
+glMaterialfv(GL_FRONT,GL_SHININESS,low_shininess);
+//glMaterialfv(GL_FRONT,GL_AMBIENT,mat_ambient);
+//glMaterialfv(GL_FRONT,GL_DIFFUSE,mat_diffuse);
+//
+//glMaterialfv(GL_FRONT,GL_SHININESS,mat_shininess);
 
 }
 
@@ -413,7 +461,11 @@ void motionEventHandler(int x, int y) {
   glutPostRedisplay();
 }
 
-
+void hit(){
+  if (Particles.getn()==TotalNum*TotalNum){
+    Particles[190+Particles.getn()].set(0,0.5,0);
+  }
+}
 
 void keyboardEventHandler(unsigned char key, int x, int y) {
   switch (key) {
@@ -430,9 +482,12 @@ void keyboardEventHandler(unsigned char key, int x, int y) {
   case 's': case 'S':
     Restart();
     if (Stopped){
-      glutTimerFunc(1,TimerCallback,0);
+      glutTimerFunc(TimerDelay,TimerCallback,0);
       Stopped=!Stopped;
     }
+    break;
+  case 'a': case 'A':
+    hit();
     break;
   case 't': case 'T':
     Stopped=TRUE;
@@ -468,7 +523,7 @@ int main(int argc, char *argv[]) {
   glutInit(&argc, argv);
   glutInitDisplayMode(GLUT_RGBA | GLUT_DEPTH | GLUT_DOUBLE);
   glutInitWindowSize(WIDTH, HEIGHT);
-  glutInitWindowPosition(50, 50);
+  glutInitWindowPosition(200, 200);
   persp_win = glutCreateWindow("Project2");
 
 
@@ -482,8 +537,9 @@ int main(int argc, char *argv[]) {
   glutMotionFunc(motionEventHandler);
   glutKeyboardFunc(keyboardEventHandler);
 
-  do_material();
   do_lights();
+  do_material();
+
 
   glutMainLoop();
   return(0);
