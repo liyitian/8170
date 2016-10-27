@@ -55,9 +55,11 @@ static double Mass;
 static double TimeStep;
 static double DispTime;
 static double Kij;
+static double Dtheta;
 static double Time = 0;
 static double epsilon;
 static double l0 = 1;
+static double theta0 = 180;
 static int TimerDelay;
 static int TimeStepsPerDisplay;
 static int NSteps = 0;
@@ -165,8 +167,8 @@ void LoadParameters(char *filename){
   
   ParamFilename = filename;
   
-  if(fscanf(paramfile, "%d %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf",
-            &TotalNum, &Mass, &Kij, &TimeStep, &DispTime, &(Wind.x), &(Wind.y), &(Wind.z),&(G.x),&(G.y),&(G.z),&epsilon) != 12){
+  if(fscanf(paramfile, "%d %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf",
+            &TotalNum, &Mass, &Kij,&Dtheta, &TimeStep, &DispTime, &(Wind.x), &(Wind.y), &(Wind.z),&(G.x),&(G.y),&(G.z),&epsilon) != 13){
     fprintf(stderr, "error reading parameter file %s\n", filename);
     exit(1);
   }
@@ -267,7 +269,33 @@ void InitSimulation(int argc, char* argv[]){
   //TODO:Vertex clear
 }
 
-
+std::vector<Vector3d> torsional(Vector3d x0,Vector3d x1,Vector3d x2,Vector3d x3,Vector3d v2, Vector3d v3)
+{
+  std::vector<Vector3d> fgroup;
+  Vector3d hhab=(x1-x0)/(x1-x0).norm();
+  double d02=(x2-x0)*hhab;
+  double d03=(x3-x0)*hhab;
+  Vector3d rl=(x2-x0)-d02*hhab;
+  Vector3d rr=(x3-x0)-d03*hhab;
+  Vector3d nlhab=((x2-x0)%(x1-x0)).normalize();
+  Vector3d nrhab=((x3-x0)%(x1-x0)).normalize();
+  double temptheta=((nlhab%nrhab)*hhab)/(nlhab*nrhab);
+  double theta=abs(atan2((nlhab%nrhab)*hhab,nlhab*nrhab))*180/3.1415926;
+  cout<<temptheta<<"\t"<<theta<<endl;
+  if (abs(theta-theta0)<1e-2)theta=theta0;
+  double thetal=(v2*nlhab)/rl.norm();
+  double thetar=(v3*nrhab)/rr.norm();
+  Vector3d tmp=(Kij*(theta-theta0)-Dtheta*(thetal+thetar))*hhab;
+  Vector3d f3=((tmp*hhab)/rr.norm())*nrhab;
+  Vector3d f2=((tmp*hhab)/rl.norm())*nlhab;
+  Vector3d f1=-(d02*f2+d03*f3)/(x1-x0).norm();
+  Vector3d f0=-(f1+f2+f3);
+  fgroup.push_back(f0);
+  fgroup.push_back(f1);
+  fgroup.push_back(f2);
+  fgroup.push_back(f3);
+  return fgroup;
+}
 
 //TODO: Acceleration
 StateVector Acceleration(StateVector S, double t)
@@ -283,22 +311,24 @@ StateVector Acceleration(StateVector S, double t)
   //Springy force;
   for(int i=0;i<S.getn()-1;i++){
     if(i % TotalNum!=TotalNum-1){
+
       Vector3d Xijhab=(Particles[i+1]-Particles[i]).normalize();
       double dij=(Particles[i+1]-Particles[i]).norm();
       Vector3d Vij=Particles[i+1+S.getn()]-Particles[i+S.getn()];
       Vector3d fis=Kij*(dij-l0)*Xijhab;
-      Vector3d fid=dij*(Vij*Xijhab)*Xijhab;
+      Vector3d fid=Dtheta*(Vij*Xijhab)*Xijhab;
       fij=fis+fid;
       Sdot[S.getn()+i]=Sdot[S.getn()+i]+fij/ParticlesMass[i];
-      Sdot[S.getn()+i+1]=Sdot[S.getn()+i+1]-fij/ParticlesMass[S.getn()+i+1];
+      Sdot[S.getn()+i+1]=Sdot[S.getn()+i+1]-fij/ParticlesMass[i+1];
     }
     if(i +TotalNum<TotalNum*TotalNum){
+      
       int j=i+TotalNum;
       Vector3d Xijhab=(Particles[j]-Particles[i]).normalize();
       double dij=(Particles[j]-Particles[i]).norm();
       Vector3d Vij=Particles[j+S.getn()]-Particles[i+S.getn()];
       Vector3d fis=Kij*(dij-l0)*Xijhab;
-      Vector3d fid=dij*(Vij*Xijhab)*Xijhab;
+      Vector3d fid=Dtheta*(Vij*Xijhab)*Xijhab;
       fij=fis+fid;
       Sdot[S.getn()+i]=Sdot[S.getn()+i]+fij/ParticlesMass[i];
       Sdot[S.getn()+j]=Sdot[S.getn()+j]-fij/ParticlesMass[j];
@@ -307,15 +337,57 @@ StateVector Acceleration(StateVector S, double t)
       int j=i+TotalNum;
       Vector3d Xijhab=(Particles[j]-Particles[i+1]).normalize();
       double dij=(Particles[j]-Particles[i+1]).norm();
-      cout<<dij<<endl;
       Vector3d Vij=Particles[j+S.getn()]-Particles[i+1+S.getn()];
       Vector3d fis=Kij*(dij-sqrt(2)*l0)*Xijhab;
-      Vector3d fid=dij*(Vij*Xijhab)*Xijhab;
+      Vector3d fid=Dtheta*(Vij*Xijhab)*Xijhab;
       fij=fis+fid;
       Sdot[S.getn()+i+1]=Sdot[S.getn()+i+1]+fij/ParticlesMass[i+1];
       Sdot[S.getn()+j]=Sdot[S.getn()+j]-fij/ParticlesMass[j];
+      
+      // std::vector<Vector3d> fgroup=torsional(Particles[j],
+      //                                       Particles[i+1],
+      //                                       Particles[i],
+      //                                       Particles[j+1],
+      //                                       Particles[i+Particles.getn()],
+      //                                       Particles[j+1+Particles.getn()]);
+      // Sdot[S.getn()+j]=Sdot[S.getn()+j]+fgroup[0]/ParticlesMass[j];
+      // Sdot[S.getn()+i+1]=Sdot[S.getn()+i+1]+fgroup[1]/ParticlesMass[i+1];
+      // Sdot[S.getn()+i]=Sdot[S.getn()+i]+fgroup[2]/ParticlesMass[i];
+      // Sdot[S.getn()+j+1]=Sdot[S.getn()+j+1]+fgroup[3]/ParticlesMass[j+1];
+      
+     }
+/*
+    if ((i % TotalNum!=0)&&(i % TotalNum!=TotalNum-1)&&(i +TotalNum<TotalNum*TotalNum))
+    {
+      int j=i+TotalNum;
+      std::vector<Vector3d> fgroup=torsional(Particles[j],
+                                            Particles[i],
+                                            Particles[j-1],
+                                            Particles[i+1],
+                                            Particles[j-1+Particles.getn()],
+                                            Particles[i+1+Particles.getn()]);
+      Sdot[S.getn()+j]=Sdot[S.getn()+j]+fgroup[0]/ParticlesMass[j];
+      Sdot[S.getn()+i]=Sdot[S.getn()+i]+fgroup[1]/ParticlesMass[i];
+      Sdot[S.getn()+j-1]=Sdot[S.getn()+j-1]+fgroup[2]/ParticlesMass[j-1];
+      Sdot[S.getn()+i+1]=Sdot[S.getn()+i+1]+fgroup[3]/ParticlesMass[i+1];     
     }
 
+    if (i>=TotalNum&&(i % TotalNum!=TotalNum-1)&&(i +TotalNum<TotalNum*TotalNum))
+    {
+      int j=i+TotalNum;
+      std::vector<Vector3d> fgroup=torsional(Particles[i+1],
+                                            Particles[i],
+                                            Particles[j],
+                                            Particles[i+1-TotalNum],
+                                            Particles[j+Particles.getn()],
+                                            Particles[i+1-TotalNum+Particles.getn()]);
+      Sdot[S.getn()+i+1]=Sdot[S.getn()+i+1]+fgroup[0]/ParticlesMass[i+1];
+      Sdot[S.getn()+i]=Sdot[S.getn()+i]+fgroup[1]/ParticlesMass[i];
+      Sdot[S.getn()+j]=Sdot[S.getn()+j]+fgroup[2]/ParticlesMass[j];
+      Sdot[S.getn()+i+1-TotalNum]=Sdot[S.getn()+i+1-TotalNum]+fgroup[3]/ParticlesMass[i+1-TotalNum];
+      
+    }
+*/
   }
   return Sdot;
 }
