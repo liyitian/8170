@@ -290,7 +290,7 @@ StateVector Acceleration(StateVector S, double t)
       Vector3d fid=dij*(Vij*Xijhab)*Xijhab;
       fij=fis+fid;
       Sdot[S.getn()+i]=Sdot[S.getn()+i]+fij/ParticlesMass[i];
-      Sdot[S.getn()+i+1]=Sdot[S.getn()+i+1]-fij/ParticlesMass[i];
+      Sdot[S.getn()+i+1]=Sdot[S.getn()+i+1]-fij/ParticlesMass[S.getn()+i+1];
     }
     if(i +TotalNum<TotalNum*TotalNum){
       int j=i+TotalNum;
@@ -301,9 +301,20 @@ StateVector Acceleration(StateVector S, double t)
       Vector3d fid=dij*(Vij*Xijhab)*Xijhab;
       fij=fis+fid;
       Sdot[S.getn()+i]=Sdot[S.getn()+i]+fij/ParticlesMass[i];
-      Sdot[S.getn()+j]=Sdot[S.getn()+j]-fij/ParticlesMass[i];
+      Sdot[S.getn()+j]=Sdot[S.getn()+j]-fij/ParticlesMass[j];
     }
-   
+    if ((i % TotalNum!=TotalNum-1)&&(i +TotalNum<TotalNum*TotalNum)){
+      int j=i+TotalNum;
+      Vector3d Xijhab=(Particles[j]-Particles[i+1]).normalize();
+      double dij=(Particles[j]-Particles[i+1]).norm();
+      cout<<dij<<endl;
+      Vector3d Vij=Particles[j+S.getn()]-Particles[i+1+S.getn()];
+      Vector3d fis=Kij*(dij-sqrt(2)*l0)*Xijhab;
+      Vector3d fid=dij*(Vij*Xijhab)*Xijhab;
+      fij=fis+fid;
+      Sdot[S.getn()+i+1]=Sdot[S.getn()+i+1]+fij/ParticlesMass[i+1];
+      Sdot[S.getn()+j]=Sdot[S.getn()+j]-fij/ParticlesMass[j];
+    }
 
   }
   return Sdot;
