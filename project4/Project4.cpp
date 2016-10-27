@@ -281,7 +281,7 @@ std::vector<Vector3d> torsional(Vector3d x0,Vector3d x1,Vector3d x2,Vector3d x3,
   Vector3d nrhab=((x3-x0)%(x1-x0)).normalize();
   double temptheta=((nlhab%nrhab)*hhab)/(nlhab*nrhab);
   double theta=abs(atan2((nlhab%nrhab)*hhab,nlhab*nrhab))*180/3.1415926;
-  cout<<temptheta<<"\t"<<theta<<endl;
+  //cout<<temptheta<<"\t"<<theta<<endl;
   if (abs(theta-theta0)<1e-2)theta=theta0;
   double thetal=(v2*nlhab)/rl.norm();
   double thetar=(v3*nrhab)/rr.norm();
@@ -294,6 +294,7 @@ std::vector<Vector3d> torsional(Vector3d x0,Vector3d x1,Vector3d x2,Vector3d x3,
   fgroup.push_back(f1);
   fgroup.push_back(f2);
   fgroup.push_back(f3);
+  //cout << f0<<"\t"<<f1<<"\t"<<f2<<"\t"<<f3<<endl;
   return fgroup;
 }
 
@@ -350,10 +351,10 @@ StateVector Acceleration(StateVector S, double t)
       //                                       Particles[j+1],
       //                                       Particles[i+Particles.getn()],
       //                                       Particles[j+1+Particles.getn()]);
-      // Sdot[S.getn()+j]=Sdot[S.getn()+j]+fgroup[0]/ParticlesMass[j];
-      // Sdot[S.getn()+i+1]=Sdot[S.getn()+i+1]+fgroup[1]/ParticlesMass[i+1];
-      // Sdot[S.getn()+i]=Sdot[S.getn()+i]+fgroup[2]/ParticlesMass[i];
-      // Sdot[S.getn()+j+1]=Sdot[S.getn()+j+1]+fgroup[3]/ParticlesMass[j+1];
+      //Sdot[S.getn()+j]=Sdot[S.getn()+j]+fgroup[0]/ParticlesMass[j];
+      //Sdot[S.getn()+i+1]=Sdot[S.getn()+i+1]+fgroup[1]/ParticlesMass[i+1];
+      //Sdot[S.getn()+i]=Sdot[S.getn()+i]+fgroup[2]/ParticlesMass[i];
+      //Sdot[S.getn()+j+1]=Sdot[S.getn()+j+1]+fgroup[3]/ParticlesMass[j+1];
       
      }
 /*
@@ -546,7 +547,12 @@ void motionEventHandler(int x, int y) {
 
 void hit(){
   if (Particles.getn()==TotalNum*TotalNum){
-    Particles[190+Particles.getn()].set(0,0.5,0);
+    Particles[190]=Particles[190]+ G;
+  }
+}
+void hit2(){
+  if (Particles.getn()==TotalNum*TotalNum){
+    Particles[190+Particles.getn()]=Particles[190+Particles.getn()]+ G;
   }
 }
 
@@ -571,6 +577,9 @@ void keyboardEventHandler(unsigned char key, int x, int y) {
     break;
   case 'a': case 'A':
     hit();
+    break;
+  case 'd': case 'D':
+    hit2();
     break;
   case 't': case 'T':
     Stopped=TRUE;
