@@ -4,10 +4,6 @@
 		"selected_items":
 		[
 			[
-<<<<<<< HEAD
-				"Pa",
-				"ParticlesMass"
-=======
 				"no",
 				"norm"
 			],
@@ -22,48 +18,34 @@
 			[
 				"GL_Lig",
 				"GL_LIGHTING"
->>>>>>> 5e9819c93d442a523f8461387a1fa6db23185c0c
 			],
 			[
-				"Ve",
-				"Vector3d"
+				"GLen",
+				"glEnable"
 			],
 			[
-				"Sta",
-				"StateVector"
+				"F",
+				"Force"
 			],
 			[
-<<<<<<< HEAD
-				"glen",
-				"glEnd"
-			],
-			[
-				"P",
-				"Particles"
-=======
 				"ve",
 				"Vector3d"
->>>>>>> 5e9819c93d442a523f8461387a1fa6db23185c0c
 			],
 			[
-				"new",
-				"NewParticles"
+				"Vector",
+				"Vector3d"
 			],
 			[
-				"ne",
-				"NewParticles"
+				"Vec",
+				"Vector3d"
 			],
 			[
-				"tot",
-				"TotalNum"
+				"vec",
+				"vector\tstd::vector"
 			],
 			[
-				"set",
-				"setsize"
-			],
-			[
-				"n",
-				"N"
+				"State",
+				"StateVector"
 			],
 			[
 				"Project",
@@ -82,6 +64,15 @@
 	"buffers":
 	[
 		{
+			"file": "Makefile",
+			"settings":
+			{
+				"buffer_size": 1547,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
 			"file": "StateVector.cpp",
 			"settings":
 			{
@@ -91,23 +82,19 @@
 			}
 		},
 		{
-			"file": "Project4.cpp",
+			"file": "StateVector.h",
 			"settings":
 			{
-				"buffer_size": 16394,
+				"buffer_size": 1387,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "StateVector.h",
+			"file": "Project4.cpp",
 			"settings":
 			{
-<<<<<<< HEAD
-				"buffer_size": 1387,
-=======
 				"buffer_size": 16394,
->>>>>>> 5e9819c93d442a523f8461387a1fa6db23185c0c
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -129,7 +116,7 @@
 	"build_varint": "",
 	"command_palette":
 	{
-		"height": 87.0,
+		"height": 96.0,
 		"last_filter": "Package Control: install",
 		"selected_items":
 		[
@@ -142,7 +129,7 @@
 				"Package Control: Install Package"
 			]
 		],
-		"width": 384.0
+		"width": 449.0
 	},
 	"console":
 	{
@@ -165,13 +152,12 @@
 	},
 	"expanded_folders":
 	[
-		"/Users/yitianli/Src/8170/8170/project4"
+		"/home/yitianl/8170/project4"
 	],
 	"file_history":
 	[
-		"/Users/yitianli/Src/8170/8170/project4/Project4.cpp",
-		"/Users/yitianli/Src/8170/8170/project4/StateVector.cpp",
-		"/Users/yitianli/Src/8170/8170/project4/StateVector.h",
+		"/home/yitianl/8170/project4/Vector.h",
+		"/home/yitianl/8170/project4/Vector.cpp",
 		"/Users/yitianli/.vimrc",
 		"/Users/yitianli/Src/8270/8270Assets-2016/projects/3/astCalc/ast.cpp",
 		"/Users/yitianli/Src/8270/8270Assets-2016/projects/3/astCalc/parse.y",
@@ -194,7 +180,7 @@
 	],
 	"find":
 	{
-		"height": 35.0
+		"height": 38.0
 	},
 	"find_in_files":
 	{
@@ -208,8 +194,6 @@
 		"case_sensitive": false,
 		"find_history":
 		[
-<<<<<<< HEAD
-=======
 			"hig",
 			"kij",
 			"cout",
@@ -218,12 +202,34 @@
 			"WIDTH",
 			"ambient_and",
 			"ambient",
->>>>>>> 5e9819c93d442a523f8461387a1fa6db23185c0c
 			"kij",
-			".size()",
-			"operator=",
-			"index",
-			"Acceleration",
+			"normalize",
+			"gl_depth",
+			"do_lights",
+			"timerdelay",
+			"simulate",
+			"hit",
+			"show",
+			"makegrid",
+			"hit",
+			"std::",
+			"vector::",
+			"std::",
+			"delete",
+			"ostream",
+			" setsize(",
+			"vector::vector(",
+			"vector::vector",
+			"vector()",
+			"vector r(",
+			" r(",
+			"r(",
+			"vector r",
+			"return x",
+			"set(",
+			"vector2d",
+			"cout",
+			"std::",
 			"std",
 			"clang",
 			"mass",
@@ -254,17 +260,11 @@
 	"groups":
 	[
 		{
-<<<<<<< HEAD
-			"selected": 1,
-=======
 			"selected": 4,
->>>>>>> 5e9819c93d442a523f8461387a1fa6db23185c0c
 			"sheets":
 			[
 				{
 					"buffer": 0,
-<<<<<<< HEAD
-=======
 					"file": "Makefile",
 					"semi_transient": false,
 					"settings":
@@ -293,7 +293,6 @@
 				},
 				{
 					"buffer": 1,
->>>>>>> 5e9819c93d442a523f8461387a1fa6db23185c0c
 					"file": "StateVector.cpp",
 					"semi_transient": false,
 					"settings":
@@ -305,34 +304,57 @@
 						"selection":
 						[
 							[
-<<<<<<< HEAD
-								987,
-								987
-=======
 								3325,
 								3325
->>>>>>> 5e9819c93d442a523f8461387a1fa6db23185c0c
 							]
 						],
 						"settings":
 						{
 							"syntax": "Packages/C++/C++.sublime-syntax",
 							"tab_size": 2,
-							"translate_tabs_to_spaces": true
+							"translate_tabs_to_spaces": true,
+							"word_wrap": true
 						},
 						"translation.x": 0.0,
-<<<<<<< HEAD
-						"translation.y": 0.0,
-=======
 						"translation.y": 3806.0,
->>>>>>> 5e9819c93d442a523f8461387a1fa6db23185c0c
 						"zoom_level": 1.0
 					},
 					"stack_index": 2,
 					"type": "text"
 				},
 				{
-					"buffer": 1,
+					"buffer": 2,
+					"file": "StateVector.h",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1387,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true,
+							"word_wrap": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 594.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
 					"file": "Project4.cpp",
 					"semi_transient": false,
 					"settings":
@@ -344,54 +366,8 @@
 						"selection":
 						[
 							[
-								0,
-								0
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/C++/C++.sublime-syntax",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-<<<<<<< HEAD
-						"translation.y": 4732.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 0,
-=======
-						"translation.y": 594.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 4,
->>>>>>> 5e9819c93d442a523f8461387a1fa6db23185c0c
-					"type": "text"
-				},
-				{
-					"buffer": 2,
-					"file": "StateVector.h",
-					"semi_transient": false,
-					"settings":
-					{
-<<<<<<< HEAD
-						"buffer_size": 1387,
-=======
-						"buffer_size": 16394,
->>>>>>> 5e9819c93d442a523f8461387a1fa6db23185c0c
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-<<<<<<< HEAD
-								757,
-								757
-=======
 								14627,
 								14627
->>>>>>> 5e9819c93d442a523f8461387a1fa6db23185c0c
 							]
 						],
 						"settings":
@@ -401,21 +377,14 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-<<<<<<< HEAD
-						"translation.y": 260.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 2,
-=======
 						"translation.y": 11817.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 1,
->>>>>>> 5e9819c93d442a523f8461387a1fa6db23185c0c
 					"type": "text"
 				},
 				{
-					"buffer": 3,
+					"buffer": 4,
 					"file": "parameters",
 					"semi_transient": false,
 					"settings":
@@ -427,13 +396,8 @@
 						"selection":
 						[
 							[
-<<<<<<< HEAD
-								0,
-								0
-=======
 								10,
 								10
->>>>>>> 5e9819c93d442a523f8461387a1fa6db23185c0c
 							]
 						],
 						"settings":
@@ -444,11 +408,7 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-<<<<<<< HEAD
-					"stack_index": 3,
-=======
 					"stack_index": 0,
->>>>>>> 5e9819c93d442a523f8461387a1fa6db23185c0c
 					"type": "text"
 				}
 			]

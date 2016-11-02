@@ -1,0 +1,12 @@
+Project4 Usage:
+----------------------
+
+Example:  ./Project4 parameters
+
+Keybind:
+	R:to restart the animation
+	S:to start the animation
+	T:to stop the animation
+
+use make to compile the Project4
+use make clean to clean excutable file
