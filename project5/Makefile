@@ -24,7 +24,7 @@ endif
 
 HFILES 	= Matrix.${H} Vector.${H} Utility.${H} Camera.${H} Gauss.${H} StateVector.${H}
 OFILES 	= Matrix.o Vector.o Utility.o Camera.o Gauss.o StateVector.o
-PROJECT = Project4
+PROJECT = Project5
 
 ${PROJECT}:	${PROJECT}.o $(OFILES)
 	${CC} $(CFLAGS) -o ${PROJECT} ${PROJECT}.o $(OFILES) $(LDFLAGS)
