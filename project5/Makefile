@@ -15,7 +15,7 @@ H	= h
 CFLAGS 	= -g -Wno-deprecated-declarations
 
 ifeq ("$(shell uname)", "Darwin")
-  LDFLAGS     = -framework Foundation -framework GLUT -framework OpenGL -lm 
+  LDFLAGS     = $(CFLAGS) -framework Foundation -framework GLUT -framework OpenGL -lm 
 else
   ifeq ("$(shell uname)", "Linux")
     LDFLAGS     = -lglut -lGL -lm -L/usr/local/lib -lGLU

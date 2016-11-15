@@ -19,14 +19,14 @@ StateVector::StateVector()
 }
 
 StateVector::StateVector(int n, std::vector<Vector3d> x,std::vector<Vector3d> v):N(n),Array(v){
-  for(int i=1;i<=n;i++){
-    Array.push_back(v[i-1]);
+  for(int i=0;i<n;i++){
+    Array.push_back(v[i]);
   }
 }
 StateVector::StateVector(int n):N(n){
-  Array.reserve(2*N);
+  Array.reserve(4*N);
   Vector3d t(0,0,0);
-  for(int i=0;i<2*N;i++){
+  for(int i=0;i<4*N;i++){
     Array.push_back(t);
   }
 }
@@ -48,7 +48,7 @@ StateVector::~StateVector(){
 //
  Vector3d& StateVector::operator[](int i) 
 {
-  if(i < 0 || i > 2*N){
+  if(i < 0 || i > 4*N){
     cerr << "2D vector index bounds error :" <<i<< endl;
     exit(1);
   }
@@ -66,6 +66,10 @@ void StateVector::setn(int n) {
 
 int StateVector::getArraysize() const{
   return Array.size();
+}
+void StateVector::add(double x, double y, double z){
+  Vector3d t(x,y,z);
+  Array.push_back(t);
 }
 //  Set the components of a Vector according to the arguments
 void StateVector::set(std::vector<Vector3d> x,std::vector<Vector3d> v)
@@ -99,11 +103,8 @@ void StateVector::setsize(int vN){
     Array.clear();
   else{
     Array.clear();
-    Array.reserve(2*N);
+    Array.reserve(4*N);
   }
-  Vector3d t(0,0,0);
-  for(int i = 0; i < 2*N; i++)
-    Array.push_back(t);
 }
 
 // Print a Vector to the standard output device.
@@ -180,9 +181,13 @@ const StateVector& StateVector::operator=(const StateVector& v2){
   if(N != v2.N){
     Array.clear();
     setsize(v2.N);
+    for(int i = 0; i < 4*N; i++)
+      Array.push_back(v2.Array[i]);
   }
-  for(int i = 0; i < 2*N; i++)
-    Array[i] = v2.Array[i];
+  else{
+    for(int i = 0; i < 4*N; i++)
+      Array[i] = v2.Array[i];
+  }
 
   return *this;
 }

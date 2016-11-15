@@ -26,6 +26,15 @@
 				"buffer_size": 16394,
 				"line_ending": "Unix"
 			}
+		},
+		{
+			"file": "/Users/yitianli/Src/8170/8170/projectproposal.html",
+			"settings":
+			{
+				"buffer_size": 2267,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
 		}
 	],
 	"build_system": "",
@@ -180,7 +189,7 @@
 	"groups":
 	[
 		{
-			"selected": 0,
+			"selected": 1,
 			"sheets":
 			[
 				{
@@ -208,6 +217,36 @@
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "/Users/yitianli/Src/8170/8170/projectproposal.html",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2267,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2231,
+								2231
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/HTML/HTML.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 5.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,

@@ -42,6 +42,7 @@ public:
 
   void set(vector<Vector3d> x,vector<Vector3d> v);
   void set(const StateVector &t);
+  void add(double x, double y, double z);
   void setsize(int vN);
   void print() const;
 

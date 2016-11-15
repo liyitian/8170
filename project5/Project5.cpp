@@ -1,5 +1,5 @@
 //
-// Project4.cpp
+// Project5.cpp
 //
 // 
 // 
@@ -33,7 +33,7 @@ int persp_win;
 
 Camera *camera;
 
-bool showGrid = false;
+bool showGrid = true;
 bool Stopped =true;
 
 static Vector3d V0;
@@ -50,7 +50,7 @@ static std::vector<double> ParticlesMass;
 static std::vector<double> ParticlesBorntime;
 
 static char *ParamFilename = NULL;
-static int TotalNum;
+static int TotalNum = 1;
 static double Mass;
 static double TimeStep;
 static double DispTime;
@@ -67,6 +67,13 @@ static int NTimeSteps = -1;
 static int Collision[MAXSTEPS];
 bool resting=false;
 bool restingflag[6]={true,true,true,true,true,true},totalresting=false;
+static int back[4]={0,1,2,3};
+static int leftface[4]={4,0,3,7};
+static int front[4]={5,6,7,4};
+static int rightface[4]={1,5,6,2};
+static int top[4]={6,7,3,2};
+static int bot[4]={0,1,5,4};
+//back,left,front,right,top,bot
 
 GLuint Texture;
 
@@ -167,8 +174,8 @@ void LoadParameters(char *filename){
   
   ParamFilename = filename;
   
-  if(fscanf(paramfile, "%d %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf",
-            &TotalNum, &Mass, &Kij,&Dtheta, &TimeStep, &DispTime, &(Wind.x), &(Wind.y), &(Wind.z),&(G.x),&(G.y),&(G.z),&epsilon) != 13){
+  if(fscanf(paramfile, "%lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf",
+            &Mass, &Kij,&Dtheta, &TimeStep, &DispTime, &(Wind.x), &(Wind.y), &(Wind.z),&(G.x),&(G.y),&(G.z),&epsilon) != 12){
     fprintf(stderr, "error reading parameter file %s\n", filename);
     exit(1);
   }
@@ -179,47 +186,55 @@ void LoadParameters(char *filename){
   TimerDelay = int(0.5 * TimeStep * 1000);
 }
 
+void makenormal(const Vector3d &v0, const Vector3d &v1, const Vector3d &v2){
+  Vector3d normal = ((v1 - v0) % (v2 - v0)).normalize();
+  glNormal3f(normal.x, normal.y, normal.z);
+}
+struct point {
+  float x, y, z;
+  };
 
 void DrawParticles()
 {
   
-  glClear(GL_COLOR_BUFFER_BIT);
-  
+  struct point front[4]={{0.0,0.0,4.0},{4.0,0.0,4.0},{4.0,4.0,4.0},{0.0,4.0,4.0}};
+  struct point back[4]={{0.0,0.0,0.0},{0.0,4.0,0.0},{4.0,4.0,0.0},{4.0,0.0,0.0}};
+  struct point leftface[4]={{0.0,0.0,0.0},{0.0,0.0,4.0},{0.0,4.0,4.0},{0.0,4.0,0.0}};
+  struct point rightface[4]={{4.0,0.0,0.0},{4.0,4.0,0.0},{4.0,4.0,4.0},{4.0,0.0,4.0}};
+  struct point top[4]={{0.0,4.0,0.0},{0.0,4.0,4.0},{4.0,4.0,4.0},{4.0,4.0,0.0}};
+  struct point bottom[4]={{0.0,0.0,0.0},{0.0,0.0,4.0},{4.0,0.0,4.0},{4.0,0.0,0.0}};
+
+  glEnable(GL_DEPTH_TEST);
+  glEnable(GL_MULTISAMPLE_ARB);
+  glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
   //TODO:Draw the CUBE
   glLoadIdentity();
+//back,left,front,right,top,bot
+  glTranslatef(Particles[0].x,Particles[0].y,Particles[0].z);
+  Vector3d Zaxis;
+  Zaxis.x=0.0;Zaxis.y=0.0;Zaxis.z=1.0;
+  Vector3d RotateAxis=(Particles[0+TotalNum]%Zaxis).normalize();
+  glRotatef(-acos(Particles[0+TotalNum].normalize()*Zaxis)* 180.0 / 3.1415926,RotateAxis.x,RotateAxis.y,RotateAxis.z);
+  int i;
+  glBegin(GL_QUADS); 
+  glNormal3f(0.0,0.0,1.0);
+  for(i=0;i<4;i++) glVertex3f(front[i].x,front[i].y,front[i].z);
+  glNormal3f(0.0,0.0,-1.0);
+  for(i=0;i<4;i++) glVertex3f(back[i].x,back[i].y,back[i].z);
+  glNormal3f(-1.0,0.0,0.0);
+  for(i=0;i<4;i++) glVertex3f(leftface[i].x,leftface[i].y,leftface[i].z);
+  glNormal3f(1.0,0.0,0.0);
+  for(i=0;i<4;i++) glVertex3f(rightface[i].x,rightface[i].y,rightface[i].z);
+  glNormal3f(0.0,1.0,0.0);
+  for(i=0;i<4;i++) glVertex3f(top[i].x,top[i].y,top[i].z);
+  glNormal3f(0.0,-1.0,0.0);
+  for(i=0;i<4;i++) glVertex3f(bottom[i].x,bottom[i].y,bottom[i].z);
+  glEnd();
   
-
-
-  for(int i=0;i<Particles.getn()-1;i++){
-    if(i % TotalNum!=TotalNum-1&&i +TotalNum<TotalNum*TotalNum){
-    //glDisable(GL_LIGHTING);
-
-    glBegin(GL_TRIANGLES);
-    glColor3f(0.0, 0.0, 1.0);
-    glVertex3f(Particles[i].x,Particles[i].y,Particles[i].z);
-    glVertex3f(Particles[i+1].x,Particles[i+1].y,Particles[i+1].z);
-    glVertex3f(Particles[i+TotalNum].x,Particles[i+TotalNum].y,Particles[i+TotalNum].z);
-    glEnd();
-    glBegin(GL_TRIANGLES);
-    glColor3f(0.0, 0.0, 1.0);
-    glVertex3f(Particles[i+1+TotalNum].x,Particles[i+1+TotalNum].y,Particles[i+1+TotalNum].z);
-    glVertex3f(Particles[i+1].x,Particles[i+1].y,Particles[i+1].z);
-    glVertex3f(Particles[i+TotalNum].x,Particles[i+TotalNum].y,Particles[i+TotalNum].z);
-    glEnd();
-    //glEnable(GL_LIGHTING);
-    }
-    // if(i +TotalNum<TotalNum*TotalNum){
-    // glBegin(GL_LINES);
-    // glVertex3f(Particles[i].x,Particles[i].y,Particles[i].z);
-
-    // glEnd();
-    // }
-    
-  }
-
+  
   glutPostRedisplay();
   
-
+  
   //????what is this?
   if(NSteps > MAXSTEPS){
     cerr << "Particle position table overflow, restarting!!" << endl;
@@ -232,19 +247,17 @@ void DrawParticles()
 void Restart(){
   
   LoadParameters(ParamFilename); // reload parameters in case changed
-  //TODO:Vertex clear,& reserve the room;
-  Particles.setsize(TotalNum*TotalNum);
-  Particles.setn(0);
-  Sdot.setsize(TotalNum*TotalNum);
-  Snew.setsize(TotalNum*TotalNum);
-  ParticlesMass.clear();
-  ParticlesMass.reserve(TotalNum*TotalNum);
   NTimeSteps = -1;
-
   glutIdleFunc(NULL);
   Time = 0;
 
-
+//TODO:Vertex clear,& reserve the room;
+  Particles.setsize(TotalNum);
+  Sdot.setsize(TotalNum);
+  Snew.setsize(TotalNum);
+  ParticlesMass.clear();
+  ParticlesMass.reserve(2*TotalNum);
+  
   DrawParticles();
 }
 
@@ -254,13 +267,13 @@ void Restart(){
 void InitSimulation(int argc, char* argv[]){
   
   if(argc != 2){
-    fprintf(stderr, "usage: Project4 paramfile\n");
+    fprintf(stderr, "usage: Project5 paramfile\n");
     exit(1);
   }
   
   LoadParameters(argv[1]);
-  Particles.setsize(TotalNum*TotalNum);
-  Particles.setn(0);
+  Particles.setsize(TotalNum);
+  //Particles.setn(TotalNum);
 
   NSteps = 0;
   NTimeSteps = -1;
@@ -269,127 +282,23 @@ void InitSimulation(int argc, char* argv[]){
   //TODO:Vertex clear
 }
 
-std::vector<Vector3d> torsional(Vector3d x0,Vector3d x1,Vector3d x2,Vector3d x3,Vector3d v2, Vector3d v3)
-{
-  std::vector<Vector3d> fgroup;
-  Vector3d hhab=(x1-x0)/(x1-x0).norm();
-  double d02=(x2-x0)*hhab;
-  double d03=(x3-x0)*hhab;
-  Vector3d rl=(x2-x0)-d02*hhab;
-  Vector3d rr=(x3-x0)-d03*hhab;
-  Vector3d nlhab=((x2-x0)%(x1-x0)).normalize();
-  Vector3d nrhab=((x3-x0)%(x1-x0)).normalize();
-  double temptheta=((nlhab%nrhab)*hhab)/(nlhab*nrhab);
-  double theta=abs(atan2((nlhab%nrhab)*hhab,nlhab*nrhab))*180/3.1415926;
-  //cout<<temptheta<<"\t"<<theta<<endl;
-  if (abs(theta-theta0)<1e-2)theta=theta0;
-  double thetal=(v2*nlhab)/rl.norm();
-  double thetar=(v3*nrhab)/rr.norm();
-  Vector3d tmp=(Kij*(theta-theta0)-Dtheta*(thetal+thetar))*hhab;
-  Vector3d f3=((tmp*hhab)/rr.norm())*nrhab;
-  Vector3d f2=((tmp*hhab)/rl.norm())*nlhab;
-  Vector3d f1=-(d02*f2+d03*f3)/(x1-x0).norm();
-  Vector3d f0=-(f1+f2+f3);
-  fgroup.push_back(f0);
-  fgroup.push_back(f1);
-  fgroup.push_back(f2);
-  fgroup.push_back(f3);
-  //cout << f0<<"\t"<<f1<<"\t"<<f2<<"\t"<<f3<<endl;
-  return fgroup;
-}
-
 //TODO: Acceleration
 StateVector Acceleration(StateVector S, double t)
 {
   StateVector Sdot(S.getn());
   Vector3d fij;
-  Vector3d tmp(0,0,0);
+  Vector3d tmp(0,-0.1,0);
   for(int i=0;i<S.getn();i++){
     //cout<<S.getn()+i<<endl;
     Sdot[S.getn()+i]=tmp/ParticlesMass[i];
   }
-
+  // for(int i=0;i<S.getn()-1;i++){
+  //   for(int j=i+1;j<S.getn();j++){
+  //     Sdot[i+S.getn()]=Sdot[i+S.getn()];
+  //     Sdot[j+S.getn()]=Sdot[j+S.getn()];
+  //   }
+  // }
   //Springy force;
-  for(int i=0;i<S.getn()-1;i++){
-    if(i % TotalNum!=TotalNum-1){
-
-      Vector3d Xijhab=(Particles[i+1]-Particles[i]).normalize();
-      double dij=(Particles[i+1]-Particles[i]).norm();
-      Vector3d Vij=Particles[i+1+S.getn()]-Particles[i+S.getn()];
-      Vector3d fis=Kij*(dij-l0)*Xijhab;
-      Vector3d fid=Dtheta*(Vij*Xijhab)*Xijhab;
-      fij=fis+fid;
-      Sdot[S.getn()+i]=Sdot[S.getn()+i]+fij/ParticlesMass[i];
-      Sdot[S.getn()+i+1]=Sdot[S.getn()+i+1]-fij/ParticlesMass[i+1];
-    }
-    if(i +TotalNum<TotalNum*TotalNum){
-      
-      int j=i+TotalNum;
-      Vector3d Xijhab=(Particles[j]-Particles[i]).normalize();
-      double dij=(Particles[j]-Particles[i]).norm();
-      Vector3d Vij=Particles[j+S.getn()]-Particles[i+S.getn()];
-      Vector3d fis=Kij*(dij-l0)*Xijhab;
-      Vector3d fid=Dtheta*(Vij*Xijhab)*Xijhab;
-      fij=fis+fid;
-      Sdot[S.getn()+i]=Sdot[S.getn()+i]+fij/ParticlesMass[i];
-      Sdot[S.getn()+j]=Sdot[S.getn()+j]-fij/ParticlesMass[j];
-    }
-    if ((i % TotalNum!=TotalNum-1)&&(i +TotalNum<TotalNum*TotalNum)){
-      int j=i+TotalNum;
-      Vector3d Xijhab=(Particles[j]-Particles[i+1]).normalize();
-      double dij=(Particles[j]-Particles[i+1]).norm();
-      Vector3d Vij=Particles[j+S.getn()]-Particles[i+1+S.getn()];
-      Vector3d fis=Kij*(dij-sqrt(2)*l0)*Xijhab;
-      Vector3d fid=Dtheta*(Vij*Xijhab)*Xijhab;
-      fij=fis+fid;
-      Sdot[S.getn()+i+1]=Sdot[S.getn()+i+1]+fij/ParticlesMass[i+1];
-      Sdot[S.getn()+j]=Sdot[S.getn()+j]-fij/ParticlesMass[j];
-      
-      // std::vector<Vector3d> fgroup=torsional(Particles[j],
-      //                                       Particles[i+1],
-      //                                       Particles[i],
-      //                                       Particles[j+1],
-      //                                       Particles[i+Particles.getn()],
-      //                                       Particles[j+1+Particles.getn()]);
-      //Sdot[S.getn()+j]=Sdot[S.getn()+j]+fgroup[0]/ParticlesMass[j];
-      //Sdot[S.getn()+i+1]=Sdot[S.getn()+i+1]+fgroup[1]/ParticlesMass[i+1];
-      //Sdot[S.getn()+i]=Sdot[S.getn()+i]+fgroup[2]/ParticlesMass[i];
-      //Sdot[S.getn()+j+1]=Sdot[S.getn()+j+1]+fgroup[3]/ParticlesMass[j+1];
-      
-     }
-/*
-    if ((i % TotalNum!=0)&&(i % TotalNum!=TotalNum-1)&&(i +TotalNum<TotalNum*TotalNum))
-    {
-      int j=i+TotalNum;
-      std::vector<Vector3d> fgroup=torsional(Particles[j],
-                                            Particles[i],
-                                            Particles[j-1],
-                                            Particles[i+1],
-                                            Particles[j-1+Particles.getn()],
-                                            Particles[i+1+Particles.getn()]);
-      Sdot[S.getn()+j]=Sdot[S.getn()+j]+fgroup[0]/ParticlesMass[j];
-      Sdot[S.getn()+i]=Sdot[S.getn()+i]+fgroup[1]/ParticlesMass[i];
-      Sdot[S.getn()+j-1]=Sdot[S.getn()+j-1]+fgroup[2]/ParticlesMass[j-1];
-      Sdot[S.getn()+i+1]=Sdot[S.getn()+i+1]+fgroup[3]/ParticlesMass[i+1];     
-    }
-
-    if (i>=TotalNum&&(i % TotalNum!=TotalNum-1)&&(i +TotalNum<TotalNum*TotalNum))
-    {
-      int j=i+TotalNum;
-      std::vector<Vector3d> fgroup=torsional(Particles[i+1],
-                                            Particles[i],
-                                            Particles[j],
-                                            Particles[i+1-TotalNum],
-                                            Particles[j+Particles.getn()],
-                                            Particles[i+1-TotalNum+Particles.getn()]);
-      Sdot[S.getn()+i+1]=Sdot[S.getn()+i+1]+fgroup[0]/ParticlesMass[i+1];
-      Sdot[S.getn()+i]=Sdot[S.getn()+i]+fgroup[1]/ParticlesMass[i];
-      Sdot[S.getn()+j]=Sdot[S.getn()+j]+fgroup[2]/ParticlesMass[j];
-      Sdot[S.getn()+i+1-TotalNum]=Sdot[S.getn()+i+1-TotalNum]+fgroup[3]/ParticlesMass[i+1-TotalNum];
-      
-    }
-*/
-  }
   return Sdot;
 }
 
@@ -399,7 +308,7 @@ StateVector Force(StateVector S, double t)
 {
   StateVector Sdot(S.getn());
 
-  Sdot=Acceleration(Sdot,t);
+  Sdot=Acceleration(Particles,t);
 
   for(int i=0;i<S.getn();i++){
     Sdot[i]=S[S.getn()+i];
@@ -417,6 +326,7 @@ StateVector Euler(StateVector S,StateVector Sdot,double t)
   K3=Force(S+TimeStep/2*K2,t+TimeStep/2);
   K4=Force(S+TimeStep*K3,t+TimeStep);
   Snew=S+TimeStep/6*(K1+2*K2+2*K3+K4);
+  //Snew=S+TimeStep*Sdot;
   return Snew;
 }
 
@@ -427,30 +337,34 @@ double min(double a, double b){
 void Simulate()
 {
 
-  //Particles Generator
-  //cout<<Particles.getn()<<endl;
-  if (Particles.getn()!=TotalNum*TotalNum){
-    //cout<<TotalNum<<endl;
-    Particles.setsize(TotalNum*TotalNum);
-    //Particles.setn(0);
-    Sdot.setsize(TotalNum*TotalNum);
-    Snew.setsize(TotalNum*TotalNum);
+//Particles Generator
+
+  if (Particles.getArraysize()!=2*TotalNum){
+    Particles.setsize(TotalNum);
+    Sdot.setsize(TotalNum);
+    Snew.setsize(TotalNum);
     ParticlesMass.clear();
-    ParticlesMass.reserve(TotalNum*TotalNum);
-    for(int i=0;i<TotalNum;i++){
-      for(int j=0;j<TotalNum;j++){
-        
-        Particles[i*TotalNum+j].set(-10+i,0,-10+j);
-        ParticlesMass.push_back(Mass);
-        
-      }
+    ParticlesMass.reserve(TotalNum);
+    Particles.add( -2, 8, -2);
+    
+    for(int i=0;i<TotalNum;i++)Particles.add( 0, 0, 0);
+    for(int i=0;i<TotalNum;i++)
+      ParticlesMass.push_back(Mass);
+    for(int i=0;i<2*TotalNum;i++){
+      Sdot.add(0,0,0);
+      Snew.add(0,0,0);
     }
+
   }
 
-  //cout<<TotalNum<<endl;
   Sdot=Force(Particles,Time);
+  //cout<<Sdot<<endl;
   Snew=Euler(Particles,Sdot,Time);
+  //cout<<Snew<<endl;
   Particles=Snew;
+
+  Vector3d x;
+
 
 
   Time += TimeStep;
@@ -473,41 +387,42 @@ void TimerCallback(int timertype)
 void do_lights()
 {
   float light0_ambient[] = { 0.0, 0.0, 0.0, 1.0 };
-  float light0_diffuse[] = { 0.3, 0.3, 0.3, 1.0 }; 
-  float light0_specular[] = { 0.3, 0.3, 0.3, 1.0 }; 
-  float light0_position[] = { 0.0, 1.0, 8.0, 1.0 };
+  float light0_diffuse[] = { 1, 1, 1, 1.0 };
+  float light0_specular[] = { 0.1, 0.1, 0.1, 1.0 };
+  float light0_position[] = { 0.0, 10.0, 18.0, 1.0 };
   float light0_direction[] = { -1.0, -1.0, -1.0, 1.0};
   float lmodel_ambient[] = { 0.2, 0.2, 0.2, 1.0 };
 
 
-
   glLightfv(GL_LIGHT0,GL_AMBIENT,light0_ambient); 
   glLightfv(GL_LIGHT0,GL_DIFFUSE,light0_diffuse); 
-  glLightfv(GL_LIGHT0,GL_SPECULAR,light0_specular); 
-  glLightModelfv(GL_LIGHT_MODEL_AMBIENT, lmodel_ambient);
+  //glLightfv(GL_LIGHT0,GL_SPECULAR,light0_specular);
 
   glLightfv(GL_LIGHT0,GL_POSITION,light0_position);
-  glLightfv(GL_LIGHT0,GL_SPOT_DIRECTION,light0_direction);
+  //glLightfv(GL_LIGHT0,GL_SPOT_DIRECTION,light0_direction);
   
+  //glLightModelfv(GL_LIGHT_MODEL_AMBIENT, lmodel_ambient);
+  glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
+
   glEnable(GL_LIGHTING);
   glEnable(GL_LIGHT0);
 }
-
 void do_material()
 {
-float mat_ambient[] = {1.0,1.0,1.0,1.0};
-float mat_specular[] = {1.0,1.0,1.0,1.0};
+float mat_ambient[] = {0.1,0.1,0.1,1.0};
+float mat_diffuse[] = {0.7,0.7,0.7,1.0};
+float mat_specular[] = {0.05,0.05,0.05,1.0};
 float mat_emission[] = {0.0,0.0,0.0,1.0};
-float low_shininess[] = { 128.0 };
-
+float low_shininess[] = { 10.0 };
 
 
 glEnable(GL_COLOR_MATERIAL);
-glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
-glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, mat_ambient);
-glMaterialfv(GL_FRONT,GL_SPECULAR,mat_specular);
-glMaterialfv(GL_FRONT,GL_EMISSION,mat_emission);
-glMaterialfv(GL_FRONT,GL_SHININESS,low_shininess);
+  //glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
+glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, mat_ambient);
+  glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, mat_diffuse);
+  //glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,mat_specular);
+  //glMaterialfv(GL_FRONT,GL_EMISSION,mat_emission);
+  //glMaterialfv(GL_FRONT,GL_SHININESS,low_shininess);
 //glMaterialfv(GL_FRONT,GL_AMBIENT,mat_ambient);
 //glMaterialfv(GL_FRONT,GL_DIFFUSE,mat_diffuse);
 //
@@ -528,8 +443,7 @@ void PerspDisplay() {
     makeGrid();
     glEnable(GL_LIGHT0);
   }
- 
-  
+
   glutSwapBuffers();
 }
 
@@ -545,16 +459,6 @@ void motionEventHandler(int x, int y) {
   glutPostRedisplay();
 }
 
-void hit(){
-  if (Particles.getn()==TotalNum*TotalNum){
-    Particles[190]=Particles[190]+ G;
-  }
-}
-void hit2(){
-  if (Particles.getn()==TotalNum*TotalNum){
-    Particles[190+Particles.getn()]=Particles[190+Particles.getn()]+ G;
-  }
-}
 
 void keyboardEventHandler(unsigned char key, int x, int y) {
   switch (key) {
@@ -576,10 +480,10 @@ void keyboardEventHandler(unsigned char key, int x, int y) {
     }
     break;
   case 'a': case 'A':
-    hit();
+    //hit();
     break;
   case 'd': case 'D':
-    hit2();
+    //hit2();
     break;
   case 't': case 'T':
     Stopped=TRUE;
@@ -616,7 +520,7 @@ int main(int argc, char *argv[]) {
   glutInitDisplayMode(GLUT_RGBA | GLUT_DEPTH | GLUT_DOUBLE);
   glutInitWindowSize(WIDTH, HEIGHT);
   glutInitWindowPosition(200, 200);
-  persp_win = glutCreateWindow("Project2");
+  persp_win = glutCreateWindow("Project5");
 
 
   // initialize the camera and such

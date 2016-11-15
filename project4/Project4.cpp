@@ -179,6 +179,11 @@ void LoadParameters(char *filename){
   TimerDelay = int(0.5 * TimeStep * 1000);
 }
 
+void makenormal(const Vector3d &v0, const Vector3d &v1, const Vector3d &v2){
+  Vector3d normal = ((v1 - v0) % (v2 - v0)).normalize();
+  glNormal3f(normal.x, normal.y, normal.z);
+}
+
 
 void DrawParticles()
 {
@@ -195,13 +200,15 @@ void DrawParticles()
     //glDisable(GL_LIGHTING);
 
     glBegin(GL_TRIANGLES);
-    glColor3f(0.0, 0.0, 1.0);
+      //glColor3f(0.0, 0.0, 1.0);
+    makenormal(Particles[i], Particles[i+1], Particles[i+TotalNum]);
     glVertex3f(Particles[i].x,Particles[i].y,Particles[i].z);
     glVertex3f(Particles[i+1].x,Particles[i+1].y,Particles[i+1].z);
     glVertex3f(Particles[i+TotalNum].x,Particles[i+TotalNum].y,Particles[i+TotalNum].z);
-    glEnd();
-    glBegin(GL_TRIANGLES);
-    glColor3f(0.0, 0.0, 1.0);
+      //glEnd();
+      //glBegin(GL_TRIANGLES);
+      //glColor3f(0.0, 0.0, 1.0);
+    makenormal(Particles[i+1+TotalNum], Particles[i+1], Particles[i+TotalNum]);
     glVertex3f(Particles[i+1+TotalNum].x,Particles[i+1+TotalNum].y,Particles[i+1+TotalNum].z);
     glVertex3f(Particles[i+1].x,Particles[i+1].y,Particles[i+1].z);
     glVertex3f(Particles[i+TotalNum].x,Particles[i+TotalNum].y,Particles[i+TotalNum].z);
@@ -473,41 +480,44 @@ void TimerCallback(int timertype)
 void do_lights()
 {
   float light0_ambient[] = { 0.0, 0.0, 0.0, 1.0 };
-  float light0_diffuse[] = { 0.3, 0.3, 0.3, 1.0 }; 
-  float light0_specular[] = { 0.3, 0.3, 0.3, 1.0 }; 
-  float light0_position[] = { 0.0, 1.0, 8.0, 1.0 };
+  float light0_diffuse[] = { 1, 1, 1, 1.0 };
+  float light0_specular[] = { 0.1, 0.1, 0.1, 1.0 };
+  float light0_position[] = { 0.0, 10.0, 18.0, 1.0 };
   float light0_direction[] = { -1.0, -1.0, -1.0, 1.0};
   float lmodel_ambient[] = { 0.2, 0.2, 0.2, 1.0 };
 
 
-
   glLightfv(GL_LIGHT0,GL_AMBIENT,light0_ambient); 
   glLightfv(GL_LIGHT0,GL_DIFFUSE,light0_diffuse); 
-  glLightfv(GL_LIGHT0,GL_SPECULAR,light0_specular); 
-  glLightModelfv(GL_LIGHT_MODEL_AMBIENT, lmodel_ambient);
+  //glLightfv(GL_LIGHT0,GL_SPECULAR,light0_specular);
 
   glLightfv(GL_LIGHT0,GL_POSITION,light0_position);
-  glLightfv(GL_LIGHT0,GL_SPOT_DIRECTION,light0_direction);
+  //glLightfv(GL_LIGHT0,GL_SPOT_DIRECTION,light0_direction);
   
+  //glLightModelfv(GL_LIGHT_MODEL_AMBIENT, lmodel_ambient);
+  glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
+
   glEnable(GL_LIGHTING);
   glEnable(GL_LIGHT0);
 }
 
 void do_material()
 {
-float mat_ambient[] = {1.0,1.0,1.0,1.0};
-float mat_specular[] = {1.0,1.0,1.0,1.0};
+float mat_ambient[] = {0.1,0.1,0.1,1.0};
+float mat_diffuse[] = {0.7,0.7,0.7,1.0};
+float mat_specular[] = {0.05,0.05,0.05,1.0};
 float mat_emission[] = {0.0,0.0,0.0,1.0};
-float low_shininess[] = { 128.0 };
+float low_shininess[] = { 10.0 };
 
 
 
 glEnable(GL_COLOR_MATERIAL);
-glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
-glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, mat_ambient);
-glMaterialfv(GL_FRONT,GL_SPECULAR,mat_specular);
-glMaterialfv(GL_FRONT,GL_EMISSION,mat_emission);
-glMaterialfv(GL_FRONT,GL_SHININESS,low_shininess);
+  //glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
+glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, mat_ambient);
+  glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, mat_diffuse);
+  //glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,mat_specular);
+  //glMaterialfv(GL_FRONT,GL_EMISSION,mat_emission);
+  //glMaterialfv(GL_FRONT,GL_SHININESS,low_shininess);
 //glMaterialfv(GL_FRONT,GL_AMBIENT,mat_ambient);
 //glMaterialfv(GL_FRONT,GL_DIFFUSE,mat_diffuse);
 //
