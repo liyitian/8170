@@ -67,6 +67,7 @@ static int NSteps = 0;
 static int NTimeSteps = -1;
 static int Collision[MAXSTEPS];
 bool resting=false;
+bool pushAforce = false;
 bool restingflag[6]={true,true,true,true,true,true},totalresting=false;
 static int back[4]={0,1,2,3};
 static int leftface[4]={4,0,3,7};
@@ -198,12 +199,12 @@ struct point {
 void DrawParticles()
 {
   
-  struct point front[4]={{0.0,0.0,4.0},{4.0,0.0,4.0},{4.0,4.0,4.0},{0.0,4.0,4.0}};
-  struct point back[4]={{0.0,0.0,0.0},{0.0,4.0,0.0},{4.0,4.0,0.0},{4.0,0.0,0.0}};
-  struct point leftface[4]={{0.0,0.0,0.0},{0.0,0.0,4.0},{0.0,4.0,4.0},{0.0,4.0,0.0}};
-  struct point rightface[4]={{4.0,0.0,0.0},{4.0,4.0,0.0},{4.0,4.0,4.0},{4.0,0.0,4.0}};
-  struct point top[4]={{0.0,4.0,0.0},{0.0,4.0,4.0},{4.0,4.0,4.0},{4.0,4.0,0.0}};
-  struct point bottom[4]={{0.0,0.0,0.0},{0.0,0.0,4.0},{4.0,0.0,4.0},{4.0,0.0,0.0}};
+  struct point front[4]={{-2.0,-2.0,2.0},{2.0,-2.0,2.0},{2.0,2.0,2.0},{-2.0,2.0,2.0}};
+  struct point back[4]={{-2.0,-2.0,-2.0},{-2.0,2.0,-2.0},{2.0,2.0,-2.0},{2.0,-2.0,-2.0}};
+  struct point leftface[4]={{-2.0,-2.0,-2.0},{-2.0,-2.0,2.0},{-2.0,2.0,2.0},{-2.0,2.0,-2.0}};
+  struct point rightface[4]={{2.0,-2.0,-2.0},{2.0,2.0,-2.0},{2.0,2.0,2.0},{2.0,-2.0,2.0}};
+  struct point top[4]={{-2.0,2.0,-2.0},{-2.0,2.0,2.0},{2.0,2.0,2.0},{2.0,2.0,-2.0}};
+  struct point bottom[4]={{-2.0,-2.0,-2.0},{-2.0,-2.0,2.0},{2.0,-2.0,2.0},{2.0,-2.0,-2.0}};
 
   glEnable(GL_DEPTH_TEST);
   glEnable(GL_MULTISAMPLE_ARB);
@@ -235,6 +236,11 @@ void DrawParticles()
   for(i=0;i<4;i++) glVertex3f(bottom[i].x,bottom[i].y,bottom[i].z);
   glEnd();
   
+  glLoadIdentity();
+  glBegin(GL_LINES);
+  glVertex3f(StartPoint.x,StartPoint.y,StartPoint.z);
+  glVertex3f(Particles.x.x,Particles.x.y,Particles.x.z);
+  glEnd();
   
   glutPostRedisplay();
   
@@ -360,11 +366,24 @@ StateVector ComputeRigidDerivatives(StateVector &S, float m, Matrix3x3 I0T)
   Vector3d zero(0,0,0);
   Sdot.P=zero;
   Sdot.L=zero;
-  Vector3d Pi(4,4,4);
-  Sdot.P=Sdot.P+AddForce;
-  //Sdot.P=Sdot.P+Kij*(StartPoint-S.x);
-  Vector3d r = Pi-S.x;
-  Sdot.L=Sdot.L+ (r % AddForce);
+  
+  //Vector3d g(0,-10,0);
+  //Sdot.P=g*Mass;
+  // if ((StartPoint-S.x).norm()>2){
+  //    Vector3d springforce=Mass*Kij*(StartPoint-S.x).normalize()*((StartPoint-S.x).norm()-2);
+  //    Vector3d damper=Dtheta*S.velocity;
+  //    Sdot.P=Sdot.P+springforce+damper;
+  //  }
+  if (pushAforce){
+    Vector3d Pi(4,4,4);
+    Sdot.P=Sdot.P+AddForce;
+    cout<<AddForce<<endl;
+    pushAforce=false;
+    Vector3d r = Pi;//-S.x;
+    Sdot.L=Sdot.L+ (r % AddForce);
+  }
+  //cout<<pushforce<<endl;
+  
   //cout<<"r:"<<r<<",AddForce:"<<AddForce<<endl;
   //cout<<"add"<<r % AddForce<<endl;
 
@@ -510,8 +529,8 @@ void motionEventHandler(int x, int y) {
 
 void hit()
 {
-  Vector3d tmp(0,-10,0);
-  AddForce=AddForce+tmp;
+  pushAforce=true;
+  cout<<"true"<<endl;
 }
 
 

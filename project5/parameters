@@ -1,2 +1,2 @@
-7	 11      2.8       0.04      1.0        0     0   	0		-2   8  		-2	     0.5
-Mass, Kij, Dtheta, TimeStep, DispTime, AddForce, AddForce, AddForce,  Gx,	Gy,		Gz,   epsilon
+1	 11      5       0.04      1.0        0     -10   	0		-2   8  		-2	     0.5
+Mass, Kij, kd, TimeStep, DispTime, AddForce, AddForce, AddForce,  startx,	starty,		startz,   epsilon
