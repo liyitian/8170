@@ -20,9 +20,9 @@
 #endif
 
 
-#define STARTX -10.0
-#define STARTY -10.0
-#define STARTZ -10.0
+#define STARTX -2.0
+#define STARTY 8.0
+#define STARTZ -2.0
 #define radius 1.0
 #define MAXSTEPS  10000
 #define PRINTTEST cout<<"here"<<endl
@@ -36,9 +36,10 @@ Camera *camera;
 bool showGrid = true;
 bool Stopped =true;
 
-static Vector3d V0;
+
 static Vector3d Wind;
-static Vector3d G;
+static Vector3d StartPoint;
+static Vector3d AddForce;
 static Vector3d Stone;
 static double StoneRadius;
 static StateVector Particles;
@@ -175,7 +176,7 @@ void LoadParameters(char *filename){
   ParamFilename = filename;
   
   if(fscanf(paramfile, "%lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf",
-            &Mass, &Kij,&Dtheta, &TimeStep, &DispTime, &(Wind.x), &(Wind.y), &(Wind.z),&(G.x),&(G.y),&(G.z),&epsilon) != 12){
+            &Mass, &Kij,&Dtheta, &TimeStep, &DispTime, &(AddForce.x), &(AddForce.y), &(AddForce.z),&(StartPoint.x),&(StartPoint.y),&(StartPoint.z),&epsilon) != 12){
     fprintf(stderr, "error reading parameter file %s\n", filename);
     exit(1);
   }
@@ -210,11 +211,14 @@ void DrawParticles()
   //TODO:Draw the CUBE
   glLoadIdentity();
 //back,left,front,right,top,bot
-  glTranslatef(Particles[0].x,Particles[0].y,Particles[0].z);
-  Vector3d Zaxis;
-  Zaxis.x=0.0;Zaxis.y=0.0;Zaxis.z=1.0;
-  Vector3d RotateAxis=(Particles[0+TotalNum]%Zaxis).normalize();
-  glRotatef(-acos(Particles[0+TotalNum].normalize()*Zaxis)* 180.0 / 3.1415926,RotateAxis.x,RotateAxis.y,RotateAxis.z);
+  glTranslatef(Particles.x.x,Particles.x.y,Particles.x.z);
+  // Vector3d Zaxis;
+  // Zaxis.x=0.0;Zaxis.y=0.0;Zaxis.z=1.0;
+  Quaternion rotate=Particles.q;
+  glRotatef(rotate.angle(),rotate.axis().x,rotate.axis().y,rotate.axis().z);
+  //cout<<rotate<<endl;
+  
+  // Vector3d RotateAxis=(rotate%Zaxis).normalize();
   int i;
   glBegin(GL_QUADS); 
   glNormal3f(0.0,0.0,1.0);
@@ -253,6 +257,7 @@ void Restart(){
 
 //TODO:Vertex clear,& reserve the room;
   Particles.setsize(TotalNum);
+  Particles.setn(0);
   Sdot.setsize(TotalNum);
   Snew.setsize(TotalNum);
   ParticlesMass.clear();
@@ -273,6 +278,7 @@ void InitSimulation(int argc, char* argv[]){
   
   LoadParameters(argv[1]);
   Particles.setsize(TotalNum);
+  Particles.setn(0);
   //Particles.setn(TotalNum);
 
   NSteps = 0;
@@ -282,91 +288,134 @@ void InitSimulation(int argc, char* argv[]){
   //TODO:Vertex clear
 }
 
-//TODO: Acceleration
-StateVector Acceleration(StateVector S, double t)
-{
-  StateVector Sdot(S.getn());
-  Vector3d fij;
-  Vector3d tmp(0,-0.1,0);
-  for(int i=0;i<S.getn();i++){
-    //cout<<S.getn()+i<<endl;
-    Sdot[S.getn()+i]=tmp/ParticlesMass[i];
-  }
-  // for(int i=0;i<S.getn()-1;i++){
-  //   for(int j=i+1;j<S.getn();j++){
-  //     Sdot[i+S.getn()]=Sdot[i+S.getn()];
-  //     Sdot[j+S.getn()]=Sdot[j+S.getn()];
-  //   }
-  // }
-  //Springy force;
-  return Sdot;
-}
+// //TODO: Acceleration
+// StateVector Acceleration(StateVector S, double t)
+// {
+//   StateVector Sdot(S.getn());
+//   Vector3d fij;
+//   Vector3d tmp(0,-0.1,0);
+//   for(int i=0;i<S.getn();i++){
+//     //cout<<S.getn()+i<<endl;
+//     Sdot[S.getn()+i]=tmp/ParticlesMass[i];
+//   }
+//   // for(int i=0;i<S.getn()-1;i++){
+//   //   for(int j=i+1;j<S.getn();j++){
+//   //     Sdot[i+S.getn()]=Sdot[i+S.getn()];
+//   //     Sdot[j+S.getn()]=Sdot[j+S.getn()];
+//   //   }
+//   // }
+//   //Springy force;
+//   return Sdot;
+// }
 
 
-/////////TODO: Force:
-StateVector Force(StateVector S, double t)
-{
-  StateVector Sdot(S.getn());
+// /////////TODO: Force:
+// StateVector Force(StateVector S, double t)
+// {
+//   StateVector Sdot(S.getn());
 
-  Sdot=Acceleration(Particles,t);
+//   Sdot=Acceleration(Particles,t);
 
-  for(int i=0;i<S.getn();i++){
-    Sdot[i]=S[S.getn()+i];
-    //Sdot[i+S.getn()]=1/ParticlesMass[i]*
-  }
-  return Sdot;
-}
+//   for(int i=0;i<S.getn();i++){
+//     Sdot[i]=S[S.getn()+i];
+//     //Sdot[i+S.getn()]=1/ParticlesMass[i]*
+//   }
+//   return Sdot;
+// }
 
-StateVector Euler(StateVector S,StateVector Sdot,double t)
-{
-  StateVector K1,K2,K3,K4;
-  StateVector Snew(S.getn());
-  K1=Sdot;
-  K2=Force(S+TimeStep/2*K1,t+TimeStep/2);
-  K3=Force(S+TimeStep/2*K2,t+TimeStep/2);
-  K4=Force(S+TimeStep*K3,t+TimeStep);
-  Snew=S+TimeStep/6*(K1+2*K2+2*K3+K4);
-  //Snew=S+TimeStep*Sdot;
-  return Snew;
-}
+// StateVector Euler(StateVector S,StateVector Sdot,double t)
+// {
+//   StateVector K1,K2,K3,K4;
+//   StateVector Snew(S.getn());
+//   K1=Sdot;
+//   K2=Force(S+TimeStep/2*K1,t+TimeStep/2);
+//   K3=Force(S+TimeStep/2*K2,t+TimeStep/2);
+//   K4=Force(S+TimeStep*K3,t+TimeStep);
+//   Snew=S+TimeStep/6*(K1+2*K2+2*K3+K4);
+//   //Snew=S+TimeStep*Sdot;
+//   return Snew;
+// }
 
 double min(double a, double b){
   if (a<b)return a; else return b;
+}
+
+StateVector ComputeRigidDerivatives(StateVector &S, float m, Matrix3x3 I0T)
+{
+  StateVector Sdot;
+  Sdot.setsize(TotalNum);
+
+  Sdot.x= S.P/m;
+  Matrix3x3 R= S.q.rotation();
+  I0T=I0T.inv();
+  //cout<<I0T<<endl;
+  Matrix3x3 It= R * I0T * R.transpose();
+  //cout<<"I-1\n"<<It<<endl;
+  Vector3d w = S.L*I0T;
+
+  Quaternion wq= Quaternion(w);
+  //cout<<"w="<<w<<",wq="<<wq<<endl;
+  Sdot.q=wq * S.q * 1/2;
+
+  Vector3d zero(0,0,0);
+  Sdot.P=zero;
+  Sdot.L=zero;
+  Vector3d Pi(4,4,4);
+  Sdot.P=Sdot.P+AddForce;
+  //Sdot.P=Sdot.P+Kij*(StartPoint-S.x);
+  Vector3d r = Pi-S.x;
+  Sdot.L=Sdot.L+ (r % AddForce);
+  //cout<<"r:"<<r<<",AddForce:"<<AddForce<<endl;
+  //cout<<"add"<<r % AddForce<<endl;
+
+  //cout<<Sdot<<endl;
+  return Sdot;
 }
 
 void Simulate()
 {
 
 //Particles Generator
+  Matrix3x3 BigI(Mass/12*32,0,0,0,Mass/12*32,0,0,0,Mass/12*32);
 
-  if (Particles.getArraysize()!=2*TotalNum){
+  if (Particles.getn()==0){
     Particles.setsize(TotalNum);
     Sdot.setsize(TotalNum);
     Snew.setsize(TotalNum);
     ParticlesMass.clear();
     ParticlesMass.reserve(TotalNum);
-    Particles.add( -2, 8, -2);
-    
-    for(int i=0;i<TotalNum;i++)Particles.add( 0, 0, 0);
-    for(int i=0;i<TotalNum;i++)
-      ParticlesMass.push_back(Mass);
-    for(int i=0;i<2*TotalNum;i++){
-      Sdot.add(0,0,0);
-      Snew.add(0,0,0);
-    }
-
+    // Particles.add( -2, 8, -2);
+    // for(int i=0;i<TotalNum;i++)Particles.add( 0, 0, 0);
+    // for(int i=0;i<TotalNum;i++)
+    //   ParticlesMass.push_back(Mass);
+    // for(int i=0;i<2*TotalNum;i++){
+    //   Sdot.add(0,0,0);
+    //   Snew.add(0,0,0);
+    // }
+    Vector3d P0=StartPoint;
+    Vector3d V0(0,0,0);
+    Vector3d Orientation(1e-6,1e-6,1e-6);
+    Particles.x=P0;
+    Particles.velocity=V0;
+    Particles.P=V0;
+    Particles.L=V0;
+    Particles.q=Quaternion(Orientation);
+    Particles.I0=BigI;
+    Particles.m=Mass;
   }
-
-  Sdot=Force(Particles,Time);
+  //Sdot=Force(Particles,Time);
   //cout<<Sdot<<endl;
-  Snew=Euler(Particles,Sdot,Time);
+  //Snew=Euler(Particles,Sdot,Time);
   //cout<<Snew<<endl;
+  //Particles=Snew;
+
+  Sdot=ComputeRigidDerivatives(Particles,Particles.m,Particles.I0);
+  Snew=Particles+Sdot*TimeStep;
+  Snew.q=Snew.q.normalize();
   Particles=Snew;
 
-  Vector3d x;
-
-
-
+  //cout<<Sdot<<endl;
+  
   Time += TimeStep;
   NTimeSteps++;
   DrawParticles();
@@ -459,6 +508,12 @@ void motionEventHandler(int x, int y) {
   glutPostRedisplay();
 }
 
+void hit()
+{
+  Vector3d tmp(0,-10,0);
+  AddForce=AddForce+tmp;
+}
+
 
 void keyboardEventHandler(unsigned char key, int x, int y) {
   switch (key) {
@@ -480,7 +535,7 @@ void keyboardEventHandler(unsigned char key, int x, int y) {
     }
     break;
   case 'a': case 'A':
-    //hit();
+    hit();
     break;
   case 'd': case 'D':
     //hit2();

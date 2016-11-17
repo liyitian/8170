@@ -105,6 +105,18 @@ void StateVector::setsize(int vN){
     Array.clear();
     Array.reserve(4*N);
   }
+    double Mass=7;
+  Matrix3x3 BigI(Mass/12*32,0,0,0,Mass/12*32,0,0,0,Mass/12*32);
+    Vector3d P0(-2,8,-2);
+    Vector3d V0(0,0,0);
+    x=P0;
+    m=Mass;
+    velocity=V0;
+    P=V0;
+    L=V0;
+    q=Quaternion(V0);
+    I0= BigI;
+    //cout<<"reset size"<<endl;
 }
 
 // Print a Vector to the standard output device.
@@ -131,6 +143,12 @@ StateVector operator+(const StateVector& v1, const StateVector& v2)
     r.Array[i]=v1.Array[i]+v2.Array[i];
   }
 
+  r.x=v1.x+v2.x;
+  r.P=v1.P+v2.P;
+  r.L=v1.L+v2.L;
+  r.q=v1.q+v2.q;
+  r.I0=v1.I0+v2.I0;
+  r.velocity=v1.velocity+v2.velocity;
   return r;
 }
 
@@ -149,6 +167,13 @@ StateVector operator-(const StateVector& v1, const StateVector& v2)
     r.Array[i]=v1.Array[i]-v2.Array[i];
   }
 
+  r.x=v1.x-v2.x;
+  r.P=v1.P-v2.P;
+  r.L=v1.L-v2.L;
+  r.q=v1.q-v2.q;
+  r.I0=v1.I0-v2.I0;
+  r.velocity=v1.velocity-v2.velocity;
+
   return r;
 }
 
@@ -159,6 +184,14 @@ StateVector operator*(const StateVector& v, double s)
   for(int i=0;i<2*r.N;i++){
     r.Array[i]=v.Array[i]*s;
   }
+
+  r.x=v.x*s;
+  r.P=v.P*s;
+  r.L=v.L*s;
+  r.q=v.q*s;
+  r.I0=v.I0*s;
+  r.velocity=v.velocity*s;
+
   return r;
 }
 
@@ -168,6 +201,13 @@ StateVector operator*(double s, const StateVector& v)
   for(int i=0;i<2*r.N;i++){
     r.Array[i]=v.Array[i]*s;
   }
+  r.x=v.x*s;
+  r.P=v.P*s;
+  r.L=v.L*s;
+  r.q=v.q*s;
+  r.I0=v.I0*s;
+  r.velocity=v.velocity*s;
+  
   return r;
 }
 
@@ -189,14 +229,24 @@ const StateVector& StateVector::operator=(const StateVector& v2){
       Array[i] = v2.Array[i];
   }
 
+  x=v2.x;
+  P=v2.P;
+  L=v2.L;
+  q=v2.q;
+  I0=v2.I0;
+  velocity=v2.velocity;
+
   return *this;
 }
 
 ostream& operator<< (ostream& os, const StateVector& v){
-  os << "[" << v.N << "]" << endl;
-  for(int i=0;i<v.N;i++){
-    os << v.Array[i] << " " << v.Array[i+v.N] << endl;
-  }
+
+  os << "{x=" <<v.x<<",v="<<v.velocity<<",P="<<v.P<<",L="<<v.L<<",q="<<v.q<<"}"<<endl;
+
+  // os << "[" << v.N << "]" << endl;
+  // for(int i=0;i<v.N;i++){
+  //   os << v.Array[i] << " " << v.Array[i+v.N] << endl;
+  // }
   return os;
 }
 

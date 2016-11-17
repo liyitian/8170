@@ -15,6 +15,7 @@
 #define _H_StateVector
 
 #include "Vector.h"
+#include "Quaternion.h"
 #include <vector>
 
 using namespace std;
@@ -45,6 +46,13 @@ public:
   void add(double x, double y, double z);
   void setsize(int vN);
   void print() const;
+  Vector3d x;
+  Vector3d velocity;
+  Vector3d P;
+  Vector3d L;
+  Quaternion q;
+  Matrix3x3 I0;
+  double m;
 
   friend StateVector operator+(const StateVector& v1, const StateVector& v2);//addition 
   friend StateVector operator-(const StateVector& v1, const StateVector& v2);//subtract

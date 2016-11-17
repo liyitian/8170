@@ -22,8 +22,8 @@ else
   endif
 endif
 
-HFILES 	= Matrix.${H} Vector.${H} Utility.${H} Camera.${H} Gauss.${H} StateVector.${H}
-OFILES 	= Matrix.o Vector.o Utility.o Camera.o Gauss.o StateVector.o
+HFILES 	= Matrix.${H} Vector.${H} Utility.${H} Camera.${H} Gauss.${H} StateVector.${H} Quaternion.${H}
+OFILES 	= Matrix.o Vector.o Utility.o Camera.o Gauss.o StateVector.o Quaternion.o
 PROJECT = Project5
 
 ${PROJECT}:	${PROJECT}.o $(OFILES)
@@ -49,7 +49,9 @@ Utility.o: Utility.${C} Utility.${H}
 
 Gauss.o: Gauss.${C} Gauss.${H}
 	${CC} $(CFLAGS) -c Gauss.${C} $(LDFLAGS)
-
+	
+Quaternion.o: Quaternion.${C} Quaternion.${H} Matrix.${H} Vector.${H} Utility.${H}
+	${CC} $(CFLAGS) -c Quaternion.${C}
 
 
 debug:
