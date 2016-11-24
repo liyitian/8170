@@ -16,12 +16,14 @@ using namespace std;
 StateVector::StateVector()
 {
 
+
 }
 
 StateVector::StateVector(int n, std::vector<Vector3d> x,std::vector<Vector3d> v):N(n),Array(v){
   for(int i=0;i<n;i++){
     Array.push_back(v[i]);
   }
+
 }
 StateVector::StateVector(int n):N(n){
   Array.reserve(4*N);
@@ -29,17 +31,31 @@ StateVector::StateVector(int n):N(n){
   for(int i=0;i<4*N;i++){
     Array.push_back(t);
   }
+  double Mass=1;
+  Matrix3x3 BigI(Mass/12*32,0,0,0,Mass/12*32,0,0,0,Mass/12*32);
+    Vector3d P0(-2,8,-2);
+    Vector3d V0(0,0,0);
+    x=P0;
+    m=Mass;
+    velocity=V0;
+    P=V0;
+    L=V0;
+    q=Quaternion(V0);
+    I0= BigI;
+
 }
 
 //Copy Constructor
 StateVector::StateVector(const StateVector& V){
   set(V);
+
 }
 
 
 // Destructor
 StateVector::~StateVector(){
   Array.clear();
+
 }
 
 //
@@ -84,11 +100,20 @@ void StateVector::set(std::vector<Vector3d> x,std::vector<Vector3d> v)
   for(int i=0;i<N;i++){
     Array.push_back(v[i]);
   }
+
 }
 void StateVector::set(const StateVector &t)
 {
   N = t.N;
   Array = t.Array;
+  x=t.x;
+  P=t.P;
+  L=t.L;
+  q=t.q;
+  I0=t.I0;
+  velocity=t.velocity;
+
+
 }
 
 // Set size of generic Vector
@@ -105,7 +130,7 @@ void StateVector::setsize(int vN){
     Array.clear();
     Array.reserve(4*N);
   }
-    double Mass=7;
+    double Mass=1;
   Matrix3x3 BigI(Mass/12*32,0,0,0,Mass/12*32,0,0,0,Mass/12*32);
     Vector3d P0(-2,8,-2);
     Vector3d V0(0,0,0);
@@ -235,6 +260,7 @@ const StateVector& StateVector::operator=(const StateVector& v2){
   q=v2.q;
   I0=v2.I0;
   velocity=v2.velocity;
+
 
   return *this;
 }

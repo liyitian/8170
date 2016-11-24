@@ -4,6 +4,22 @@
 		"selected_items":
 		[
 			[
+				"Forc",
+				"ForceonP"
+			],
+			[
+				"glC",
+				"glColor3f"
+			],
+			[
+				"P",
+				"Particles"
+			],
+			[
+				"Tim",
+				"TimeStep"
+			],
+			[
 				"Project",
 				"Project4"
 			],
@@ -23,15 +39,33 @@
 			"file": "Project5.cpp",
 			"settings":
 			{
-				"buffer_size": 16394,
+				"buffer_size": 15303,
+				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "/Users/yitianli/Src/8170/8170/projectproposal.html",
+			"file": "Quaternion.h",
 			"settings":
 			{
-				"buffer_size": 2267,
+				"buffer_size": 3980,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "StateVector.cpp",
+			"settings":
+			{
+				"buffer_size": 4860,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "parameters",
+			"settings":
+			{
+				"buffer_size": 178,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -84,6 +118,7 @@
 	],
 	"file_history":
 	[
+		"/Users/yitianli/Src/8170/8170/projectproposal.html",
 		"/Users/yitianli/Src/8270/8270Assets-2016/projects/4/code/startCode/scan.l",
 		"/Users/yitianli/Src/8270/8270Assets-2016/projects/4/code/startCode/cases/case10.py",
 		"/Users/yitianli/Src/8270/8270Assets-2016/projects/4/code/startCode/cases/case9.py",
@@ -122,7 +157,7 @@
 	],
 	"find":
 	{
-		"height": 25.0
+		"height": 35.0
 	},
 	"find_in_files":
 	{
@@ -137,6 +172,11 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"cout",
+			"pi=",
+			"Pi=s.x",
+			"cout",
+			"ComputeRigidDerivatives",
 			"+",
 			"lib",
 			"lib_f",
@@ -189,16 +229,46 @@
 	"groups":
 	[
 		{
-			"selected": 1,
+			"selected": 0,
 			"sheets":
 			[
 				{
 					"buffer": 0,
 					"file": "Project5.cpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 15303,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								8990,
+								8990
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 6196.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "Quaternion.h",
 					"semi_transient": true,
 					"settings":
 					{
-						"buffer_size": 16394,
+						"buffer_size": 3980,
 						"regions":
 						{
 						},
@@ -216,40 +286,68 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 935.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 1,
 					"type": "text"
 				},
 				{
-					"buffer": 1,
-					"file": "/Users/yitianli/Src/8170/8170/projectproposal.html",
+					"buffer": 2,
+					"file": "StateVector.cpp",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 2267,
+						"buffer_size": 4860,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								2231,
-								2231
+								2453,
+								2453
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/HTML/HTML.sublime-syntax",
+							"syntax": "Packages/C++/C++.sublime-syntax",
 							"tab_size": 2,
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 5.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 0,
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "parameters",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 178,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1,
+								1
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
 					"type": "text"
 				}
 			]
