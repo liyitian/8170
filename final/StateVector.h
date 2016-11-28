@@ -23,33 +23,24 @@ using namespace std;
 /* StateVector Descriptions and Operations */
 
 class StateVector {
-protected:
-  int N;
 public:
   StateVector();
-  StateVector(int n);
-  StateVector(int n, vector<Vector3d> x,vector<Vector3d> v);
+  StateVector(double Mass, Matrix3x3 I0);
+  StateVector::StateVector(Vector3d X,double Mass,Vector3d v,Vector3d p,Vector3d l,Quaternion Q,Matrix3x3 I0,double btime, double ltime);
 
   StateVector(const StateVector& V);
   ~StateVector();
 
-   Vector3d& operator[](int i) ;
-  int getn() const; 
-  void setn(int n);
-
-
-  void set(vector<Vector3d> x,vector<Vector3d> v);
-  void set(const StateVector &t);
-  void add(double x, double y, double z);
-  void setsize(int vN);
   void print() const;
-  vector<Vector3d> x;
-  vector<Vector3d> velocity;
-  vector<Vector3d> P;
-  vector<Vector3d> L;
-  vector<Quaternion> q;
-  vector<Matrix3x3> I0;
-  vector<double> m;
+  Vector3d x;
+  Vector3d velocity;
+  Vector3d P;
+  Vector3d L;
+  Quaternion q;
+  Matrix3x3 I0;
+  double m;
+  double Borntime;
+  double lifetime;
 
   friend StateVector operator+(const StateVector& v1, const StateVector& v2);//addition 
   friend StateVector operator-(const StateVector& v1, const StateVector& v2);//subtract
@@ -58,7 +49,5 @@ public:
   const StateVector& operator=(const StateVector& v2);
   friend ostream& operator<< (ostream& os, const StateVector& v);
 };
-
-
 
 #endif

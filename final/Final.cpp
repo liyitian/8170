@@ -43,12 +43,10 @@ static Vector3d AddForce;
 static Vector3d Stone;
 static double StoneRadius;
 static vector<StateVector> State;
-static vector<StateVector> Snew;
-static vector<StateVector> Sdot;
 static std::vector<int> Sindex;
-static std::vector<Vector3d> ParticlesColor;
-static std::vector<double> ParticlesMass;
-static std::vector<double> ParticlesBorntime;
+static std::vector<Vector3d> LeavesColor;
+static std::vector<double> LeavesMass;
+static std::vector<double> LeavesBorntime;
 
 static char *ParamFilename = NULL;
 static int TotalNum = 0;
@@ -177,8 +175,8 @@ void LoadParameters(char *filename){
   
   ParamFilename = filename;
   
-  if(fscanf(paramfile, "%d %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf",
-            &TotalNum, &Mass, &Kij,&Dtheta, &TimeStep, &DispTime, &(AddForce.x), &(AddForce.y), &(AddForce.z),&(StartPoint.x),&(StartPoint.y),&(StartPoint.z),&epsilon) != 12){
+  if(fscanf(paramfile, "%d %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf",
+            &TotalNum,&LifeTime, &Mass, &Kij,&Dtheta, &TimeStep, &DispTime, &(AddForce.x), &(AddForce.y), &(AddForce.z),&(StartPoint.x),&(StartPoint.y),&(StartPoint.z),&epsilon) != 14){
     fprintf(stderr, "error reading parameter file %s\n", filename);
     exit(1);
   }
@@ -197,7 +195,7 @@ struct point {
   float x, y, z;
   };
 
-void DrawParticles()
+void DrawLeaves()
 {
   
   struct point front[4]={{-2.0,-2.0,2.0},{2.0,-2.0,2.0},{2.0,2.0,2.0},{-2.0,2.0,2.0}};
@@ -213,39 +211,40 @@ void DrawParticles()
   //TODO:Draw the CUBE
   glLoadIdentity();
 //back,left,front,right,top,bot
-  int i=0;
-  glTranslatef(State[i].x.x,State[i].x.y,State[i].x.z);
+  for(int i=0;i<TotalNum;i++){
+    if(Time-State[i].Borntime>1e-6){
+      glTranslatef(State[i].x.x,State[i].x.y,State[i].x.z);
 
-  Quaternion rotate=State[i].q;
-  rotate.GLrotate();
+      Quaternion rotate=State[i].q;
+      rotate.GLrotate();
+     
+      glBegin(GL_QUADS); 
+      glColor3f(1,1,1);
+      glNormal3f(0.0,0.0,1.0);
+      for(i=0;i<4;i++) glVertex3f(front[i].x,front[i].y,front[i].z);
+      glNormal3f(0.0,0.0,-1.0);
+      for(i=0;i<4;i++) glVertex3f(back[i].x,back[i].y,back[i].z);
+      glNormal3f(-1.0,0.0,0.0);
+      for(i=0;i<4;i++) glVertex3f(leftface[i].x,leftface[i].y,leftface[i].z);
+      glNormal3f(1.0,0.0,0.0);
+      for(i=0;i<4;i++) glVertex3f(rightface[i].x,rightface[i].y,rightface[i].z);
+      glNormal3f(0.0,1.0,0.0);
+      for(i=0;i<4;i++) glVertex3f(top[i].x,top[i].y,top[i].z);
+      glNormal3f(0.0,-1.0,0.0);
+      for(i=0;i<4;i++) glVertex3f(bottom[i].x,bottom[i].y,bottom[i].z);
+      glEnd();
+      
+      glLoadIdentity();
+      glBegin(GL_LINES);
 
-  int i;
-  glBegin(GL_QUADS); 
-  glColor3f(1,1,1);
-  glNormal3f(0.0,0.0,1.0);
-  for(i=0;i<4;i++) glVertex3f(front[i].x,front[i].y,front[i].z);
-  glNormal3f(0.0,0.0,-1.0);
-  for(i=0;i<4;i++) glVertex3f(back[i].x,back[i].y,back[i].z);
-  glNormal3f(-1.0,0.0,0.0);
-  for(i=0;i<4;i++) glVertex3f(leftface[i].x,leftface[i].y,leftface[i].z);
-  glNormal3f(1.0,0.0,0.0);
-  for(i=0;i<4;i++) glVertex3f(rightface[i].x,rightface[i].y,rightface[i].z);
-  glNormal3f(0.0,1.0,0.0);
-  for(i=0;i<4;i++) glVertex3f(top[i].x,top[i].y,top[i].z);
-  glNormal3f(0.0,-1.0,0.0);
-  for(i=0;i<4;i++) glVertex3f(bottom[i].x,bottom[i].y,bottom[i].z);
-  glEnd();
-  
-  glLoadIdentity();
-  glBegin(GL_LINES);
-
-  glVertex3f(StartPoint.x,StartPoint.y,StartPoint.z);
-  Vector3d Pi(-2,-2,-2);
-  Vector3d Rot(State[i].q.q.x,State[i].q.q.y,State[i].q.q.z);
-  Pi=State[i].x+State[i].q.rotation()*Pi;
-  glVertex3f(Pi.x,Pi.y,Pi.z);
-  glEnd();
-  
+      glVertex3f(StartPoint.x,StartPoint.y,StartPoint.z);
+      Vector3d Pi(-2,-2,-2);
+      Vector3d Rot(State[i].q.q.x,State[i].q.q.y,State[i].q.q.z);
+      Pi=State[i].x+State[i].q.rotation()*Pi;
+      glVertex3f(Pi.x,Pi.y,Pi.z);
+      glEnd();
+    }
+  }
   glutPostRedisplay();
   
   
@@ -266,15 +265,9 @@ void Restart(){
   Time = 0;
   int i=0;
 //TODO:Vertex clear,& reserve the room;
-  State[i].setsize(TotalNum);
-  State[i].setn(0);
-  pushAforce=false;
-  Sdot.setsize(TotalNum);
-  Snew.setsize(TotalNum);
-  ParticlesMass.clear();
-  ParticlesMass.reserve(2*TotalNum);
-  
-  DrawParticles();
+  State.clear();
+  State.reserve(TotalNum);  
+  DrawLeaves();
 }
 
 /*
@@ -288,9 +281,7 @@ void InitSimulation(int argc, char* argv[]){
   }
   int i=0;
   LoadParameters(argv[1]);
-  State[i].setsize(TotalNum);
-  State[i].setn(0);
-  //Particles.setn(TotalNum);
+  State.reserve(TotalNum);
 
   NSteps = 0;
   NTimeSteps = -1;
@@ -304,12 +295,13 @@ double min(double a, double b){
   if (a<b)return a; else return b;
 }
 
-StateVector Force(StateVector S, float m, Matrix3x3 I0T)
+StateVector Force(StateVector S)
 {
-  StateVector Sdot;
-  
-  Sdot.setsize(TotalNum);
+  double m= S.m;
+  Matrix3x3 I0T= S.I0;
+  StateVector Sdot(m,I0T);
 
+  
   Sdot.x= S.P/m;
   Matrix3x3 R= S.q.rotation();
   I0T=I0T.inv();
@@ -343,57 +335,48 @@ StateVector Force(StateVector S, float m, Matrix3x3 I0T)
 void Simulate()
 {
 
-//Particles Generator
+  
+  //Leaves Killer....
+  for(int i=0;i<TotalNum;i++){
+    if (Time-State[i].Borntime-State[i].lifetime<1e-6){
+      State[i].erase(State.begin()+i);
+    }
+  }
+  
+  //Leaves Generator
   Matrix3x3 BigI(Mass/12*32,0,0,0,Mass/12*32,0,0,0,Mass/12*32);
-
-
   if (numofleaves<TotalNum){
     for(int i=numofleaves;i<TotalNum;i++){
-      
-      State[i].push_back()
-
-      State[i].setsize(TotalNum);
-      Sdot[i].setsize(TotalNum);
-      Snew[i].setsize(TotalNum);
-      ParticlesMass.clear();
-      ParticlesMass.reserve(TotalNum);
-
       Vector3d P0=StartPoint;
       Vector3d zero(0,0,0);
       Vector3d V0(0,0,0);
       Vector3d Orientation(1e-6,1e-6,1e-6);
-      State[i].x=P0;
-      State[i].velocity=V0;
-      State[i].P=V0*Mass;
-      Particles.L=zero;
-      Particles.q=Quaternion(Orientation);
-      Particles.I0=BigI;
-      Particles.m=Mass;
+      Quaternion q=Quaternion(Orientation);
+      double btime=Time+(double)rand()/(RAND_MAX)*epsilon*2;
+      double ltime=abs(gauss(LifeTime,epsilon/100,Time));
+      btime=Time;
+      ltime=LifeTime;
+      StateVector NewLeaf(P0,Mass,V0,V0*Mass,zero,q,BigI,btime,ltime);
+      State[i].push_back(NewLeaf);
     }
   }
-  //Sdot=Force(Particles,Time);
-  //cout<<Sdot<<endl;
-  //Snew=Euler(Particles,Sdot,Time);
-  //cout<<Snew<<endl;
-  //Particles=Snew;
-  StateVector K1,K2,K3,K4;
-  K1=Force(Particles,Particles.m,Particles.I0);
-  K2=Force(Particles+TimeStep/2*K1,Particles.m,Particles.I0);
-  K3=Force(Particles+TimeStep/2*K2,Particles.m,Particles.I0);
-  K4=Force(Particles+TimeStep*K3,Particles.m,Particles.I0);
 
-  Snew=Particles+TimeStep/6.0*(K1+2*K2+2*K3+K4);
-  //Snew=Particles+TimeStep*Sdot;
-  Snew.q=Snew.q.normalize();
-  Particles=Snew;
 
-  //cout<<Particles<<endl;
+  for(int i=0;i<numofleaves;i++){
+    StateVector K1,K2,K3,K4,Snew;
+    K1=Force(State[i]);
+    K2=Force(State[i]+TimeStep/2*K1);
+    K3=Force(State[i]+TimeStep/2*K2);
+    K4=Force(State[i]+TimeStep*K3);
 
-  //cout<<Sdot<<endl;
+    Snew=State[i]+TimeStep/6.0*(K1+2*K2+2*K3+K4);
+    Snew.q=Snew.q.normalize();
+    State[i]=Snew;
+  }
   
   Time += TimeStep;
   NTimeSteps++;
-  DrawParticles();
+  DrawLeaves();
   if (!Stopped)
     glutTimerFunc(TimerDelay, TimerCallback, 0);
 }
@@ -460,7 +443,7 @@ void PerspDisplay() {
   camera->PerspectiveDisplay(WIDTH, HEIGHT);
 
   glMatrixMode(GL_MODELVIEW);
-  DrawParticles();
+  DrawLeaves();
   glLoadIdentity();
   if (showGrid){ 
     glDisable(GL_LIGHT0);
