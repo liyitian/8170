@@ -15,8 +15,7 @@
 using namespace std;
 
 
-StateVector::StateVector(Vector3d X,double Mass,Vector3d v,Vector3d p,Vector3d l,Quaternion Q,Matrix3x3 I0,double btime, double ltime)
-                      :x(X),m(Mass),velocity(v),P(p),L(l),q(Q),I(I0),Borntime(btime),lifetime(ltime){
+StateVector::StateVector(Vector3d X,double Mass,Vector3d v,Vector3d p,Vector3d l,Quaternion Q,Matrix3x3 I0,double btime, double ltime):x(X),m(Mass),velocity(v),P(p),L(l),q(Q),I(I0),Borntime(btime),lifetime(ltime){
 }
 StateVector::StateVector(){
   Vector3d t(0,0,0);
@@ -73,7 +72,7 @@ void StateVector::print() const
 StateVector operator+(const StateVector& v1, const StateVector& v2)
 {
 
-  StateVector r();
+  StateVector r;
 
   r.x=v1.x+v2.x;
   r.P=v1.P+v2.P;

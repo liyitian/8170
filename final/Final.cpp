@@ -45,8 +45,6 @@ static double StoneRadius;
 static vector<StateVector> State;
 static std::vector<int> Sindex;
 static std::vector<Vector3d> LeavesColor;
-static std::vector<double> LeavesMass;
-static std::vector<double> LeavesBorntime;
 
 static char *ParamFilename = NULL;
 static int TotalNum = 0;
@@ -59,21 +57,12 @@ static double Time = 0;
 static double epsilon;
 static double l0 = 1;
 static double theta0 = 180;
+static double LifeTime;
 static int numofleaves=0;
 static int TimerDelay;
 static int TimeStepsPerDisplay;
 static int NSteps = 0;
 static int NTimeSteps = -1;
-static int Collision[MAXSTEPS];
-bool resting=false;
-bool pushAforce = false;
-bool restingflag[6]={true,true,true,true,true,true},totalresting=false;
-static int back[4]={0,1,2,3};
-static int leftface[4]={4,0,3,7};
-static int front[4]={5,6,7,4};
-static int rightface[4]={1,5,6,2};
-static int top[4]={6,7,3,2};
-static int bot[4]={0,1,5,4};
 //back,left,front,right,top,bot
 
 GLuint Texture;
@@ -339,7 +328,7 @@ void Simulate()
   //Leaves Killer....
   for(int i=0;i<TotalNum;i++){
     if (Time-State[i].Borntime-State[i].lifetime<1e-6){
-      State[i].erase(State.begin()+i);
+      State.erase(State.begin()+i);
     }
   }
   
@@ -357,7 +346,7 @@ void Simulate()
       btime=Time;
       ltime=LifeTime;
       StateVector NewLeaf(P0,Mass,V0,V0*Mass,zero,q,BigI,btime,ltime);
-      State[i].push_back(NewLeaf);
+      State.push_back(NewLeaf);
     }
   }
 
@@ -466,12 +455,6 @@ void motionEventHandler(int x, int y) {
   glutPostRedisplay();
 }
 
-void hit()
-{
-  pushAforce=true;
-  cout<<"true"<<endl;
-}
-
 
 void keyboardEventHandler(unsigned char key, int x, int y) {
   switch (key) {
@@ -493,7 +476,7 @@ void keyboardEventHandler(unsigned char key, int x, int y) {
     }
     break;
   case 'a': case 'A':
-    hit();
+    //hit();
     break;
   case 'd': case 'D':
     //hit2();

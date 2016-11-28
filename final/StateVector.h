@@ -26,7 +26,7 @@ class StateVector {
 public:
   StateVector();
   StateVector(double Mass, Matrix3x3 I0);
-  StateVector::StateVector(Vector3d X,double Mass,Vector3d v,Vector3d p,Vector3d l,Quaternion Q,Matrix3x3 I0,double btime, double ltime);
+  StateVector(Vector3d X,double Mass,Vector3d v,Vector3d p,Vector3d l,Quaternion Q,Matrix3x3 I0,double btime, double ltime);
 
   StateVector(const StateVector& V);
   ~StateVector();
