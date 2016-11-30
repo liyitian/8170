@@ -211,7 +211,7 @@ void Camera::PerspectiveDisplay(int W, int H) {
 
   Fov = min (max(30.0 + Zoom, 1.0), 179.0);
   gluPerspective(Fov, (float) W/(float) H, NearPlane, FarPlane);
-  gluLookAt(0, 40, 60, 0, 0, 0, 0, 1, 0);
+  gluLookAt(0, 0, 70, 0, 0, 0, 0, 1, 0);
 
 
 /*  gluLookAt(Pos.x, Pos.y, Pos.z,

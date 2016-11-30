@@ -15,7 +15,9 @@
 #include <vector>
 #include <iostream>
 #include <fstream>
-#include <string>
+#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
 #ifdef __APPLE__
 #  include <GLUT/glut.h>
 #else
@@ -31,7 +33,16 @@
 #define PRINTTEST cout<<"here"<<endl
 #define MAPLE_VERTEX_NUM 2054
 #define TRIANGLE_VERTEX_NUM 1968
-#define MAPLE_SCALER 0.01
+#define MAPLE_SCALER 0.005
+#define MAPLE_TEX_ID 1
+#define GROUND_TEX_ID 20
+#define SKYBOX_TEX_ID_FNT 10
+#define SKYBOX_TEX_ID_LFT 11
+#define SKYBOX_TEX_ID_BAK 12
+#define SKYBOX_TEX_ID_RHT 13
+#define SKYBOX_TEX_ID_TOP 14
+#define SKYBOX_TEX_ID_BOT 15
+
 int WIDTH = 1024;
 int HEIGHT = 765;
 
@@ -39,7 +50,7 @@ int persp_win;
 
 Camera *camera;
 
-bool showGrid = true;
+bool showGrid = false;
 bool Stopped =true;
 
 struct  tri
@@ -165,8 +176,114 @@ void makeGrid() {
 
 }
 
+void do_lights()
+{
+  float light0_ambient[] = { 0.0, 0.0, 0.0, 1.0 };
+  float light0_diffuse[] = { 1, 1, 1, 1.0 };
+  float light0_specular[] = { 0.1, 0.1, 0.1, 1.0 };
+  float light0_position[] = { 0.0, 0.0, 0.0, 1.0 };
+  float light0_direction[] = { -1.0, -1.0, -1.0, 1.0};
+  float lmodel_ambient[] = { 0.2, 0.2, 0.2, 1.0 };
 
 
+  glLightfv(GL_LIGHT0,GL_AMBIENT,light0_ambient); 
+  glLightfv(GL_LIGHT0,GL_DIFFUSE,light0_diffuse); 
+  glLightfv(GL_LIGHT0,GL_POSITION,light0_position);
+  glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
+
+  glEnable(GL_LIGHTING);
+  glEnable(GL_LIGHT0);
+}
+void do_material()
+{
+  float mat_ambient[] = {0.1,0.1,0.1,1.0};
+  float mat_diffuse[] = {0.7,0.7,0.7,1.0};
+  float mat_specular[] = {0.05,0.05,0.05,1.0};
+  float mat_emission[] = {0.0,0.0,0.0,1.0};
+  float low_shininess[] = { 10.0 };
+
+
+  glEnable(GL_COLOR_MATERIAL);
+  glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, mat_ambient);
+  glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, mat_diffuse);
+
+}
+
+void load_texture(string filename,int TexID)
+{
+  FILE *fptr;
+  char buf[512], *parse;
+  int im_size, im_width, im_height, max_color;
+  unsigned char *texture_bytes; 
+
+  fptr=fopen(filename.c_str(),"r");
+  fgets(buf,512,fptr);
+  do{
+    fgets(buf,512,fptr);
+    } while(buf[0]=='#');
+  parse = strtok(buf," \t");
+  im_width = atoi(parse);
+
+  parse = strtok(NULL," \n");
+  im_height = atoi(parse);
+
+  fgets(buf,512,fptr);
+  parse = strtok(buf," \n");
+  max_color = atoi(parse);
+
+  im_size = im_width*im_height;
+  texture_bytes = (unsigned char *)calloc(3,im_size);
+  fread(texture_bytes,3,im_size,fptr);
+  fclose(fptr);
+
+  glBindTexture(GL_TEXTURE_2D,TexID);
+  glTexImage2D(GL_TEXTURE_2D,0,GL_RGB,im_width,im_height,0,GL_RGB, 
+    GL_UNSIGNED_BYTE,texture_bytes);
+  glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+  glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+  glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
+  //glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_REPLACE);
+  cfree(texture_bytes);
+}
+
+void load_Repeat_texture(string filename,int TexID)
+{
+  FILE *fptr;
+  char buf[512], *parse;
+  int im_size, im_width, im_height, max_color;
+  unsigned char *texture_bytes; 
+
+  fptr=fopen(filename.c_str(),"r");
+  fgets(buf,512,fptr);
+  do{
+    fgets(buf,512,fptr);
+    } while(buf[0]=='#');
+  parse = strtok(buf," \t");
+  im_width = atoi(parse);
+
+  parse = strtok(NULL," \n");
+  im_height = atoi(parse);
+
+  fgets(buf,512,fptr);
+  parse = strtok(buf," \n");
+  max_color = atoi(parse);
+
+  im_size = im_width*im_height;
+  texture_bytes = (unsigned char *)calloc(3,im_size);
+  fread(texture_bytes,3,im_size,fptr);
+  fclose(fptr);
+
+  glBindTexture(GL_TEXTURE_2D,TexID);
+  glTexImage2D(GL_TEXTURE_2D,0,GL_RGB,im_width,im_height,0,GL_RGB, 
+    GL_UNSIGNED_BYTE,texture_bytes);
+  glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+  glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+  glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT);
+  glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);
+  glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
+  //glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_REPLACE);
+  cfree(texture_bytes);
+}
 
 /*
  Load parameter file and reinitialize global parameters
@@ -215,6 +332,22 @@ void LoadParameters(char *filename){
   MapleH=maxz-minz;
   MapleBigI=Matrix3x3(Mass/12*(MapleW*MapleW+MapleH*MapleH),0,0,0,Mass/12*(MapleL*MapleL+MapleH*MapleH),0,0,0,Mass/12*(MapleL*MapleL+MapleW*MapleW));
   
+  //load_texture("Texture/bubble_color.ppm",MAPLE_TEX_ID);
+  string files[]={"./TropicalSunnyDay/Fnt.ppm",
+                    "./TropicalSunnyDay/Lft.ppm",
+                    "./TropicalSunnyDay/Bak.ppm",
+                    "./TropicalSunnyDay/Rht.ppm",
+                    "./TropicalSunnyDay/Top.ppm",
+                    "./TropicalSunnyDay/Bot.ppm"};
+  load_texture(files[0],SKYBOX_TEX_ID_FNT);
+  load_texture(files[1],SKYBOX_TEX_ID_LFT);
+  load_texture(files[2],SKYBOX_TEX_ID_BAK);
+  load_texture(files[3],SKYBOX_TEX_ID_RHT);
+  load_texture(files[4],SKYBOX_TEX_ID_TOP);
+  load_texture(files[5],SKYBOX_TEX_ID_BOT);
+
+  load_Repeat_texture("./Texture/Ground.ppm",GROUND_TEX_ID);
+
 
   ifstream trianglepoint ("Triangle-index.xml");
   if (trianglepoint.is_open()){
@@ -224,8 +357,8 @@ void LoadParameters(char *filename){
     trianglepoint.close();
   }else cout << "Unable to read file";
   
-  TimeStepsPerDisplay = Max(1, int(DispTime / TimeStep + 0.5));
-  TimerDelay = int(0.5 * TimeStep * 1000);
+  TimeStepsPerDisplay = Max(1, int(DispTime / TimeStep + 1.0 / 2 ));
+  TimerDelay = int(1.0 / 2 * TimeStep * 1000);
 }
 
 void makenormal(const Vector3d &v0, const Vector3d &v1, const Vector3d &v2){
@@ -236,26 +369,114 @@ struct point {
   float x, y, z;
   };
 
+
+
+// glBindTexture(GL_TEXTURE_2D,1);
+// glEnable(GL_TEXTURE_2D);
+// glBegin(GL_QUADS); 
+// glNormal3f(0.0,0.0,1.0);
+// for(i=0;i<4;i++){
+//   glTexCoord2fv(mytexcoords[i]);
+//   glVertex3f(front[i].x,front[i].y,front[i].z);
+//   }
+// glEnd();
+// glDisable(GL_TEXTURE_2D);
+
 void DrawLeaves()
 {
+    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
   
+  // Store the current matrix
+    glPushMatrix();
+    // Reset and transform the matrix.
+    glLoadIdentity();
+    // Enable/Disable features
+    glPushAttrib(GL_ENABLE_BIT);
+    glEnable(GL_TEXTURE_2D);
+    glDisable(GL_DEPTH_TEST);
+    glDisable(GL_LIGHTING);
+    glDisable(GL_BLEND);
+    // Just in case we set all vertices to white.
+    glColor4f(1,1,1,1);
+     // Render the front quad
+    glBindTexture(GL_TEXTURE_2D, SKYBOX_TEX_ID_FNT);
+    glBegin(GL_QUADS);
+        glTexCoord2f(1, 1); glVertex3f(  100.0f, -100.0f, -100.0f );
+        glTexCoord2f(0, 1); glVertex3f( -100.0f, -100.0f, -100.0f );
+        glTexCoord2f(0, 0); glVertex3f( -100.0f,  100.0f, -100.0f );
+        glTexCoord2f(1, 0); glVertex3f(  100.0f,  100.0f, -100.0f );
+    glEnd();
+ 
+    // Render the left quad
+    glBindTexture(GL_TEXTURE_2D, SKYBOX_TEX_ID_LFT);
+    glBegin(GL_QUADS);
+        glTexCoord2f(1, 1); glVertex3f(  100.0f, -100.0f,  100.0f );
+        glTexCoord2f(0, 1); glVertex3f(  100.0f, -100.0f, -100.0f );
+        glTexCoord2f(0, 0); glVertex3f(  100.0f,  100.0f, -100.0f );
+        glTexCoord2f(1, 0); glVertex3f(  100.0f,  100.0f,  100.0f );
+    glEnd();
+ 
+    // Render the back quad
+    glBindTexture(GL_TEXTURE_2D, SKYBOX_TEX_ID_BAK);
+    glBegin(GL_QUADS);
+        glTexCoord2f(1, 1); glVertex3f( -100.0f, -100.0f,  100.0f );
+        glTexCoord2f(0, 1); glVertex3f(  100.0f, -100.0f,  100.0f );
+        glTexCoord2f(0, 0); glVertex3f(  100.0f,  100.0f,  100.0f );
+        glTexCoord2f(1, 0); glVertex3f( -100.0f,  100.0f,  100.0f );
+ 
+    glEnd();
+ 
+    // Render the right quad
+    glBindTexture(GL_TEXTURE_2D, SKYBOX_TEX_ID_RHT);
+    glBegin(GL_QUADS);
+        glTexCoord2f(1, 1); glVertex3f( -100.0f, -100.0f, -100.0f );
+        glTexCoord2f(0, 1); glVertex3f( -100.0f, -100.0f,  100.0f );
+        glTexCoord2f(0, 0); glVertex3f( -100.0f,  100.0f,  100.0f );
+        glTexCoord2f(1, 0); glVertex3f( -100.0f,  100.0f, -100.0f );
+    glEnd();
+ 
+    // Render the top quad
+    glBindTexture(GL_TEXTURE_2D, SKYBOX_TEX_ID_TOP);
+    glBegin(GL_QUADS);
+        glTexCoord2f(0, 1); glVertex3f( -100.0f,  100.0f, -100.0f );
+        glTexCoord2f(0, 0); glVertex3f( -100.0f,  100.0f,  100.0f );
+        glTexCoord2f(1, 0); glVertex3f(  100.0f,  100.0f,  100.0f );
+        glTexCoord2f(1, 1); glVertex3f(  100.0f,  100.0f, -100.0f );
+    glEnd();
+ 
+    // Render the bottom quad
+    glBindTexture(GL_TEXTURE_2D, SKYBOX_TEX_ID_BOT);
+    glBegin(GL_QUADS);
+        glTexCoord2f(0, 0); glVertex3f( -100.0f, -100.0f, -100.0f );
+        glTexCoord2f(0, 1); glVertex3f( -100.0f, -100.0f,  100.0f );
+        glTexCoord2f(1, 1); glVertex3f(  100.0f, -100.0f,  100.0f );
+        glTexCoord2f(1, 0); glVertex3f(  100.0f, -100.0f, -100.0f );
+    glEnd();
+
+    
+ 
+    // Restore enable bits and matrix
+    glPopAttrib();
+    glPopMatrix();
+
+  glDisable(GL_TEXTURE_2D);
+  glLoadIdentity();
+  glEnable(GL_LIGHTING);
+  glEnable(GL_BLEND);
   glEnable(GL_DEPTH_TEST);
   glEnable(GL_MULTISAMPLE_ARB);
-  glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
   //TODO:Draw the CUBE
-  
-//back,left,front,right,top,bot
+
   for(int index=0;index<numofleaves;index++){
     if(Time-Borntime[index]>1e-6){
       glLoadIdentity();
       glTranslatef(State[index].x.x,State[index].x.y,State[index].x.z);
-
       Quaternion rotate=State[index].q;
       rotate.GLrotate();
-     
+
       glBegin(GL_TRIANGLES); 
       glColor3f(1,0,0);
-      
+
       for(int i=0;i<TRIANGLE_VERTEX_NUM;i++){
         makenormal(PointsData[Triangles[i].a],PointsData[Triangles[i].b],PointsData[Triangles[i].c]);
         glVertex3f(PointsData[Triangles[i].a].x,PointsData[Triangles[i].a].y,PointsData[Triangles[i].a].z);
@@ -264,7 +485,6 @@ void DrawLeaves()
          
       }
       glEnd();
-      
       // glLoadIdentity();
       // glBegin(GL_LINES);
 
@@ -277,9 +497,22 @@ void DrawLeaves()
       // glEnd();
     }
   }
+  glLoadIdentity();
+  glColor4f(1,1,1,1);
+  glEnable(GL_TEXTURE_2D);
+  glDisable(GL_LIGHTING);
+  glBindTexture(GL_TEXTURE_2D, GROUND_TEX_ID);
+    glBegin(GL_QUADS);
+        glTexCoord2f(0, 0); glVertex3f( -100.0f, -12.0f, -100.0f );
+        glTexCoord2f(0, 30); glVertex3f( -100.0f, -12.0f,  100.0f );
+        glTexCoord2f(30, 30); glVertex3f(  100.0f, -12.0f,  100.0f );
+        glTexCoord2f(30, 0); glVertex3f(  100.0f, -12.0f, -100.0f );
+    glEnd();
+  glDisable(GL_TEXTURE_2D);
+  glEnable(GL_LIGHTING);
+  
   glutPostRedisplay();
-  
-  
+    
   //????what is this?
   if(NSteps > MAXSTEPS){
     cerr << "Particle position table overflow, restarting!!" << endl;
@@ -351,13 +584,13 @@ StateVector Force(StateVector S)
   Vector3d w = S.L*I0T;
 
   Quaternion wq= Quaternion(w);
-  Sdot.q=0.5* wq * S.q;
+  Sdot.q=1.0 / 2 * wq * S.q;
 
   Vector3d zero(0,0,0);
   Sdot.P=zero;
   Sdot.L=zero;
   
-  Vector3d g(0,-10,0);
+  Vector3d g(-5,-10,0);
   //Sdot.P=g*Mass;
   Vector3d Pi(0,-2,0);
   Pi=S.x+S.q.rotation()*Pi;
@@ -398,16 +631,16 @@ void Simulate()
   if (numofleaves<TotalNum){
     for(int i=numofleaves;i<TotalNum;i++){
       Vector3d P0=StartPoint;
-      P0.x=STARTX+(double)rand()/(RAND_MAX)*10;
-      P0.y=STARTY+(double)rand()/(RAND_MAX)*10;
-      P0.z=STARTZ+(double)rand()/(RAND_MAX)*10;
+      P0.x=StartPoint.x+(double)rand()/(RAND_MAX)*20;
+      P0.y=StartPoint.y+(double)rand()/(RAND_MAX)*20;
+      P0.z=StartPoint.z+(double)rand()/(RAND_MAX)*20;
       Vector3d zero(0,0,0);
       Vector3d V0(0,0,0);
       Vector3d Orientation((double)rand()/(RAND_MAX),(double)rand()/(RAND_MAX),(double)rand()/(RAND_MAX));
       Quaternion q=Quaternion(Orientation);
-      double btime=Time+(double)rand()/(RAND_MAX)*10-5;
+      double btime=Time+(double)rand()/(RAND_MAX)*20-10;
       double ltime=abs(gauss(LifeTime,epsilon/100,Time));
-      btime=Time;
+      //btime=Time;
       ltime=LifeTime;
 
       StateVector NewLeaf(P0,q,V0*Mass,zero);
@@ -419,7 +652,7 @@ void Simulate()
   }
 
   for(int i=0;i<numofleaves;i++){
-    if (State[i].x.y<=-12)continue;
+    if (State[i].x.y<=-11||Time-Borntime[i]<1e-6) continue;
     StateVector K1,K2,K3,K4,Snew;
     K1=Force(State[i]);
     K2=Force(State[i]+TimeStep/2*K1);
@@ -447,51 +680,7 @@ void TimerCallback(int timertype)
   }
 }
 
-void do_lights()
-{
-  float light0_ambient[] = { 0.0, 0.0, 0.0, 1.0 };
-  float light0_diffuse[] = { 1, 1, 1, 1.0 };
-  float light0_specular[] = { 0.1, 0.1, 0.1, 1.0 };
-  float light0_position[] = { 10.0, 10.0, 18.0, 1.0 };
-  float light0_direction[] = { -1.0, -1.0, -1.0, 1.0};
-  float lmodel_ambient[] = { 0.2, 0.2, 0.2, 1.0 };
 
-
-  glLightfv(GL_LIGHT0,GL_AMBIENT,light0_ambient); 
-  glLightfv(GL_LIGHT0,GL_DIFFUSE,light0_diffuse); 
-  //glLightfv(GL_LIGHT0,GL_SPECULAR,light0_specular);
-
-  glLightfv(GL_LIGHT0,GL_POSITION,light0_position);
-  //glLightfv(GL_LIGHT0,GL_SPOT_DIRECTION,light0_direction);
-  
-  //glLightModelfv(GL_LIGHT_MODEL_AMBIENT, lmodel_ambient);
-  glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
-
-  glEnable(GL_LIGHTING);
-  glEnable(GL_LIGHT0);
-}
-void do_material()
-{
-float mat_ambient[] = {0.1,0.1,0.1,1.0};
-float mat_diffuse[] = {0.7,0.7,0.7,1.0};
-float mat_specular[] = {0.05,0.05,0.05,1.0};
-float mat_emission[] = {0.0,0.0,0.0,1.0};
-float low_shininess[] = { 10.0 };
-
-
-glEnable(GL_COLOR_MATERIAL);
-  //glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
-glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, mat_ambient);
-  glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, mat_diffuse);
-  //glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,mat_specular);
-  //glMaterialfv(GL_FRONT,GL_EMISSION,mat_emission);
-  //glMaterialfv(GL_FRONT,GL_SHININESS,low_shininess);
-//glMaterialfv(GL_FRONT,GL_AMBIENT,mat_ambient);
-//glMaterialfv(GL_FRONT,GL_DIFFUSE,mat_diffuse);
-//
-//glMaterialfv(GL_FRONT,GL_SHININESS,mat_shininess);
-
-}
 
 
 void PerspDisplay() {
