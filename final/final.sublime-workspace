@@ -1,0 +1,370 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"M",
+				"MAX_Vertex_Num"
+			],
+			[
+				"set",
+				"setVal"
+			],
+			[
+				"get",
+				"getNumber"
+			],
+			[
+				"Ve",
+				"Vector3d"
+			],
+			[
+				"Sta",
+				"StateVector"
+			],
+			[
+				"Total",
+				"TotalNum"
+			],
+			[
+				"P",
+				"Particles"
+			],
+			[
+				"tota",
+				"Totalfaces"
+			],
+			[
+				"Project",
+				"Project4"
+			],
+			[
+				"ret",
+				"returnCode"
+			],
+			[
+				"Ast",
+				"AstNode"
+			]
+		]
+	},
+	"buffers":
+	[
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 87.0,
+		"last_filter": "Package Control: install",
+		"selected_items":
+		[
+			[
+				"Package Control: install",
+				"Package Control: Install Package"
+			],
+			[
+				"install",
+				"Package Control: Install Package"
+			]
+		],
+		"width": 485.0
+	},
+	"console":
+	{
+		"height": 126.0,
+		"history":
+		[
+			"import urllib.request,os,hashlib; h = 'df21e130d211cfc94d9b0905775a7c0f' + '1e3d39e33b79698005270310898eea76'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://packagecontrol.io/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by)",
+			"import urllib.request,os,hashlib; h = '2915d1851351e5ee549c20394736b442' + '8bc59f460fa1548d1514676163dafc88'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://packagecontrol.io/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by)",
+			"import urllib.request,os,hashlib; h = 'df21e130d211cfc94d9b0905775a7c0f' + '1e3d39e33b79698005270310898eea76'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://packagecontrol.io/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by)"
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/Users/yitianli/Src/8170/8170/final"
+	],
+	"file_history":
+	[
+		"/Users/yitianli/Downloads/hep-th/hep-th.net",
+		"/Users/yitianli/Src/8480/final/loop.cpp",
+		"/Users/yitianli/Src/8480/final/data-test",
+		"/Users/yitianli/Src/8480/final/data",
+		"/Users/yitianli/Downloads/hep-th/hep-th-new.net",
+		"/Users/yitianli/Src/8270/8270Assets-2016/projects/5/proj5/code/Makefile",
+		"/Users/yitianli/Src/8270/8270Assets-2016/projects/5/proj5/code/ast.cpp",
+		"/Users/yitianli/Src/8270/8270Assets-2016/projects/5/proj5/code/test.py",
+		"/Users/yitianli/Src/8270/8270Assets-2016/projects/5/proj5/code/ast.h",
+		"/Users/yitianli/Src/8270/8270Assets-2016/projects/5/proj5/code/symbolTable.h",
+		"/Users/yitianli/Src/8270/8270Assets-2016/projects/5/proj5/code/scan.l",
+		"/Users/yitianli/Src/8270/8270Assets-2016/projects/5/proj5/code/main.cpp",
+		"/Users/yitianli/Src/8270/8270Assets-2016/projects/4/code/startCode/parse.y",
+		"/Users/yitianli/Src/8270/8270Assets-2016/projects/3/astCalc/parse.y",
+		"/Users/yitianli/Src/8170/8170/project2/Project2.cpp",
+		"/Users/yitianli/Src/8170/8170/cube.c",
+		"/Users/yitianli/Src/8170/8170/cube.cpp",
+		"/Users/yitianli/Src/8170/8170/project5/StateVector.cpp",
+		"/Users/yitianli/Src/8270/8270Assets-2016/projects/4/code/startCode/scan.l",
+		"/Users/yitianli/Src/8270/8270Assets-2016/projects/4/code/startCode/cases/case10.py",
+		"/Users/yitianli/Src/8270/8270Assets-2016/projects/4/code/startCode/cases/case9.py",
+		"/Users/yitianli/Src/8270/8270Assets-2016/projects/4/code/startCode/cases/case8.py",
+		"/Users/yitianli/Src/8270/8270Assets-2016/projects/4/code/startCode/cases/case7.py",
+		"/Users/yitianli/Src/8270/8270Assets-2016/projects/4/code/startCode/cases/case6.py",
+		"/Users/yitianli/Src/8270/8270Assets-2016/projects/4/code/startCode/cases/case5.py",
+		"/Users/yitianli/Src/8270/8270Assets-2016/projects/4/code/startCode/test.py",
+		"/Users/yitianli/Src/8270/8270Assets-2016/projects/4/code/startCode/generator.py",
+		"/Users/yitianli/Src/8270/8270Assets-2016/projects/4/code/Python-2.7.2/Lib/generator.py",
+		"/Users/yitianli/Src/8270/8270Assets-2016/projects/4/code/Python-2.7.2/Lib/_abcoll.py",
+		"/Users/yitianli/Src/8270/8270Assets-2016/projects/4/code/startCode/cases/case4.py",
+		"/Users/yitianli/Src/8270/8270Assets-2016/projects/4/code/startCode/cases/case3.py",
+		"/Users/yitianli/Src/8270/8270Assets-2016/projects/4/code/startCode/cases/case2.py",
+		"/Users/yitianli/Src/8270/8270Assets-2016/projects/4/code/startCode/cases/case1.py",
+		"/Users/yitianli/.vimrc",
+		"/Users/yitianli/Src/8270/8270Assets-2016/projects/3/astCalc/ast.cpp",
+		"/Users/yitianli/Src/8270/8270Assets-2016/projects/3/astCalc/main.cpp",
+		"/Users/yitianli/Src/8270/8270Assets-2016/projects/3/astCalc/scan.l",
+		"/Users/yitianli/Src/8270/8270Assets-2016/projects/3/astCalc/parse.tab.cpp",
+		"/Users/yitianli/Src/8270/8270Assets-2016/projects/3/astCalc/parse.tab.hpp",
+		"/Users/yitianli/Downloads/CSphd/CSphd.net",
+		"/Users/yitianli/Downloads/ml-10M100K/movies.dat",
+		"/Users/yitianli/Downloads/ml-10M100K/tags.dat",
+		"/Users/yitianli/Downloads/ml-10M100K/ratings.dat",
+		"/Users/yitianli/Downloads/ml-100k/README",
+		"/Users/yitianli/Downloads/foldoc.net",
+		"/Users/yitianli/Downloads/Days.net",
+		"/Users/yitianli/Downloads/twitter/12831.edges",
+		"/Users/yitianli/Downloads/DaysAll.net",
+		"/Users/yitianli/Downloads/soc-Slashdot0811.txt",
+		"/Users/yitianli/Downloads/ml-100k/ua.base"
+	],
+	"find":
+	{
+		"height": 25.0
+	},
+	"find_in_files":
+	{
+		"height": 93.0,
+		"where_history":
+		[
+			"/Users/yitianli/Src/8270/8270Assets-2016/projects/4/code/Python-2.7.2"
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"10631",
+			"10631 10996",
+			"10299",
+			"10290",
+			"10299 10790",
+			"count",
+			"cout",
+			"cout<<",
+			"(){}\n",
+			"vextype",
+			"print",
+			"ast",
+			"name",
+			"ast",
+			"enum yytoken",
+			"ast",
+			"ast::eval",
+			"yield_expr",
+			"arith",
+			"ast",
+			"val",
+			"ast",
+			"getnumber",
+			"gettype",
+			"gettypee",
+			"gettype",
+			"name",
+			"na me",
+			"disptime",
+			"postredis",
+			"gl_post",
+			"GL_TRIANGLE",
+			"printtest",
+			"print",
+			"particlesmass",
+			"simulate",
+			"simulate(",
+			"simulate",
+			"drawpart",
+			"simulate",
+			"restart",
+			"cout<<",
+			"restart",
+			"1",
+			"printte",
+			"drawparticles",
+			"restart",
+			":\n",
+			"initsimulation",
+			"init",
+			"perspdisplay",
+			"Drawpart",
+			"Draw",
+			"TotalNum",
+			"right",
+			"left",
+			"right",
+			"totalnum",
+			"total",
+			"grid",
+			"makegr",
+			"+",
+			"lib",
+			"lib_f",
+			"testpath",
+			"testdir",
+			"doublestar",
+			"test /",
+			"test",
+			"star_COMMA_test",
+			"class specifier is deprecated and incompatible with C++1z",
+			"stmt /",
+			"stmt",
+			"plus_stmt",
+			"lambdef",
+			"test /",
+			"test ",
+			"test",
+			"plus_stmt",
+			"print",
+			"bar",
+			"plus",
+			"state",
+			"std",
+			"clang",
+			"mass",
+			"int yywrap",
+			"272",
+			"1882",
+			"robert",
+			" gei s t",
+			"robert",
+			"godfather",
+			"redemption",
+			"romantic",
+			"strike"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 25.0
+	},
+	"input":
+	{
+		"height": 31.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "",
+	"project": "final.sublime-project",
+	"replace":
+	{
+		"height": 46.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": true,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 180.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}

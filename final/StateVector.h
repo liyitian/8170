@@ -16,6 +16,7 @@
 
 #include "Vector.h"
 #include "Quaternion.h"
+#include "Matrix.h"
 #include <vector>
 
 using namespace std;
@@ -25,22 +26,16 @@ using namespace std;
 class StateVector {
 public:
   StateVector();
-  StateVector(double Mass, Matrix3x3 I0);
-  StateVector(Vector3d X,double Mass,Vector3d v,Vector3d p,Vector3d l,Quaternion Q,Matrix3x3 I0,double btime, double ltime);
+  StateVector(Vector3d X,Quaternion Q,Vector3d p,Vector3d l);
 
   StateVector(const StateVector& V);
   ~StateVector();
 
   void print() const;
   Vector3d x;
-  Vector3d velocity;
+  Quaternion q;
   Vector3d P;
   Vector3d L;
-  Quaternion q;
-  Matrix3x3 I0;
-  double m;
-  double Borntime;
-  double lifetime;
 
   friend StateVector operator+(const StateVector& v1, const StateVector& v2);//addition 
   friend StateVector operator-(const StateVector& v1, const StateVector& v2);//subtract

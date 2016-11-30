@@ -13,6 +13,9 @@
 #include "Gauss.h"
 #include "StateVector.h"
 #include <vector>
+#include <iostream>
+#include <fstream>
+#include <string>
 #ifdef __APPLE__
 #  include <GLUT/glut.h>
 #else
@@ -26,6 +29,9 @@
 #define radius 1.0
 #define MAXSTEPS  10000
 #define PRINTTEST cout<<"here"<<endl
+#define MAPLE_VERTEX_NUM 2054
+#define TRIANGLE_VERTEX_NUM 1968
+#define MAPLE_SCALER 0.01
 int WIDTH = 1024;
 int HEIGHT = 765;
 
@@ -36,15 +42,21 @@ Camera *camera;
 bool showGrid = true;
 bool Stopped =true;
 
+struct  tri
+{
+  int a,b,c;
+};
 
 static Vector3d Wind;
 static Vector3d StartPoint;
-static Vector3d AddForce;
 static Vector3d Stone;
 static double StoneRadius;
-static vector<StateVector> State;
-static std::vector<int> Sindex;
+static std::vector<StateVector> State;
 static std::vector<Vector3d> LeavesColor;
+static std::vector<double> Borntime;
+static std::vector<double> LeavesLifetime;
+static std::vector<Vector3d> PointsData(MAPLE_VERTEX_NUM);
+static std::vector<tri> Triangles(TRIANGLE_VERTEX_NUM);
 
 static char *ParamFilename = NULL;
 static int TotalNum = 0;
@@ -63,9 +75,15 @@ static int TimerDelay;
 static int TimeStepsPerDisplay;
 static int NSteps = 0;
 static int NTimeSteps = -1;
+static double MapleW;
+static double MapleH;
+static double MapleL;
+static Matrix3x3 MapleBigI;
 //back,left,front,right,top,bot
 
 GLuint Texture;
+
+
 
 void TimerCallback(int value);
 
@@ -164,13 +182,47 @@ void LoadParameters(char *filename){
   
   ParamFilename = filename;
   
-  if(fscanf(paramfile, "%d %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf",
-            &TotalNum,&LifeTime, &Mass, &Kij,&Dtheta, &TimeStep, &DispTime, &(AddForce.x), &(AddForce.y), &(AddForce.z),&(StartPoint.x),&(StartPoint.y),&(StartPoint.z),&epsilon) != 14){
+  if(fscanf(paramfile, "%d %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf",
+            &TotalNum,&LifeTime, &Mass, &Kij,&Dtheta, &TimeStep, &DispTime,&(StartPoint.x),&(StartPoint.y),&(StartPoint.z),&epsilon) != 11){
     fprintf(stderr, "error reading parameter file %s\n", filename);
     exit(1);
   }
   
   fclose(paramfile);
+  double maxx=0,maxy=0,maxz=0;
+  double minx=0,miny=0,minz=0;
+
+  ifstream maplepoint ("Maple-model.xml");
+  if (maplepoint.is_open())
+  {
+    for(int i = 0;i<MAPLE_VERTEX_NUM;i++){
+      maplepoint >> PointsData[i].x >> PointsData[i].y >> PointsData[i].z;
+      PointsData[i].x*=MAPLE_SCALER;
+      maxx=Max(maxx,PointsData[i].x);
+      minx=Min(minx,PointsData[i].x);
+      PointsData[i].y*=MAPLE_SCALER;
+      maxy=Max(maxy,PointsData[i].y);
+      miny=Min(miny,PointsData[i].y);
+      PointsData[i].z*=MAPLE_SCALER;
+      maxz=Max(maxz,PointsData[i].z);
+      minz=Min(minz,PointsData[i].z);
+       
+    }
+    maplepoint.close();
+  }else cout << "Unable to open file"; 
+  MapleL=maxx-minx;
+  MapleW=maxy-miny;
+  MapleH=maxz-minz;
+  MapleBigI=Matrix3x3(Mass/12*(MapleW*MapleW+MapleH*MapleH),0,0,0,Mass/12*(MapleL*MapleL+MapleH*MapleH),0,0,0,Mass/12*(MapleL*MapleL+MapleW*MapleW));
+  
+
+  ifstream trianglepoint ("Triangle-index.xml");
+  if (trianglepoint.is_open()){
+    for (int i=0;i<TRIANGLE_VERTEX_NUM;i++){
+      trianglepoint >> Triangles[i].a >>Triangles[i].b >>Triangles[i].c;
+    }
+    trianglepoint.close();
+  }else cout << "Unable to read file";
   
   TimeStepsPerDisplay = Max(1, int(DispTime / TimeStep + 0.5));
   TimerDelay = int(0.5 * TimeStep * 1000);
@@ -187,51 +239,42 @@ struct point {
 void DrawLeaves()
 {
   
-  struct point front[4]={{-2.0,-2.0,2.0},{2.0,-2.0,2.0},{2.0,2.0,2.0},{-2.0,2.0,2.0}};
-  struct point back[4]={{-2.0,-2.0,-2.0},{-2.0,2.0,-2.0},{2.0,2.0,-2.0},{2.0,-2.0,-2.0}};
-  struct point leftface[4]={{-2.0,-2.0,-2.0},{-2.0,-2.0,2.0},{-2.0,2.0,2.0},{-2.0,2.0,-2.0}};
-  struct point rightface[4]={{2.0,-2.0,-2.0},{2.0,2.0,-2.0},{2.0,2.0,2.0},{2.0,-2.0,2.0}};
-  struct point top[4]={{-2.0,2.0,-2.0},{-2.0,2.0,2.0},{2.0,2.0,2.0},{2.0,2.0,-2.0}};
-  struct point bottom[4]={{-2.0,-2.0,-2.0},{-2.0,-2.0,2.0},{2.0,-2.0,2.0},{2.0,-2.0,-2.0}};
-
   glEnable(GL_DEPTH_TEST);
   glEnable(GL_MULTISAMPLE_ARB);
   glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
   //TODO:Draw the CUBE
-  glLoadIdentity();
+  
 //back,left,front,right,top,bot
-  for(int i=0;i<TotalNum;i++){
-    if(Time-State[i].Borntime>1e-6){
-      glTranslatef(State[i].x.x,State[i].x.y,State[i].x.z);
+  for(int index=0;index<numofleaves;index++){
+    if(Time-Borntime[index]>1e-6){
+      glLoadIdentity();
+      glTranslatef(State[index].x.x,State[index].x.y,State[index].x.z);
 
-      Quaternion rotate=State[i].q;
+      Quaternion rotate=State[index].q;
       rotate.GLrotate();
      
-      glBegin(GL_QUADS); 
-      glColor3f(1,1,1);
-      glNormal3f(0.0,0.0,1.0);
-      for(i=0;i<4;i++) glVertex3f(front[i].x,front[i].y,front[i].z);
-      glNormal3f(0.0,0.0,-1.0);
-      for(i=0;i<4;i++) glVertex3f(back[i].x,back[i].y,back[i].z);
-      glNormal3f(-1.0,0.0,0.0);
-      for(i=0;i<4;i++) glVertex3f(leftface[i].x,leftface[i].y,leftface[i].z);
-      glNormal3f(1.0,0.0,0.0);
-      for(i=0;i<4;i++) glVertex3f(rightface[i].x,rightface[i].y,rightface[i].z);
-      glNormal3f(0.0,1.0,0.0);
-      for(i=0;i<4;i++) glVertex3f(top[i].x,top[i].y,top[i].z);
-      glNormal3f(0.0,-1.0,0.0);
-      for(i=0;i<4;i++) glVertex3f(bottom[i].x,bottom[i].y,bottom[i].z);
+      glBegin(GL_TRIANGLES); 
+      glColor3f(1,0,0);
+      
+      for(int i=0;i<TRIANGLE_VERTEX_NUM;i++){
+        makenormal(PointsData[Triangles[i].a],PointsData[Triangles[i].b],PointsData[Triangles[i].c]);
+        glVertex3f(PointsData[Triangles[i].a].x,PointsData[Triangles[i].a].y,PointsData[Triangles[i].a].z);
+        glVertex3f(PointsData[Triangles[i].b].x,PointsData[Triangles[i].b].y,PointsData[Triangles[i].c].z);
+        glVertex3f(PointsData[Triangles[i].c].x,PointsData[Triangles[i].c].y,PointsData[Triangles[i].c].z);
+         
+      }
       glEnd();
       
-      glLoadIdentity();
-      glBegin(GL_LINES);
+      // glLoadIdentity();
+      // glBegin(GL_LINES);
 
-      glVertex3f(StartPoint.x,StartPoint.y,StartPoint.z);
-      Vector3d Pi(-2,-2,-2);
-      Vector3d Rot(State[i].q.q.x,State[i].q.q.y,State[i].q.q.z);
-      Pi=State[i].x+State[i].q.rotation()*Pi;
-      glVertex3f(Pi.x,Pi.y,Pi.z);
-      glEnd();
+      // glVertex3f(StartPoint.x,StartPoint.y,StartPoint.z);
+      // Vector3d Pi(0,-2,0);
+      // Vector3d Somepoint=Pi;
+      // Pi=State[index].x+State[index].q.rotation()*Pi;
+
+      // glVertex3f(Pi.x,Pi.y,Pi.z);
+      // glEnd();
     }
   }
   glutPostRedisplay();
@@ -254,7 +297,13 @@ void Restart(){
   Time = 0;
   int i=0;
 //TODO:Vertex clear,& reserve the room;
+  numofleaves=0;
   State.clear();
+  LeavesLifetime.clear();
+  Borntime.clear();
+
+  LeavesLifetime.reserve(TotalNum);
+  Borntime.reserve(TotalNum);
   State.reserve(TotalNum);  
   DrawLeaves();
 }
@@ -270,7 +319,12 @@ void InitSimulation(int argc, char* argv[]){
   }
   int i=0;
   LoadParameters(argv[1]);
-  State.reserve(TotalNum);
+
+  LeavesLifetime.reserve(TotalNum);
+  Borntime.reserve(TotalNum);
+  State.reserve(TotalNum);  
+
+  numofleaves=0;
 
   NSteps = 0;
   NTimeSteps = -1;
@@ -286,12 +340,11 @@ double min(double a, double b){
 
 StateVector Force(StateVector S)
 {
-  double m= S.m;
-  Matrix3x3 I0T= S.I0;
-  StateVector Sdot(m,I0T);
+  Matrix3x3 I0T= MapleBigI;
+  StateVector Sdot;
 
   
-  Sdot.x= S.P/m;
+  Sdot.x= S.P/Mass;
   Matrix3x3 R= S.q.rotation();
   I0T=I0T.inv();
   Matrix3x3 It= R * I0T * R.transpose();
@@ -305,18 +358,21 @@ StateVector Force(StateVector S)
   Sdot.L=zero;
   
   Vector3d g(0,-10,0);
-  Sdot.P=g*Mass;
-  Vector3d Pi(-2,-2,-2);
-  Vector3d Rot(S.q.q.x,S.q.q.y,S.q.q.z);
+  //Sdot.P=g*Mass;
+  Vector3d Pi(0,-2,0);
   Pi=S.x+S.q.rotation()*Pi;
 
-  if ((StartPoint-Pi).norm()>2){
-      Vector3d springforce=Kij*(StartPoint-Pi).normalize()*(StartPoint-Pi).norm();
-      Vector3d damper=Dtheta*S.velocity;
-      Vector3d ForceonP=springforce+damper;
-      Sdot.P=Sdot.P+ForceonP;
-      Sdot.L=Sdot.L+ ((Pi-S.x) % ForceonP);
-  }
+  // if ((StartPoint-Pi).norm()>2){
+  //     Vector3d springforce=Kij*(StartPoint-Pi).normalize()*((StartPoint-Pi).norm()-2);
+  //     Vector3d damper=-Dtheta*Sdot.x;
+  //     Vector3d ForceonP=springforce+damper;
+  //     Sdot.P=Sdot.P+ForceonP;
+  //     Sdot.L=Sdot.L+ ((Pi-S.x) % ForceonP);
+  // }
+  Vector3d damper=-Dtheta*Sdot.x;
+  Vector3d ForceonP=g*Mass+damper;
+  Sdot.P=Sdot.P+ForceonP;
+  Sdot.L=Sdot.L+ ((Pi-S.x) % ForceonP);
 
   return Sdot;
 }
@@ -324,45 +380,56 @@ StateVector Force(StateVector S)
 void Simulate()
 {
 
+
   
   //Leaves Killer....
-  for(int i=0;i<TotalNum;i++){
-    if (Time-State[i].Borntime-State[i].lifetime<1e-6){
-      State.erase(State.begin()+i);
+  if (numofleaves!=0&&State.size()!=0){
+    for(int i=0;i<numofleaves;i++){
+      if (LeavesLifetime[i]-Time+Borntime[i]<1e-6){
+        State.erase(State.begin()+i);
+        Borntime.erase(Borntime.begin()+i);
+        LeavesLifetime.erase(LeavesLifetime.begin()+i);
+        numofleaves--;
+      }
     }
   }
-  
   //Leaves Generator
-  Matrix3x3 BigI(Mass/12*32,0,0,0,Mass/12*32,0,0,0,Mass/12*32);
+
   if (numofleaves<TotalNum){
     for(int i=numofleaves;i<TotalNum;i++){
       Vector3d P0=StartPoint;
+      P0.x=STARTX+(double)rand()/(RAND_MAX)*10;
+      P0.y=STARTY+(double)rand()/(RAND_MAX)*10;
+      P0.z=STARTZ+(double)rand()/(RAND_MAX)*10;
       Vector3d zero(0,0,0);
       Vector3d V0(0,0,0);
-      Vector3d Orientation(1e-6,1e-6,1e-6);
+      Vector3d Orientation((double)rand()/(RAND_MAX),(double)rand()/(RAND_MAX),(double)rand()/(RAND_MAX));
       Quaternion q=Quaternion(Orientation);
-      double btime=Time+(double)rand()/(RAND_MAX)*epsilon*2;
+      double btime=Time+(double)rand()/(RAND_MAX)*10-5;
       double ltime=abs(gauss(LifeTime,epsilon/100,Time));
       btime=Time;
       ltime=LifeTime;
-      StateVector NewLeaf(P0,Mass,V0,V0*Mass,zero,q,BigI,btime,ltime);
+
+      StateVector NewLeaf(P0,q,V0*Mass,zero);
       State.push_back(NewLeaf);
+      LeavesLifetime.push_back(ltime);
+      Borntime.push_back(btime);
     }
+    numofleaves=TotalNum;
   }
 
-
   for(int i=0;i<numofleaves;i++){
+    if (State[i].x.y<=-12)continue;
     StateVector K1,K2,K3,K4,Snew;
     K1=Force(State[i]);
     K2=Force(State[i]+TimeStep/2*K1);
     K3=Force(State[i]+TimeStep/2*K2);
     K4=Force(State[i]+TimeStep*K3);
-
     Snew=State[i]+TimeStep/6.0*(K1+2*K2+2*K3+K4);
+    //Snew=State[i]+TimeStep*K1;
     Snew.q=Snew.q.normalize();
     State[i]=Snew;
   }
-  
   Time += TimeStep;
   NTimeSteps++;
   DrawLeaves();

@@ -107,7 +107,7 @@ void Camera::Initialize() {
 // default constructor... sets position to 0, 0, 5, aimed at the origin
 // with the up vector set to the y axis
 Camera::Camera() {
-  Pos.set(0, 0, 5);
+  Pos.set(0, 0, 10);
   Aim.set(0, 0, 0);
   Up.set(0, 1, 0);
 
