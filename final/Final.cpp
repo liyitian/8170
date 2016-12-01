@@ -58,11 +58,8 @@ struct  tri
   int a,b,c;
 };
 
-static Vector3d Wind(-5,0,0);
-static Vector3d WindForce;
+static Vector3d Wind;
 static Vector3d StartPoint;
-static Vector3d Stone;
-static double StoneRadius;
 static std::vector<StateVector> State;
 static std::vector<Vector3d> LeavesColor;
 static std::vector<double> Borntime;
@@ -75,12 +72,10 @@ static int TotalNum = 0;
 static double Mass;
 static double TimeStep;
 static double DispTime;
-static double Kij;
+static double LiftConst;
 static double Dtheta;
 static double Time = 0;
 static double epsilon;
-static double l0 = 1;
-static double theta0 = 180;
 static double LifeTime;
 static int numofleaves=0;
 static int TimerDelay;
@@ -243,7 +238,6 @@ void load_texture(string filename,int TexID)
   glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
   glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
   glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
-  //glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_REPLACE);
   cfree(texture_bytes);
 }
 
@@ -282,7 +276,6 @@ void load_Repeat_texture(string filename,int TexID)
   glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT);
   glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);
   glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
-  //glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_REPLACE);
   cfree(texture_bytes);
 }
 
@@ -300,8 +293,8 @@ void LoadParameters(char *filename){
   
   ParamFilename = filename;
   
-  if(fscanf(paramfile, "%d %lf %lf %lf %lf %lf %lf %lf %lf %lf",
-            &TotalNum,&LifeTime, &Mass, &Dtheta, &TimeStep, &DispTime,&(StartPoint.x),&(StartPoint.y),&(StartPoint.z),&epsilon) != 10){
+  if(fscanf(paramfile, "%d %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf",
+            &TotalNum,&LifeTime, &Mass, &LiftConst, &Dtheta, &TimeStep, &DispTime,&(StartPoint.x),&(StartPoint.y),&(StartPoint.z),&(Wind.x),&(Wind.y),&(Wind.z),&epsilon) != 14){
     fprintf(stderr, "error reading parameter file %s\n", filename);
     exit(1);
   }
@@ -592,26 +585,19 @@ StateVector Force(StateVector S)
   Sdot.L=zero;
   
   Vector3d g(0,-10,0);
-  Vector3d damper=-Dtheta*Sdot.x;
-  //Sdot.P=g*Mass+damper;
-  Vector3d Pi(0,-2,0);
-  Pi=S.x+S.q.rotation()*Pi;
 
-  // if ((StartPoint-Pi).norm()>2){
-  //     Vector3d springforce=Kij*(StartPoint-Pi).normalize()*((StartPoint-Pi).norm()-2);
-  //     Vector3d damper=-Dtheta*Sdot.x;
-  //     Vector3d ForceonP=springforce+damper;
-  //     Sdot.P=Sdot.P+ForceonP;
-  //     Sdot.L=Sdot.L+ ((Pi-S.x) % ForceonP);
-  // }
-  Vector3d testwind(gauss(-5,epsilon/100,Time),(0,epsilon/100,Time),gauss(0,epsilon/100,Time));
-  WindForce=Wind;
-  Vector3d zaxis(0,0,5);
-  Vector3d magicForce=Sdot.x % zaxis;
-  //cout<<Wind<<endl;
-  Vector3d ForceonP=g*Mass+damper+WindForce;//+magicForce;
-  Sdot.P=Sdot.P+ForceonP;
-  Sdot.L=Sdot.L+ ((Pi-S.x) % ForceonP);
+  Sdot.P=g*Mass;
+  Vector3d Pi(0,-1,0);
+  Vector3d nhab(0,1,0);
+  nhab=S.x+S.q.rotation()*nhab;
+  Pi=S.x+S.q.rotation()*Pi;
+  Vector3d Vr=Sdot.x-Wind;  //cout<<Wind<<endl;
+  double Area=MapleL*MapleH;
+  Vector3d ForceDrag=-Dtheta*Area*(nhab*Vr)*Vr;
+  Vector3d ForceLift=-LiftConst*Area*(nhab*Vr)*(Vr % (nhab % Vr).normalize());
+  Vector3d ForceonP=ForceDrag+ForceLift;
+  Sdot.P=Sdot.P+ ForceonP;
+  Sdot.L=Sdot.L+ (nhab-S.x) % ForceonP + (Pi-S.x)*g*Mass;
 
   return Sdot;
 }
@@ -641,17 +627,12 @@ void Simulate()
       P0.y=StartPoint.y+(double)rand()/(RAND_MAX)*20;
       P0.z=StartPoint.z+(double)rand()/(RAND_MAX)*20;
       Vector3d zero(0,0,0);
-      Vector3d V0(0,0,0);
       Vector3d Orientation((double)rand()/(RAND_MAX),(double)rand()/(RAND_MAX),(double)rand()/(RAND_MAX));
       Quaternion q=Quaternion(Orientation);
       double btime=Time+(double)rand()/(RAND_MAX)*20-10;
-      double ltime=abs(gauss(LifeTime,epsilon/100,Time));
-      //btime=Time;
-      ltime=LifeTime;
-
-      StateVector NewLeaf(P0,q,V0*Mass,zero);
+      StateVector NewLeaf(P0,q,zero*Mass,zero);
       State.push_back(NewLeaf);
-      LeavesLifetime.push_back(ltime);
+      LeavesLifetime.push_back(LifeTime);
       Borntime.push_back(btime);
     }
     numofleaves=TotalNum;
