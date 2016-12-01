@@ -663,8 +663,8 @@ void Simulate()
 
     if (State[i].x.y<=-11||Time-Borntime[i]<1e-6) 
       {
-        Borntime[i]=Time;
-        LeavesLifetime[i]=1;
+        // Borntime[i]=Time;
+        // LeavesLifetime[i]=1;
         continue;
       }
     
