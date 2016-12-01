@@ -1,2 +1,2 @@
-70             10      7	 5      10       0.04      1       -2     12  		-7	     0.5
-TotalNumber, LifeTime, Mass, Kij, kd, TimeStep, DispTime,     startx,	starty,		startz,   epsilon
+30             100      1	  2       0.04      1       -2     12  		-7	     0.5
+TotalNumber, LifeTime, Mass, Dtheta, TimeStep, DispTime,     startx,	starty,		startz,   epsilon

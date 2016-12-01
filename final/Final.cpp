@@ -58,7 +58,8 @@ struct  tri
   int a,b,c;
 };
 
-static Vector3d Wind;
+static Vector3d Wind(-5,0,0);
+static Vector3d WindForce;
 static Vector3d StartPoint;
 static Vector3d Stone;
 static double StoneRadius;
@@ -299,8 +300,8 @@ void LoadParameters(char *filename){
   
   ParamFilename = filename;
   
-  if(fscanf(paramfile, "%d %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf",
-            &TotalNum,&LifeTime, &Mass, &Kij,&Dtheta, &TimeStep, &DispTime,&(StartPoint.x),&(StartPoint.y),&(StartPoint.z),&epsilon) != 11){
+  if(fscanf(paramfile, "%d %lf %lf %lf %lf %lf %lf %lf %lf %lf",
+            &TotalNum,&LifeTime, &Mass, &Dtheta, &TimeStep, &DispTime,&(StartPoint.x),&(StartPoint.y),&(StartPoint.z),&epsilon) != 10){
     fprintf(stderr, "error reading parameter file %s\n", filename);
     exit(1);
   }
@@ -590,8 +591,9 @@ StateVector Force(StateVector S)
   Sdot.P=zero;
   Sdot.L=zero;
   
-  Vector3d g(-5,-10,0);
-  //Sdot.P=g*Mass;
+  Vector3d g(0,-10,0);
+  Vector3d damper=-Dtheta*Sdot.x;
+  //Sdot.P=g*Mass+damper;
   Vector3d Pi(0,-2,0);
   Pi=S.x+S.q.rotation()*Pi;
 
@@ -602,8 +604,12 @@ StateVector Force(StateVector S)
   //     Sdot.P=Sdot.P+ForceonP;
   //     Sdot.L=Sdot.L+ ((Pi-S.x) % ForceonP);
   // }
-  Vector3d damper=-Dtheta*Sdot.x;
-  Vector3d ForceonP=g*Mass+damper;
+  Vector3d testwind(gauss(-5,epsilon/100,Time),(0,epsilon/100,Time),gauss(0,epsilon/100,Time));
+  WindForce=Wind;
+  Vector3d zaxis(0,0,5);
+  Vector3d magicForce=Sdot.x % zaxis;
+  //cout<<Wind<<endl;
+  Vector3d ForceonP=g*Mass+damper+WindForce;//+magicForce;
   Sdot.P=Sdot.P+ForceonP;
   Sdot.L=Sdot.L+ ((Pi-S.x) % ForceonP);
 
@@ -651,8 +657,20 @@ void Simulate()
     numofleaves=TotalNum;
   }
 
+  
+
   for(int i=0;i<numofleaves;i++){
-    if (State[i].x.y<=-11||Time-Borntime[i]<1e-6) continue;
+
+    if (State[i].x.y<=-11||Time-Borntime[i]<1e-6) 
+      {
+        Borntime[i]=Time;
+        LeavesLifetime[i]=1;
+        continue;
+      }
+    
+    //double SinTheta = 1/(Wind * State[i].P / Mass);
+    
+
     StateVector K1,K2,K3,K4,Snew;
     K1=Force(State[i]);
     K2=Force(State[i]+TimeStep/2*K1);
