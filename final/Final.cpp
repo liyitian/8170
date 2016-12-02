@@ -1,8 +1,8 @@
 //
 // Final.cpp
 //
-// 
-// 
+//
+//
 // Christopher Root, 2006
 // Minor Modifications by Donald House, 2009
 // Minor Modifications by Yujie Shu, 2012
@@ -58,8 +58,11 @@ struct  tri
   int a,b,c;
 };
 
-static Vector3d Wind;
+static Vector3d Wind(-5,0,0);
+static Vector3d WindForce;
 static Vector3d StartPoint;
+static Vector3d Stone;
+static double StoneRadius;
 static std::vector<StateVector> State;
 static std::vector<Vector3d> LeavesColor;
 static std::vector<double> Borntime;
@@ -72,10 +75,12 @@ static int TotalNum = 0;
 static double Mass;
 static double TimeStep;
 static double DispTime;
-static double LiftConst;
+static double Kij;
 static double Dtheta;
 static double Time = 0;
 static double epsilon;
+static double l0 = 1;
+static double theta0 = 180;
 static double LifeTime;
 static int numofleaves=0;
 static int TimerDelay;
@@ -97,9 +102,9 @@ void TimerCallback(int value);
 // draws a simple grid
 void makeGrid() {
 	glColor3f(0.0, 0.0, 0.0);
-
+  
 	glLineWidth(1.0);
-
+  
 	for (float i=-12; i<12; i+=2) {
 		for (float j=-12; j<12; j+=2) {
 			
@@ -121,7 +126,7 @@ void makeGrid() {
 			glVertex3f(-12, i, j);
 			glVertex3f(-12, i+2, j);
 			glEnd();
-
+      
 			
 			glBegin(GL_LINES);
 			glVertex3f(i, -12, j);
@@ -131,15 +136,15 @@ void makeGrid() {
 			glVertex3f(i, -12, j);
 			glVertex3f(i+2, -12, j);
 			glEnd();
-
-
-
+      
+      
+      
 			if (j == -10){
 				glBegin(GL_LINES);
 				glVertex3f(i, 12, j-2);
 				glVertex3f(i+2, 12, j-2);
 				glEnd();
-
+        
 				glBegin(GL_LINES);
 				glVertex3f(12, i, j-2);
 				glVertex3f(12, i+2, j-2);
@@ -151,7 +156,7 @@ void makeGrid() {
 				glEnd();
 			}
 			
-			if (i == -10){		    
+			if (i == -10){
 		 		glBegin(GL_LINES);
 				glVertex3f(i-2, j, 12);
 				glVertex3f(i-2, j+2, 12);
@@ -161,15 +166,15 @@ void makeGrid() {
 				glVertex3f(i-2, 12, j);
 				glVertex3f(i-2, 12, j+2);
 				glEnd();
-
+        
         glBegin(GL_LINES);
         glVertex3f(-i+2, -12, j);
         glVertex3f(-i+2, -12, j+2);
         glEnd();
-	    	}
-    	}
+      }
+    }
 	}
-
+  
 }
 
 void do_lights()
@@ -180,16 +185,17 @@ void do_lights()
   float light0_position[] = { 0.0, 0.0, 0.0, 1.0 };
   float light0_direction[] = { -1.0, -1.0, -1.0, 1.0};
   float lmodel_ambient[] = { 0.2, 0.2, 0.2, 1.0 };
-
-
-  glLightfv(GL_LIGHT0,GL_AMBIENT,light0_ambient); 
-  glLightfv(GL_LIGHT0,GL_DIFFUSE,light0_diffuse); 
+  
+  
+  glLightfv(GL_LIGHT0,GL_AMBIENT,light0_ambient);
+  glLightfv(GL_LIGHT0,GL_DIFFUSE,light0_diffuse);
   glLightfv(GL_LIGHT0,GL_POSITION,light0_position);
   glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
-
+  
   glEnable(GL_LIGHTING);
   glEnable(GL_LIGHT0);
 }
+
 void do_material()
 {
   float mat_ambient[] = {0.1,0.1,0.1,1.0};
@@ -197,12 +203,12 @@ void do_material()
   float mat_specular[] = {0.05,0.05,0.05,1.0};
   float mat_emission[] = {0.0,0.0,0.0,1.0};
   float low_shininess[] = { 10.0 };
-
-
+  
+  
   glEnable(GL_COLOR_MATERIAL);
   glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, mat_ambient);
   glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, mat_diffuse);
-
+  
 }
 
 void load_texture(string filename,int TexID)
@@ -210,35 +216,36 @@ void load_texture(string filename,int TexID)
   FILE *fptr;
   char buf[512], *parse;
   int im_size, im_width, im_height, max_color;
-  unsigned char *texture_bytes; 
-
+  unsigned char *texture_bytes;
+  
   fptr=fopen(filename.c_str(),"r");
   fgets(buf,512,fptr);
   do{
     fgets(buf,512,fptr);
-    } while(buf[0]=='#');
+  } while(buf[0]=='#');
   parse = strtok(buf," \t");
   im_width = atoi(parse);
-
+  
   parse = strtok(NULL," \n");
   im_height = atoi(parse);
-
+  
   fgets(buf,512,fptr);
   parse = strtok(buf," \n");
   max_color = atoi(parse);
-
+  
   im_size = im_width*im_height;
   texture_bytes = (unsigned char *)calloc(3,im_size);
   fread(texture_bytes,3,im_size,fptr);
   fclose(fptr);
-
+  
   glBindTexture(GL_TEXTURE_2D,TexID);
-  glTexImage2D(GL_TEXTURE_2D,0,GL_RGB,im_width,im_height,0,GL_RGB, 
-    GL_UNSIGNED_BYTE,texture_bytes);
+  glTexImage2D(GL_TEXTURE_2D,0,GL_RGB,im_width,im_height,0,GL_RGB,
+               GL_UNSIGNED_BYTE,texture_bytes);
   glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
   glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
   glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
-  cfree(texture_bytes);
+  //glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_REPLACE);
+  free(texture_bytes);
 }
 
 void load_Repeat_texture(string filename,int TexID)
@@ -246,37 +253,38 @@ void load_Repeat_texture(string filename,int TexID)
   FILE *fptr;
   char buf[512], *parse;
   int im_size, im_width, im_height, max_color;
-  unsigned char *texture_bytes; 
-
+  unsigned char *texture_bytes;
+  
   fptr=fopen(filename.c_str(),"r");
   fgets(buf,512,fptr);
   do{
     fgets(buf,512,fptr);
-    } while(buf[0]=='#');
+  } while(buf[0]=='#');
   parse = strtok(buf," \t");
   im_width = atoi(parse);
-
+  
   parse = strtok(NULL," \n");
   im_height = atoi(parse);
-
+  
   fgets(buf,512,fptr);
   parse = strtok(buf," \n");
   max_color = atoi(parse);
-
+  
   im_size = im_width*im_height;
   texture_bytes = (unsigned char *)calloc(3,im_size);
   fread(texture_bytes,3,im_size,fptr);
   fclose(fptr);
-
+  
   glBindTexture(GL_TEXTURE_2D,TexID);
-  glTexImage2D(GL_TEXTURE_2D,0,GL_RGB,im_width,im_height,0,GL_RGB, 
-    GL_UNSIGNED_BYTE,texture_bytes);
+  glTexImage2D(GL_TEXTURE_2D,0,GL_RGB,im_width,im_height,0,GL_RGB,
+               GL_UNSIGNED_BYTE,texture_bytes);
   glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
   glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
   glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT);
   glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);
   glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
-  cfree(texture_bytes);
+  //glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_REPLACE);
+  free(texture_bytes);
 }
 
 /*
@@ -293,8 +301,8 @@ void LoadParameters(char *filename){
   
   ParamFilename = filename;
   
-  if(fscanf(paramfile, "%d %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf",
-            &TotalNum,&LifeTime, &Mass, &LiftConst, &Dtheta, &TimeStep, &DispTime,&(StartPoint.x),&(StartPoint.y),&(StartPoint.z),&(Wind.x),&(Wind.y),&(Wind.z),&epsilon) != 14){
+  if(fscanf(paramfile, "%d %lf %lf %lf %lf %lf %lf %lf %lf %lf",
+            &TotalNum,&LifeTime, &Mass, &Dtheta, &TimeStep, &DispTime,&(StartPoint.x),&(StartPoint.y),&(StartPoint.z),&epsilon) != 10){
     fprintf(stderr, "error reading parameter file %s\n", filename);
     exit(1);
   }
@@ -302,7 +310,7 @@ void LoadParameters(char *filename){
   fclose(paramfile);
   double maxx=0,maxy=0,maxz=0;
   double minx=0,miny=0,minz=0;
-
+  
   ifstream maplepoint ("Maple-model.xml");
   if (maplepoint.is_open())
   {
@@ -317,32 +325,33 @@ void LoadParameters(char *filename){
       PointsData[i].z*=MAPLE_SCALER;
       maxz=Max(maxz,PointsData[i].z);
       minz=Min(minz,PointsData[i].z);
-       
+      
     }
     maplepoint.close();
-  }else cout << "Unable to open file"; 
+  }else cout << "Unable to open file";
   MapleL=maxx-minx;
   MapleW=maxy-miny;
   MapleH=maxz-minz;
+  //cout << "leaf AABB: (" << minx << ", " << miny << ", " << minz << ")" << ", (" << maxx << ", " << maxy << ", " << maxz << ")" << endl;
   MapleBigI=Matrix3x3(Mass/12*(MapleW*MapleW+MapleH*MapleH),0,0,0,Mass/12*(MapleL*MapleL+MapleH*MapleH),0,0,0,Mass/12*(MapleL*MapleL+MapleW*MapleW));
   
   //load_texture("Texture/bubble_color.ppm",MAPLE_TEX_ID);
   string files[]={"./TropicalSunnyDay/Fnt.ppm",
-                    "./TropicalSunnyDay/Lft.ppm",
-                    "./TropicalSunnyDay/Bak.ppm",
-                    "./TropicalSunnyDay/Rht.ppm",
-                    "./TropicalSunnyDay/Top.ppm",
-                    "./TropicalSunnyDay/Bot.ppm"};
+    "./TropicalSunnyDay/Lft.ppm",
+    "./TropicalSunnyDay/Bak.ppm",
+    "./TropicalSunnyDay/Rht.ppm",
+    "./TropicalSunnyDay/Top.ppm",
+    "./TropicalSunnyDay/Bot.ppm"};
   load_texture(files[0],SKYBOX_TEX_ID_FNT);
   load_texture(files[1],SKYBOX_TEX_ID_LFT);
   load_texture(files[2],SKYBOX_TEX_ID_BAK);
   load_texture(files[3],SKYBOX_TEX_ID_RHT);
   load_texture(files[4],SKYBOX_TEX_ID_TOP);
   load_texture(files[5],SKYBOX_TEX_ID_BOT);
-
+  
   load_Repeat_texture("./Texture/Ground.ppm",GROUND_TEX_ID);
-
-
+  
+  
   ifstream trianglepoint ("Triangle-index.xml");
   if (trianglepoint.is_open()){
     for (int i=0;i<TRIANGLE_VERTEX_NUM;i++){
@@ -361,13 +370,13 @@ void makenormal(const Vector3d &v0, const Vector3d &v1, const Vector3d &v2){
 }
 struct point {
   float x, y, z;
-  };
+};
 
 
 
 // glBindTexture(GL_TEXTURE_2D,1);
 // glEnable(GL_TEXTURE_2D);
-// glBegin(GL_QUADS); 
+// glBegin(GL_QUADS);
 // glNormal3f(0.0,0.0,1.0);
 // for(i=0;i<4;i++){
 //   glTexCoord2fv(mytexcoords[i]);
@@ -378,81 +387,81 @@ struct point {
 
 void DrawLeaves()
 {
-    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+  glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
   
   // Store the current matrix
-    glPushMatrix();
-    // Reset and transform the matrix.
-    glLoadIdentity();
-    // Enable/Disable features
-    glPushAttrib(GL_ENABLE_BIT);
-    glEnable(GL_TEXTURE_2D);
-    glDisable(GL_DEPTH_TEST);
-    glDisable(GL_LIGHTING);
-    glDisable(GL_BLEND);
-    // Just in case we set all vertices to white.
-    glColor4f(1,1,1,1);
-     // Render the front quad
-    glBindTexture(GL_TEXTURE_2D, SKYBOX_TEX_ID_FNT);
-    glBegin(GL_QUADS);
-        glTexCoord2f(1, 1); glVertex3f(  100.0f, -100.0f, -100.0f );
-        glTexCoord2f(0, 1); glVertex3f( -100.0f, -100.0f, -100.0f );
-        glTexCoord2f(0, 0); glVertex3f( -100.0f,  100.0f, -100.0f );
-        glTexCoord2f(1, 0); glVertex3f(  100.0f,  100.0f, -100.0f );
-    glEnd();
- 
-    // Render the left quad
-    glBindTexture(GL_TEXTURE_2D, SKYBOX_TEX_ID_LFT);
-    glBegin(GL_QUADS);
-        glTexCoord2f(1, 1); glVertex3f(  100.0f, -100.0f,  100.0f );
-        glTexCoord2f(0, 1); glVertex3f(  100.0f, -100.0f, -100.0f );
-        glTexCoord2f(0, 0); glVertex3f(  100.0f,  100.0f, -100.0f );
-        glTexCoord2f(1, 0); glVertex3f(  100.0f,  100.0f,  100.0f );
-    glEnd();
- 
-    // Render the back quad
-    glBindTexture(GL_TEXTURE_2D, SKYBOX_TEX_ID_BAK);
-    glBegin(GL_QUADS);
-        glTexCoord2f(1, 1); glVertex3f( -100.0f, -100.0f,  100.0f );
-        glTexCoord2f(0, 1); glVertex3f(  100.0f, -100.0f,  100.0f );
-        glTexCoord2f(0, 0); glVertex3f(  100.0f,  100.0f,  100.0f );
-        glTexCoord2f(1, 0); glVertex3f( -100.0f,  100.0f,  100.0f );
- 
-    glEnd();
- 
-    // Render the right quad
-    glBindTexture(GL_TEXTURE_2D, SKYBOX_TEX_ID_RHT);
-    glBegin(GL_QUADS);
-        glTexCoord2f(1, 1); glVertex3f( -100.0f, -100.0f, -100.0f );
-        glTexCoord2f(0, 1); glVertex3f( -100.0f, -100.0f,  100.0f );
-        glTexCoord2f(0, 0); glVertex3f( -100.0f,  100.0f,  100.0f );
-        glTexCoord2f(1, 0); glVertex3f( -100.0f,  100.0f, -100.0f );
-    glEnd();
- 
-    // Render the top quad
-    glBindTexture(GL_TEXTURE_2D, SKYBOX_TEX_ID_TOP);
-    glBegin(GL_QUADS);
-        glTexCoord2f(0, 1); glVertex3f( -100.0f,  100.0f, -100.0f );
-        glTexCoord2f(0, 0); glVertex3f( -100.0f,  100.0f,  100.0f );
-        glTexCoord2f(1, 0); glVertex3f(  100.0f,  100.0f,  100.0f );
-        glTexCoord2f(1, 1); glVertex3f(  100.0f,  100.0f, -100.0f );
-    glEnd();
- 
-    // Render the bottom quad
-    glBindTexture(GL_TEXTURE_2D, SKYBOX_TEX_ID_BOT);
-    glBegin(GL_QUADS);
-        glTexCoord2f(0, 0); glVertex3f( -100.0f, -100.0f, -100.0f );
-        glTexCoord2f(0, 1); glVertex3f( -100.0f, -100.0f,  100.0f );
-        glTexCoord2f(1, 1); glVertex3f(  100.0f, -100.0f,  100.0f );
-        glTexCoord2f(1, 0); glVertex3f(  100.0f, -100.0f, -100.0f );
-    glEnd();
-
-    
- 
-    // Restore enable bits and matrix
-    glPopAttrib();
-    glPopMatrix();
-
+  glPushMatrix();
+  // Reset and transform the matrix.
+  glLoadIdentity();
+  // Enable/Disable features
+  glPushAttrib(GL_ENABLE_BIT);
+  glEnable(GL_TEXTURE_2D);
+  glDisable(GL_DEPTH_TEST);
+  glDisable(GL_LIGHTING);
+  glDisable(GL_BLEND);
+  // Just in case we set all vertices to white.
+  glColor4f(1,1,1,1);
+  // Render the front quad
+  glBindTexture(GL_TEXTURE_2D, SKYBOX_TEX_ID_FNT);
+  glBegin(GL_QUADS);
+  glTexCoord2f(1, 1); glVertex3f(  100.0f, -100.0f, -100.0f );
+  glTexCoord2f(0, 1); glVertex3f( -100.0f, -100.0f, -100.0f );
+  glTexCoord2f(0, 0); glVertex3f( -100.0f,  100.0f, -100.0f );
+  glTexCoord2f(1, 0); glVertex3f(  100.0f,  100.0f, -100.0f );
+  glEnd();
+  
+  // Render the left quad
+  glBindTexture(GL_TEXTURE_2D, SKYBOX_TEX_ID_LFT);
+  glBegin(GL_QUADS);
+  glTexCoord2f(1, 1); glVertex3f(  100.0f, -100.0f,  100.0f );
+  glTexCoord2f(0, 1); glVertex3f(  100.0f, -100.0f, -100.0f );
+  glTexCoord2f(0, 0); glVertex3f(  100.0f,  100.0f, -100.0f );
+  glTexCoord2f(1, 0); glVertex3f(  100.0f,  100.0f,  100.0f );
+  glEnd();
+  
+  // Render the back quad
+  glBindTexture(GL_TEXTURE_2D, SKYBOX_TEX_ID_BAK);
+  glBegin(GL_QUADS);
+  glTexCoord2f(1, 1); glVertex3f( -100.0f, -100.0f,  100.0f );
+  glTexCoord2f(0, 1); glVertex3f(  100.0f, -100.0f,  100.0f );
+  glTexCoord2f(0, 0); glVertex3f(  100.0f,  100.0f,  100.0f );
+  glTexCoord2f(1, 0); glVertex3f( -100.0f,  100.0f,  100.0f );
+  
+  glEnd();
+  
+  // Render the right quad
+  glBindTexture(GL_TEXTURE_2D, SKYBOX_TEX_ID_RHT);
+  glBegin(GL_QUADS);
+  glTexCoord2f(1, 1); glVertex3f( -100.0f, -100.0f, -100.0f );
+  glTexCoord2f(0, 1); glVertex3f( -100.0f, -100.0f,  100.0f );
+  glTexCoord2f(0, 0); glVertex3f( -100.0f,  100.0f,  100.0f );
+  glTexCoord2f(1, 0); glVertex3f( -100.0f,  100.0f, -100.0f );
+  glEnd();
+  
+  // Render the top quad
+  glBindTexture(GL_TEXTURE_2D, SKYBOX_TEX_ID_TOP);
+  glBegin(GL_QUADS);
+  glTexCoord2f(0, 1); glVertex3f( -100.0f,  100.0f, -100.0f );
+  glTexCoord2f(0, 0); glVertex3f( -100.0f,  100.0f,  100.0f );
+  glTexCoord2f(1, 0); glVertex3f(  100.0f,  100.0f,  100.0f );
+  glTexCoord2f(1, 1); glVertex3f(  100.0f,  100.0f, -100.0f );
+  glEnd();
+  
+  // Render the bottom quad
+  glBindTexture(GL_TEXTURE_2D, SKYBOX_TEX_ID_BOT);
+  glBegin(GL_QUADS);
+  glTexCoord2f(0, 0); glVertex3f( -100.0f, -100.0f, -100.0f );
+  glTexCoord2f(0, 1); glVertex3f( -100.0f, -100.0f,  100.0f );
+  glTexCoord2f(1, 1); glVertex3f(  100.0f, -100.0f,  100.0f );
+  glTexCoord2f(1, 0); glVertex3f(  100.0f, -100.0f, -100.0f );
+  glEnd();
+  
+  
+  
+  // Restore enable bits and matrix
+  glPopAttrib();
+  glPopMatrix();
+  
   glDisable(GL_TEXTURE_2D);
   glLoadIdentity();
   glEnable(GL_LIGHTING);
@@ -460,33 +469,33 @@ void DrawLeaves()
   glEnable(GL_DEPTH_TEST);
   glEnable(GL_MULTISAMPLE_ARB);
   //TODO:Draw the CUBE
-
+  
   for(int index=0;index<numofleaves;index++){
     if(Time-Borntime[index]>1e-6){
       glLoadIdentity();
       glTranslatef(State[index].x.x,State[index].x.y,State[index].x.z);
       Quaternion rotate=State[index].q;
       rotate.GLrotate();
-
-      glBegin(GL_TRIANGLES); 
+      
+      glBegin(GL_TRIANGLES);
       glColor3f(1,0,0);
-
+      
       for(int i=0;i<TRIANGLE_VERTEX_NUM;i++){
         makenormal(PointsData[Triangles[i].a],PointsData[Triangles[i].b],PointsData[Triangles[i].c]);
         glVertex3f(PointsData[Triangles[i].a].x,PointsData[Triangles[i].a].y,PointsData[Triangles[i].a].z);
         glVertex3f(PointsData[Triangles[i].b].x,PointsData[Triangles[i].b].y,PointsData[Triangles[i].c].z);
         glVertex3f(PointsData[Triangles[i].c].x,PointsData[Triangles[i].c].y,PointsData[Triangles[i].c].z);
-         
+        
       }
       glEnd();
       // glLoadIdentity();
       // glBegin(GL_LINES);
-
+      
       // glVertex3f(StartPoint.x,StartPoint.y,StartPoint.z);
       // Vector3d Pi(0,-2,0);
       // Vector3d Somepoint=Pi;
       // Pi=State[index].x+State[index].q.rotation()*Pi;
-
+      
       // glVertex3f(Pi.x,Pi.y,Pi.z);
       // glEnd();
     }
@@ -496,17 +505,17 @@ void DrawLeaves()
   glEnable(GL_TEXTURE_2D);
   glDisable(GL_LIGHTING);
   glBindTexture(GL_TEXTURE_2D, GROUND_TEX_ID);
-    glBegin(GL_QUADS);
-        glTexCoord2f(0, 0); glVertex3f( -100.0f, -12.0f, -100.0f );
-        glTexCoord2f(0, 30); glVertex3f( -100.0f, -12.0f,  100.0f );
-        glTexCoord2f(30, 30); glVertex3f(  100.0f, -12.0f,  100.0f );
-        glTexCoord2f(30, 0); glVertex3f(  100.0f, -12.0f, -100.0f );
-    glEnd();
+  glBegin(GL_QUADS);
+  glTexCoord2f(0, 0); glVertex3f( -100.0f, -12.0f, -100.0f );
+  glTexCoord2f(0, 30); glVertex3f( -100.0f, -12.0f,  100.0f );
+  glTexCoord2f(30, 30); glVertex3f(  100.0f, -12.0f,  100.0f );
+  glTexCoord2f(30, 0); glVertex3f(  100.0f, -12.0f, -100.0f );
+  glEnd();
   glDisable(GL_TEXTURE_2D);
   glEnable(GL_LIGHTING);
   
   glutPostRedisplay();
-    
+  
   //????what is this?
   if(NSteps > MAXSTEPS){
     cerr << "Particle position table overflow, restarting!!" << endl;
@@ -523,15 +532,15 @@ void Restart(){
   glutIdleFunc(NULL);
   Time = 0;
   int i=0;
-//TODO:Vertex clear,& reserve the room;
+  //TODO:Vertex clear,& reserve the room;
   numofleaves=0;
   State.clear();
   LeavesLifetime.clear();
   Borntime.clear();
-
+  
   LeavesLifetime.reserve(TotalNum);
   Borntime.reserve(TotalNum);
-  State.reserve(TotalNum);  
+  State.reserve(TotalNum);
   DrawLeaves();
 }
 
@@ -546,13 +555,13 @@ void InitSimulation(int argc, char* argv[]){
   }
   int i=0;
   LoadParameters(argv[1]);
-
+  
   LeavesLifetime.reserve(TotalNum);
   Borntime.reserve(TotalNum);
-  State.reserve(TotalNum);  
-
+  State.reserve(TotalNum);
+  
   numofleaves=0;
-
+  
   NSteps = 0;
   NTimeSteps = -1;
   Time = 0;
@@ -569,43 +578,84 @@ StateVector Force(StateVector S)
 {
   Matrix3x3 I0T= MapleBigI;
   StateVector Sdot;
-
+  
   
   Sdot.x= S.P/Mass;
   Matrix3x3 R= S.q.rotation();
   I0T=I0T.inv();
   Matrix3x3 It= R * I0T * R.transpose();
-  Vector3d w = S.L*I0T;
-
+  Vector3d w = I0T * S.L; // DHH S.L*I0T;
+  
   Quaternion wq= Quaternion(w);
   Sdot.q=1.0 / 2 * wq * S.q;
-
+  
   Vector3d zero(0,0,0);
   Sdot.P=zero;
   Sdot.L=zero;
   
   Vector3d g(0,-10,0);
 
-  Sdot.P=g*Mass;
-  Vector3d Pi(0,-1,0);
-  Vector3d nhab(0,1,0);
-  nhab=S.x+S.q.rotation()*nhab;
-  Pi=S.x+S.q.rotation()*Pi;
-  Vector3d Vr=Sdot.x-Wind;  //cout<<Wind<<endl;
-  double Area=MapleL*MapleH;
-  Vector3d ForceDrag=-Dtheta*Area*(nhab*Vr)*Vr;
-  Vector3d ForceLift=-LiftConst*Area*(nhab*Vr)*(Vr % (nhab % Vr).normalize());
-  Vector3d ForceonP=ForceDrag+ForceLift;
-  Sdot.P=Sdot.P+ ForceonP;
-  Sdot.L=Sdot.L+ (nhab-S.x) % ForceonP + (Pi-S.x)*g*Mass;
+  //Vector3d damper = -Dtheta * Sdot.x;
+  //Sdot.P=g*Mass+damper;
 
+  //Vector3d Pi(0,-2,0);
+  //Pi=S.x+S.q.rotation()*Pi;
+  
+  // if ((StartPoint-Pi).norm()>2){
+  //     Vector3d springforce=Kij*(StartPoint-Pi).normalize()*((StartPoint-Pi).norm()-2);
+  //     Vector3d damper=-Dtheta*Sdot.x;
+  //     Vector3d ForceonP=springforce+damper;
+  //     Sdot.P=Sdot.P+ForceonP;
+  //     Sdot.L=Sdot.L+ ((Pi-S.x) % ForceonP);
+  // }
+  //DHH gauss below
+  // DHH Vector3d testwind(gauss(-5,epsilon/100,Time),gauss(0,epsilon/100,Time),gauss(0,epsilon/100,Time));
+  //WindForce = Wind;
+  //Vector3d localwind = 0.5 * Wind + Vector3d(gauss(0, 0.1, Time), gauss(0, 0.1, Time), gauss(0, 0.1, Time));
+  
+  // drag force
+  Vector3d zaxis(0, 0, 1);
+  Vector3d leafnormal =  R * zaxis;
+  Vector3d velocity = (Sdot.x - 0.5 * Wind);
+  if(leafnormal * velocity < 0)
+    leafnormal = - leafnormal;
+  
+  float area = 1.0; // leaf is approximatly a 1x1 square
+  float Cd = 1.0;
+  Vector3d drag = -Cd * area * (leafnormal * velocity) * velocity;
+  
+  // lift force
+  Vector3d cross = (leafnormal % velocity).normalize();
+  float Cl = 0.5;
+  Vector3d lift = -Cl * area * (leafnormal * velocity) * (velocity % cross);
+  
+  // compute force on leaf and torques to each of 3 locations on leaf
+  Vector3d Force = g * Mass + lift + drag;
+  Vector3d P[3];
+  P[0] = R * Vector3d(0, 0.5, 0);
+  P[1] = R * Vector3d(-0.5, -0.5, 0);
+  P[2] = R * Vector3d(0.5, -0.5, 0);
+  Vector3d Torque;
+  for(int k = 0; k < 3; k++)
+    Torque = Torque + 0.333 * P[k] % lift + P[k] % drag;
+  
+  // DHH Vector3d zaxis(0,0,5);
+  // DHH Vector3d magicForce=Sdot.x % zaxis;
+  //cout<<Wind<<endl;
+  //Vector3d ForceonP = g*Mass + damper + WindForce; //+magicForce;
+  //Sdot.P= Sdot.P + ForceonP;
+  // DHH Sdot.L= Sdot.L + ((Pi-S.x) % (damper + WindForce));
+  
+  Sdot.P = Force;
+  Sdot.L = Torque;
+  
   return Sdot;
 }
 
 void Simulate()
 {
-
-
+  
+  
   
   //Leaves Killer....
   if (numofleaves!=0&&State.size()!=0){
@@ -619,7 +669,7 @@ void Simulate()
     }
   }
   //Leaves Generator
-
+  
   if (numofleaves<TotalNum){
     for(int i=numofleaves;i<TotalNum;i++){
       Vector3d P0=StartPoint;
@@ -627,31 +677,36 @@ void Simulate()
       P0.y=StartPoint.y+(double)rand()/(RAND_MAX)*20;
       P0.z=StartPoint.z+(double)rand()/(RAND_MAX)*20;
       Vector3d zero(0,0,0);
+      Vector3d V0(0,0,0);
       Vector3d Orientation((double)rand()/(RAND_MAX),(double)rand()/(RAND_MAX),(double)rand()/(RAND_MAX));
       Quaternion q=Quaternion(Orientation);
       double btime=Time+(double)rand()/(RAND_MAX)*20-10;
-      StateVector NewLeaf(P0,q,zero*Mass,zero);
+      double ltime=abs(gauss(LifeTime,epsilon/100,Time));
+      //btime=Time;
+      ltime=LifeTime;
+      
+      StateVector NewLeaf(P0,q,V0*Mass,zero);
       State.push_back(NewLeaf);
-      LeavesLifetime.push_back(LifeTime);
+      LeavesLifetime.push_back(ltime);
       Borntime.push_back(btime);
     }
     numofleaves=TotalNum;
   }
-
   
-
+  
+  
   for(int i=0;i<numofleaves;i++){
-
-    if (State[i].x.y<=-11||Time-Borntime[i]<1e-6) 
-      {
-        // Borntime[i]=Time;
-        // LeavesLifetime[i]=1;
-        continue;
-      }
+    
+    if (State[i].x.y<=-11||Time-Borntime[i]<1e-6)
+    {
+      // Borntime[i]=Time;
+      // LeavesLifetime[i]=1;
+      continue;
+    }
     
     //double SinTheta = 1/(Wind * State[i].P / Mass);
     
-
+    
     StateVector K1,K2,K3,K4,Snew;
     K1=Force(State[i]);
     K2=Force(State[i]+TimeStep/2*K1);
@@ -685,16 +740,16 @@ void TimerCallback(int timertype)
 void PerspDisplay() {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   camera->PerspectiveDisplay(WIDTH, HEIGHT);
-
+  
   glMatrixMode(GL_MODELVIEW);
   DrawLeaves();
   glLoadIdentity();
-  if (showGrid){ 
+  if (showGrid){
     glDisable(GL_LIGHT0);
     makeGrid();
     glEnable(GL_LIGHT0);
   }
-
+  
   glutSwapBuffers();
 }
 
@@ -713,46 +768,46 @@ void motionEventHandler(int x, int y) {
 
 void keyboardEventHandler(unsigned char key, int x, int y) {
   switch (key) {
-  case 'r': case 'R':
-    // reset the camera to its initial position
-    camera->Reset();
-    break;
-  case 'f': case 'F':
-    camera->Reset();
-    break;
-  case 'g': case 'G':
-    showGrid = !showGrid;
-    break;
-  case 's': case 'S':
-    Restart();
-    if (Stopped){
-      glutTimerFunc(TimerDelay,TimerCallback,0);
-      Stopped=!Stopped;
-    }
-    break;
-  case 'a': case 'A':
-    //hit();
-    break;
-  case 'd': case 'D':
-    //hit2();
-    break;
-  case 't': case 'T':
-    Stopped=TRUE;
-    break;
+    case 'r': case 'R':
+      // reset the camera to its initial position
+      camera->Reset();
+      break;
+    case 'f': case 'F':
+      camera->Reset();
+      break;
+    case 'g': case 'G':
+      showGrid = !showGrid;
+      break;
+    case 's': case 'S':
+      Restart();
+      if (Stopped){
+        glutTimerFunc(TimerDelay,TimerCallback,0);
+        Stopped=!Stopped;
+      }
+      break;
+    case 'a': case 'A':
+      //hit();
+      break;
+    case 'd': case 'D':
+      //hit2();
+      break;
+    case 't': case 'T':
+      Stopped=TRUE;
+      break;
       
-  case 'q': case 'Q':	// q or esc - quit
-  case 27:		// esc
-    exit(0);
+    case 'q': case 'Q':	// q or esc - quit
+    case 27:		// esc
+      exit(0);
   }
-
+  
   glutPostRedisplay();
 }
 
 void init() {
   // set up camera
   // parameters are eye point, aim point, up vector
-  camera = new Camera(Vector3d(0, 5, 50), Vector3d(0, 0, 0), 
-          Vector3d(0, 1, 0));
+  camera = new Camera(Vector3d(0, 5, 50), Vector3d(0, 0, 0),
+                      Vector3d(0, 1, 0));
   // grey background for window
   glClearColor(0.62, 0.62, 0.62, 0.0);
   glShadeModel(GL_SMOOTH);
@@ -761,19 +816,19 @@ void init() {
   glEnable(GL_NORMALIZE);
   glEnable(GL_POINT_SMOOTH);
   glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
-
+  
 }
 
 int main(int argc, char *argv[]) {
-
+  
   // set up opengl window
   glutInit(&argc, argv);
   glutInitDisplayMode(GLUT_RGBA | GLUT_DEPTH | GLUT_DOUBLE);
   glutInitWindowSize(WIDTH, HEIGHT);
   glutInitWindowPosition(200, 200);
   persp_win = glutCreateWindow("Final");
-
-
+  
+  
   // initialize the camera and such
   init();
   InitSimulation(argc, argv);
@@ -783,11 +838,11 @@ int main(int argc, char *argv[]) {
   glutMouseFunc(mouseEventHandler);
   glutMotionFunc(motionEventHandler);
   glutKeyboardFunc(keyboardEventHandler);
-
+  
   do_lights();
   do_material();
-
-
+  
+  
   glutMainLoop();
   return(0);
 }

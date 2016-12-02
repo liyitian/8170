@@ -1,2 +1,2 @@
-100             15      1	      5          5       0.01      1             -2     12     -7	    5     0     0    0.5
-TotalNumber, LifeTime, Mass, LiftConstant ,Dtheta, TimeStep, DispTime,  startx,	starty,	startz, Windx,Windy,Windz  epsilon
+30             20      0.1	  2       0.04      1       -2     12  		-7	     0.5
+TotalNumber, LifeTime, Mass, Dtheta, TimeStep, DispTime,     startx,	starty,		startz,   epsilon
